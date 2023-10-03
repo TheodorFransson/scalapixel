@@ -11,7 +11,6 @@ import javax.swing.JPanel
 import javax.swing.JColorChooser
 import java.awt.{Color, BorderLayout, Container}
 
-/** The window of the application. */
 object EditorWindow extends Frame:
 	title = "Photostore"
 	resizable = true

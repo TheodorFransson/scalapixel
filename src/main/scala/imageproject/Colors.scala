@@ -2,7 +2,6 @@ package imageproject
 
 import java.awt.Color
 
- /** Object for easy access to pre defined color values. */
 object Colors:
     private val background = Vector(
         Color(0x121212),
@@ -17,18 +16,9 @@ object Colors:
         Color(0x383838),
     )
 
-    /**
-     * @param dp integer representing the background depth  
-     * @return the color at specified depth
-     * */
     def backgroundColorDP(dp: Int): Color =
         require(dp > -1 && dp < background.length)
         background(dp)
 
-    /** Brightens color by specified amount
-      * @param color the color to brighten  
-      * @param amount integer value to add to color
-      * @return the new color
-      * */
     def brighten(color: Color, amount: Int): Color =
         new Color(math.min(color.getRed() + amount, 255), math.min(color.getGreen() + amount, 255), math.min(color.getBlue() + amount, 255))
