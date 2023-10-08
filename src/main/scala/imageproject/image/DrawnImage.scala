@@ -2,7 +2,6 @@ package imageproject.image
 
 import imageproject.*
 import gui.CanvasPanel
-import filters.ImageFilter
 
 import scala.swing.Swing.*
 import scala.swing.*
@@ -10,6 +9,7 @@ import scala.swing.event.*
 import java.awt.{Color, Graphics2D, Point, geom}
 import java.awt.image.BufferedImage
 import java.awt.BasicStroke
+import imageproject.image.filters.ImageFilter
 
 class DrawnImage(width: Int, height: Int, canvas: CanvasPanel) extends BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB):
     import DrawnImage.*
@@ -66,11 +66,7 @@ class DrawnImage(width: Int, height: Int, canvas: CanvasPanel) extends BufferedI
 
     private def applyFilter(image: BufferedImage, filter: ImageFilter): BufferedImage =
         var filterImage = new EditorImage(image)
-        EditorWindow.getFilterArgs() match 
-            case Some(args) => filterImage = filter.apply(filterImage, args)
-            case None => filterImage = filter.apply(filterImage)
-
-        filterImage.buffer
+        filter.process(filterImage).buffer
 
     private def getResizedImage(): BufferedImage =
         val filtered = getFilteredImage()

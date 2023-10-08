@@ -1,11 +1,11 @@
-package imageproject.filters
+package imageproject.image.filters
 
 import imageproject.image.EditorImage
 import java.awt.Color
 
-class GaussFilter extends ImageFilter("Blur"):
-    def apply(image: EditorImage,  args: Double*): EditorImage = 
-        val middle = if args.length > 0 then args(0).toInt else 4
+class GaussFilter(arg: Option[Double] = None) extends ImageFilter("Blur"):
+    def process(image: EditorImage): EditorImage = 
+        val middle = if arg.isDefined then arg.get.toInt else 4
 
         val outImage = EditorImage.ofDim(image.width, image.height)
         val matrix = image.getColorMatrix

@@ -1,13 +1,13 @@
-package imageproject.filters
+package imageproject.image.filters
 
 import imageproject.image.EditorImage
 import java.awt.Color
 
-class CryptographyFilter extends ImageFilter("Encrypt"):
-    def apply(image: EditorImage,  args: Double*): EditorImage =
+class CryptographyFilter(arg: Option[Double] = None) extends ImageFilter("Encrypt"):
+    def process(image: EditorImage): EditorImage =
         import scala.util.Random
 
-        val seed = if args.length > 0 then args(0).toInt else Random().nextInt()
+        val seed = if arg.isDefined then arg.get.toInt else Random().nextInt()
         val random = Random(seed)
 
         val outImage = EditorImage.ofDim(image.width, image.height)

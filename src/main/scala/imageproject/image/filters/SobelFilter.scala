@@ -1,11 +1,11 @@
-package imageproject.filters
+package imageproject.image.filters
 
 import imageproject.image.EditorImage
 import java.awt.Color
 
-class SobelFilter extends ImageFilter("Sobel"):
-    def apply(image: EditorImage,  args: Double*): EditorImage = 
-        val threshold = if args.length > 0 then args(0).toInt else 122
+class SobelFilter(arg: Option[Double] = None) extends ImageFilter("Sobel"):
+    def process(image: EditorImage): EditorImage = 
+        val threshold = if arg.isDefined then arg.get.toInt else 122
 
         val outImage = EditorImage.ofDim(image.width, image.height)
         val matrix = image.getColorMatrix

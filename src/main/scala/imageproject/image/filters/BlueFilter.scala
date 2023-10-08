@@ -1,11 +1,12 @@
-package imageproject.filters
+package imageproject.image.filters
 
 import imageproject.image.EditorImage
+import imageproject.image.filters.ImageFilter
 
 import java.awt.Color
 
-class BlueFilter extends ImageFilter("Blue"):
-    def apply(image: EditorImage,  args: Double*): EditorImage = 
+class BlueFilter(arg: Option[Double] = None) extends ImageFilter("Blue"):
+    def process(image: EditorImage): EditorImage = 
         val outImage = EditorImage.ofDim(image.width, image.height)
         for i <- 0 until image.height do
             for j <- 0 until image.width do

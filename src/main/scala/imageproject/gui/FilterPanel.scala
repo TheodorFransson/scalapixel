@@ -1,7 +1,6 @@
 package imageproject.gui
 
 import imageproject.EditorWindow
-import imageproject.filters.*
 
 import scala.swing.ListView._
 import scala.swing.Swing._
@@ -12,6 +11,7 @@ import BorderPanel.Position.*
 
 import java.awt.{Color}
 import java.awt.BorderLayout
+import imageproject.image.filters.{BlueFilter, SobelFilter, GaussFilter, CryptographyFilter, GrayscaleFilter, ImageFilter, InvertFilter}
 
 class FilterPanel extends BoxPanel(Orientation.Vertical):
     val filters: Array[ImageFilter] = Array(
@@ -76,9 +76,10 @@ class FilterPanel extends BoxPanel(Orientation.Vertical):
     private def applyFilter(): Unit =
         getArgs() match
             case Some(arg) => 
-                EditorWindow.setCurrentImage(comboBox.selection.item.apply(EditorWindow.getCurrentImage(), arg))
+                comboBox.selection.item.setArg(arg)
+                EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))
             case None => 
-                EditorWindow.setCurrentImage(comboBox.selection.item.apply(EditorWindow.getCurrentImage()))
+                EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))
 
     def getArgs(): Option[Double] = argsField.text.toDoubleOption
 
