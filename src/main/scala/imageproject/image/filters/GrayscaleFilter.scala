@@ -4,7 +4,7 @@ import imageproject.image.EditorImage
 import imageproject.image.filters.ImageFilter
 import java.awt.Color
 
-class GrayscaleFilter(arg: Option[Double] = None) extends ImageFilter("Grayscale"):
+class GrayscaleFilter extends ImageFilter("Grayscale"):
     def process(image: EditorImage): EditorImage = 
         val outImage = EditorImage.ofDim(image.width, image.height)
         for i <- 0 until image.height do

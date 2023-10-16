@@ -89,7 +89,7 @@ object EditorWindow extends Frame:
 	def getPencilWidth(): Int = pencilPanel.getWidth()
 
 	/** @return args from filterPanel as Option. */
-	def getFilterArgs(): Option[Double] = filterPanel.getArgs()
+	def getFilterArgs(): Option[Double] = filterPanel.getOption()
 
 	/** Repaints the canvas. */
 	def repaintCanvas(): Unit = canvas.repaint()

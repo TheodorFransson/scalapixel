@@ -3,11 +3,13 @@ package imageproject.image.filters
 import imageproject.image.EditorImage
 import imageproject.image.ImageProcessor
 
-abstract case class ImageFilter(val name: String, var arg: Option[Double] = None) extends ImageProcessor:
+abstract case class ImageFilter(val name: String) extends ImageProcessor:
+    protected var option: Option[Double] = None
+
     def process(img: EditorImage): EditorImage;
 
-    def setArg(argument: Double): ImageFilter = 
-        arg = Option[Double].apply(argument)
+    def setOption(option: Double): ImageFilter = 
+        this.option = Option[Double].apply(option)
         this
 
     protected def computeIntensity(img: EditorImage): Array[Array[Short]] = 

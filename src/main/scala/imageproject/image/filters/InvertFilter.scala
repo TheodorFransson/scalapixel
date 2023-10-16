@@ -3,7 +3,7 @@ package imageproject.image.filters
 import imageproject.image.EditorImage
 import java.awt.Color
 
-class InvertFilter(arg: Option[Double] = None) extends ImageFilter("Invert"):
+class InvertFilter extends ImageFilter("Invert"):
     def process(image: EditorImage): EditorImage =
         val outImage = EditorImage.ofDim(image.width, image.height)
         for i <- 0 until image.height do

@@ -31,14 +31,14 @@ class FilterPanel extends BoxPanel(Orientation.Vertical):
             text = "Filter"
         contents += comboBox
 
-    val argsField = new TextField:
+    val optionField = new TextField:
         text = "4"
 
-    val argsFlowpanel = new FlowPanel:
+    val optionFlowpanel = new FlowPanel:
         peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
         contents += new Label:
             text = "Arguments"
-        contents += argsField
+        contents += optionField
   
     val previewCheckbox = new CheckBox:
         selected = false
@@ -57,12 +57,12 @@ class FilterPanel extends BoxPanel(Orientation.Vertical):
         contents += applyButton
 
 
-    val panels = Seq(comboFlowpanel, argsFlowpanel, previewFlowpanel, applyFlowpanel)
+    val panels = Seq(comboFlowpanel, optionFlowpanel, previewFlowpanel, applyFlowpanel)
     panels.foreach(p => p.maximumSize = p.preferredSize)
 
     contents ++= panels
 
-    listenTo(comboBox.selection, previewCheckbox, applyButton, argsField)
+    listenTo(comboBox.selection, previewCheckbox, applyButton, optionField)
     reactions += {
         case ButtonClicked(`applyButton`) => applyFilter()
         case ButtonClicked(`previewCheckbox`) => 
@@ -70,17 +70,17 @@ class FilterPanel extends BoxPanel(Orientation.Vertical):
             else EditorWindow.getDrawnImage().removeFilter()
         case SelectionChanged(`comboBox`) =>  
             if previewCheckbox.selected then EditorWindow.getDrawnImage().addFilter(comboBox.selection.item)
-        case ValueChanged(`argsField`) => EditorWindow.repaintCanvas()
+        case ValueChanged(`optionField`) => EditorWindow.repaintCanvas()
     }
     
     private def applyFilter(): Unit =
-        getArgs() match
+        getOption() match
             case Some(arg) => 
-                comboBox.selection.item.setArg(arg)
+                comboBox.selection.item.setOption(arg)
                 EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))
             case None => 
                 EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))
 
-    def getArgs(): Option[Double] = argsField.text.toDoubleOption
+    def getOption(): Option[Double] = optionField.text.toDoubleOption
 
         

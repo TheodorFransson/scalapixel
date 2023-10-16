@@ -1,4 +1,4 @@
-ThisBuild/scalaVersion := "3.1.2"
+ThisBuild/scalaVersion := "3.3.0"
 
 scalacOptions := Seq("-unchecked", "-deprecation")
 
