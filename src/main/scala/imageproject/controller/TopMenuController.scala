@@ -1,7 +1,7 @@
-package imageproject.gui
+package imageproject.controller
 
-import imageproject.EditorWindow
-import imageproject.image.*
+import imageproject.view.TopMenu
+import imageproject.model.Model
 
 import scala.swing.Swing._
 import scala.swing._
@@ -20,49 +20,37 @@ import javax.swing.filechooser.FileNameExtensionFilter
 import javax.imageio.ImageIO
 import javax.swing.JSpinner.NumberEditor
 
-class TopMenu extends MenuBar:
-	private val ctrlKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()
+import TopMenu.Events.*
+
+class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 	private var openFile: Option[File] = None
 
-	contents += new Menu("File"):
-		val newMenuItem = new MenuItem("New")
-		newMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('N', ctrlKey))
-		val openMenuItem = new MenuItem("Open...")
-		openMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('O', ctrlKey))
-		val saveMenuItem = new MenuItem("Save")
-		saveMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('S', ctrlKey))
-
-		val saveAsMenuItem = new MenuItem("Save As...")
-		val exitMenuItem = new MenuItem("Exit")
-		exitMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('Q', ctrlKey))
-
-		contents ++= Seq(newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, new Separator, exitMenuItem)
-		listenTo(openMenuItem, newMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem)
-
-		reactions += {
-			case ButtonClicked(`openMenuItem`) => fileChooser()
-			case ButtonClicked(`newMenuItem`) => createNewImage()
-			case ButtonClicked(`saveMenuItem`) => save()
-			case ButtonClicked(`saveAsMenuItem`) => saveAs()
-			case ButtonClicked(`exitMenuItem`) => EditorWindow.close()
-		}
-
+	listenTo(view)
+	reactions += {
+		case OpenMenuItemClicked() => fileChooser()
+		case NewMenuItemClicked() => createNewImage()
+		case SaveMenuItemClicked() => save()
+		case ExitMenuItemClicked() => 
+		case UndoMenuItemClicked() => 
+		case RedoMenuItemClicked() => 
+	}
+	
 	private def fileChooser(): Unit =
 		val chooser = new FileChooser(new File("./images/"))
 		chooser.peer.setAcceptAllFileFilterUsed(false)
 		chooser.peer.addChoosableFileFilter(new FileNameExtensionFilter("Images", "png", "jpg", "bmp"))
 		chooser.multiSelectionEnabled = false
-		if chooser.showOpenDialog(this) == FileChooser.Result.Approve then
+		if chooser.showOpenDialog(view) == FileChooser.Result.Approve then
 			openFile = Some(chooser.selectedFile)
-			val image = ImageIO.read(chooser.selectedFile)
-			if image != null then EditorWindow.setCurrentImage(new EditorImage(image))
+		val image = ImageIO.read(chooser.selectedFile)
+		if image != null then EditorWindow.setCurrentImage(new EditorImage(image))
 
 	private def saveAs(): Unit =
 		val chooser = new FileChooser()
 		chooser.peer.setAcceptAllFileFilterUsed(false)
 		chooser.peer.addChoosableFileFilter(new FileNameExtensionFilter("Images", "png", "jpg", "bmp"))
 		chooser.multiSelectionEnabled = false
-		if chooser.showSaveDialog(this) == FileChooser.Result.Approve then
+		if chooser.showSaveDialog(view) == FileChooser.Result.Approve then
 			val file = chooser.peer.getSelectedFile()
 			val name = if !file.getAbsolutePath().endsWith(".png") then file.getAbsolutePath() + ".png" else file.getAbsolutePath()
 			val newFile = new File(name)
@@ -107,20 +95,3 @@ class TopMenu extends MenuBar:
 			Some(newImage)
 		else
 			None
-	
-	contents += new Menu("Edit"):
-		val undoMenuItem = new MenuItem("Undo")
-		undoMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('Z', ctrlKey))
-		undoMenuItem.peer.setIcon(FontIcon.of(fluentui.FluentUiFilledAL.ARROW_UNDO_24, 12, Color(0xbbbbbb)))
-
-		val redoMenuItem = new MenuItem("Redo")
-		redoMenuItem.peer.setAccelerator(KeyStroke.getKeyStroke('Y', ctrlKey))
-		redoMenuItem.peer.setIcon(FontIcon.of(fluentui.FluentUiFilledAL.ARROW_REDO_24, 12, Color(0xbbbbbb)))
-
-		contents ++= Seq(undoMenuItem, redoMenuItem)
-		listenTo(undoMenuItem, redoMenuItem)
-
-		reactions += {
-			case ButtonClicked(`undoMenuItem`) => EditorWindow.history.undo()
-			case ButtonClicked(`redoMenuItem`) => EditorWindow.history.redo()
-		}

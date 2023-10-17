@@ -1,4 +1,4 @@
-package imageproject.gui
+package imageproject.view
 
 import scala.swing.Swing.*
 import scala.swing.*
@@ -8,7 +8,7 @@ import java.awt.{Color}
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
 
-class PencilPanelDeprecated extends BoxPanel(Orientation.Vertical):
+class PencilPanel extends BoxPanel(Orientation.Vertical):
     private val widthFeild = new TextField:
         text = "5"
         
@@ -25,15 +25,3 @@ class PencilPanelDeprecated extends BoxPanel(Orientation.Vertical):
 
     widthFlowpanel.maximumSize = widthFlowpanel.preferredSize
     contents += widthFlowpanel
-
-    def getWidth(): Int = 
-        toIntOption(spinner.getValue()) match
-            case Some(width) => width
-            case None => 5
-        
-    private def toIntOption(o: Object): Option[Int] =
-        try {
-            Some(o.asInstanceOf[Int])
-        } catch {
-            case e: NumberFormatException => None
-        }

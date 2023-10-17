@@ -1,4 +1,4 @@
-package imageproject.gui
+package imageproject.view
 
 import imageproject.EditorWindow
 import imageproject.Colors
@@ -15,7 +15,7 @@ import scala.collection.mutable.Buffer
 import javax.swing.JButton
 import javax.swing.border.LineBorder
 
-class SideToolBarDeprecated extends ToolBar:
+class SideToolbar extends ToolBar:
     peer.setOrientation(Orientation.Horizontal.id)
     peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
     peer.setFloatable(false)
@@ -33,24 +33,21 @@ class SideToolBarDeprecated extends ToolBar:
 
     private val zoom = new ToggleButton:
         icon = icons(0)
-        setupButton(this)
         tooltip = "Zoom"
 
     private val pen = new ToggleButton:
         icon = icons(1)
-        setupButton(this)
         tooltip = "Pencil"
         
     private val fill = new ToggleButton:
         icon = icons(2)
-        setupButton(this)
         tooltip = "Bucket fill"
 
     private val color = new Button:
         border = Swing.LineBorder(Colors.backgroundColorDP(7))
         peer.setContentAreaFilled(false)
-        setupButton(this)
         tooltip = "Color picker"
+        setupButton(this)
 
         override protected def paintComponent(g: Graphics2D): Unit = 
             if peer.getModel().isRollover() then
@@ -63,20 +60,8 @@ class SideToolBarDeprecated extends ToolBar:
 
     private val toggleButtons = Seq(zoom, pen, fill)
     private val buttons = Seq(color)
-    listenTo(zoom, pen, fill, color)
-    reactions += {
-        case ButtonClicked(`zoom`) => 
-            toggleSelection(toggleButtons, zoom)
-            EditorWindow.selectedTool = Some(new ZoomTool())
-        case ButtonClicked(`pen`) => 
-            toggleSelection(toggleButtons, pen)
-            EditorWindow.selectedTool = Some(new PencilTool())
-        case ButtonClicked(`fill`) => 
-            toggleSelection(toggleButtons, fill)
-            EditorWindow.selectedTool = Some(new FloodFillTool())
-        case ButtonClicked(`color`) => 
-            color.background = EditorWindow.chooseColor()
-    }
+
+    toggleButtons.foreach(btn => setupButton(btn))
 
     contents ++= toggleButtons
     contents ++= buttons
