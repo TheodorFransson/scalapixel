@@ -15,7 +15,9 @@ import scala.collection.mutable.Buffer
 import javax.swing.JButton
 import javax.swing.border.LineBorder
 
-class SideToolbar extends ToolBar:
+class SideToolbar extends ToolBar with Publisher:
+    import SideToolbar.Events.*
+
     peer.setOrientation(Orientation.Horizontal.id)
     peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
     peer.setFloatable(false)
@@ -33,20 +35,24 @@ class SideToolbar extends ToolBar:
 
     private val zoom = new ToggleButton:
         icon = icons(0)
+        bindEventToButton(this, ZoomButtonClicked())
         tooltip = "Zoom"
 
     private val pen = new ToggleButton:
         icon = icons(1)
+        bindEventToButton(this, PenButtonClicked())
         tooltip = "Pencil"
         
     private val fill = new ToggleButton:
         icon = icons(2)
+        bindEventToButton(this, FillButtonClicked())
         tooltip = "Bucket fill"
 
     private val color = new Button:
         border = Swing.LineBorder(Colors.backgroundColorDP(7))
         peer.setContentAreaFilled(false)
         tooltip = "Color picker"
+        bindEventToButton(this, ColorButtonClicked())
         setupButton(this)
 
         override protected def paintComponent(g: Graphics2D): Unit = 
@@ -68,20 +74,33 @@ class SideToolbar extends ToolBar:
 
     def repaintColorButton(): Unit = color.repaint()
 
-    private def disableAll(seq: Seq[ToggleButton]): Unit =
-        for i <- seq.indices do
-            seq(i).selected = false
+    private def disableAll(): Unit =
+        for i <- toggleButtons.indices do
+            toggleButtons(i).selected = false
             icons(i).setIconColor(buttonColor)
 
-    private def toggleSelection(seq: Seq[ToggleButton], btn: ToggleButton): Unit = 
-        for i <- seq.indices do
-            seq(i).selected = false
-            icons(i).setIconColor(buttonColor)
-
+    private def toggleSelection(btn: ToggleButton): Unit = 
+        disableAll()
         btn.selected = true
-        icons(seq.indexOf(btn)).setIconColor(selectedButtonColor)
+        icons(toggleButtons.indexOf(btn)).setIconColor(selectedButtonColor)
 
     private def setupButton(btn: AbstractButton): Unit =
         btn.peer.setPreferredSize(new Dimension(buttonSize, buttonSize)) 
         btn.peer.setMinimumSize(new Dimension(buttonSize, buttonSize))
         btn.peer.setMaximumSize(new Dimension(buttonSize, buttonSize))
+
+    def bindEventToButton(btn: AbstractButton, event: => Event): Unit = 
+        listenTo(btn)
+        btn.reactions += { 
+			case ButtonClicked(_) => {
+                if (btn.isInstanceOf[ToggleButton]) toggleSelection(btn.asInstanceOf[ToggleButton])
+                publish(event) 
+            }
+		}
+
+object SideToolbar:
+	object Events:
+		case class ZoomButtonClicked() extends Event
+		case class PenButtonClicked() extends Event
+		case class FillButtonClicked() extends Event
+		case class ColorButtonClicked() extends Event

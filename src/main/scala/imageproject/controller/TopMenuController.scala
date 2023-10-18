@@ -2,6 +2,7 @@ package imageproject.controller
 
 import imageproject.view.TopMenu
 import imageproject.model.Model
+import imageproject.image.EditorImage
 
 import scala.swing.Swing._
 import scala.swing._
@@ -30,9 +31,9 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		case OpenMenuItemClicked() => fileChooser()
 		case NewMenuItemClicked() => createNewImage()
 		case SaveMenuItemClicked() => save()
-		case ExitMenuItemClicked() => 
-		case UndoMenuItemClicked() => 
-		case RedoMenuItemClicked() => 
+		case ExitMenuItemClicked() => // TODO: Figure out how to close the program prefferably without a reference to the EditorWindow
+		case UndoMenuItemClicked() => model.undoImageProcess()
+		case RedoMenuItemClicked() => model.redoImageProcess()
 	}
 	
 	private def fileChooser(): Unit =
@@ -43,7 +44,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		if chooser.showOpenDialog(view) == FileChooser.Result.Approve then
 			openFile = Some(chooser.selectedFile)
 		val image = ImageIO.read(chooser.selectedFile)
-		if image != null then EditorWindow.setCurrentImage(new EditorImage(image))
+		if image != null then model.setImage(new EditorImage(image))
 
 	private def saveAs(): Unit =
 		val chooser = new FileChooser()
@@ -55,14 +56,14 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 			val name = if !file.getAbsolutePath().endsWith(".png") then file.getAbsolutePath() + ".png" else file.getAbsolutePath()
 			val newFile = new File(name)
 			newFile.createNewFile()
-			ImageIO.write(EditorWindow.getCurrentImage().buffer, "PNG", newFile)
+			ImageIO.write(model.getImage.buffer, "PNG", newFile)
 
 	private def save(): Unit = 
 		if openFile.isDefined then 
 			val file = openFile.get
 			file.getName() match
-				case a if a.endsWith(".png") => ImageIO.write(EditorWindow.getCurrentImage().buffer, "PNG", file)
-				case b if b.endsWith(".jpg") => ImageIO.write(EditorWindow.getCurrentImage().buffer, "JPEG", file)
+				case a if a.endsWith(".png") => ImageIO.write(model.getImage.buffer, "PNG", file)
+				case b if b.endsWith(".jpg") => ImageIO.write(model.getImage.buffer, "JPEG", file)
 				case _ => println("bruh")
 		else
 			saveAs()
@@ -84,14 +85,14 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 			contents += heightField
 
 		val values = Seq("1920", "1080")
-		val result = showConfirmation(EditorWindow, panel.peer, "New File", Options.OkCancel)
+		val result = showConfirmation(view, panel.peer, "New File", Options.OkCancel)
 
 		val width = widthField.peer.getText().toIntOption
 		val height = heightField.peer.getText().toIntOption
 
 		if result == Result.Ok then
 			val newImage = EditorImage.white(new Dimension(width.getOrElse(1400), height.getOrElse(800)))
-			EditorWindow.setCurrentImage(newImage)
+			model.setImage(newImage)
 			Some(newImage)
 		else
 			None
