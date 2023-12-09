@@ -3,3 +3,5 @@
 .bloop
 /project
 /target
+/.idea
+/.bsp
