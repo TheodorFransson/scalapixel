@@ -1,7 +1,6 @@
 package imageproject
 
 import tools.Tool
-import gui.*
 import image.*
 
 import scala.swing.*
@@ -11,15 +10,26 @@ import javax.swing.JPanel
 import javax.swing.JColorChooser
 import java.awt.{Color, BorderLayout, Container}
 
+import model.*
+import view.*
+import controller.*
+
 object EditorWindow extends Frame:
-	title = "Photostore"
+	title = "ScalaPaint"
 	resizable = true
 	
-	private val topMenu = new TopMenu()
+	val model = new Model()
+
+	val topMenu = new TopMenu()
+	val TopMenuController = new TopMenuController(model, topMenu)
 	menuBar = topMenu
-	private val sideToolBar = new SideToolBar()
-	private val pencilPanel = new PencilPanel()
-	private val filterPanel = new FilterPanel()
+
+	val sideToolbar = new SideToolbar()
+	val sideToolbarController = new SideToolbarController(model, sideToolbar)
+	val pencilPanel = new PencilPanel()
+	val pencilPanelController = new PencilPanelController(model, pencilPanel)
+	val filterPanel = new FilterPanel()
+	val filterPanelController = new FilterPanelController(model, filterPanel)
 		
 	private val colorChooser = new ColorChooser:
 		peer.setPreviewPanel(new JPanel())
@@ -30,7 +40,7 @@ object EditorWindow extends Frame:
 	private val colorDialog = JColorChooser.createDialog(filterPanel.peer, "Choose color", true, colorChooser.peer, null, null)
 
 	private val sideBar = new BoxPanel(Orientation.Vertical):
-		contents += sideToolBar
+		contents += sideToolbar
 		contents += new Separator:
 			maximumSize = new Dimension(500, 10)
 		contents += pencilPanel
@@ -58,44 +68,40 @@ object EditorWindow extends Frame:
 	peer.toFront()
 	peer.requestFocusInWindow()
 
-	reactions += {
-		case e: UIElementResized => canvas.updateDrawnImageSize()
-	}
-
 	listenTo(this)
 
 	/** @return the underlying image used by the canvas. */
-	def getCurrentImage(): EditorImage = canvas.image
+	def getCurrentImage(): EditorImage = ???
 
 	/** @return the image drawn by the canvas. */
-	def getDrawnImage(): DrawnImage = canvas.drawnImage
+	def getDrawnImage(): DrawnImage = ???
 
 	/** Calls setNewImage on canvas to set a new underlying image
 	 * @param image a new EditorImage to use
 	 */
-	def setCurrentImage(image: EditorImage): Unit = canvas.setNewImage(image)
+	def setCurrentImage(image: EditorImage): Unit = ???
 
 	/** Sets the underlying image used by the canvas directly, thus not saving the last image to history
 	 * @param image a new EditorImage to use
 	 */
-	def setCurrentImageWithoutSaving(image: EditorImage): Unit = canvas.image = image
+	def setCurrentImageWithoutSaving(image: EditorImage): Unit = ???
 
 	/** Calls createNewImage on topMenu to create a new image by allowing user to specify dimensions
 	 * @return an option EditorImage
 	 */
-	def createNewImage(): Option[EditorImage] = topMenu.createNewImage()
+	def createNewImage(): Option[EditorImage] = ???
 
 	/** @return an int that represents the width from the pencilPanel. */
-	def getPencilWidth(): Int = pencilPanel.getWidth()
+	def getPencilWidth(): Int = ???
 
 	/** @return args from filterPanel as Option. */
-	def getFilterArgs(): Option[Double] = filterPanel.getOption()
+	def getFilterArgs(): Option[Double] = ???
 
 	/** Repaints the canvas. */
 	def repaintCanvas(): Unit = canvas.repaint()
 
 	/** Repaints the color buton to match the selected color. */
-	def repaintColorButton(): Unit = sideToolBar.repaintColorButton()
+	def repaintColorButton(): Unit = sideToolbar.repaintColorButton()
 
 	/** Shows a dialog with colorChooser
 	 * @return the selected color

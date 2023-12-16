@@ -13,7 +13,7 @@ class FilterPanelController(model: Model, view: FilterPanel) extends Reactor:
     listenTo(view)
     reactions += {
         case ApplyFilter() => ???
-        case PreviewModeChanged(mode: Boolean) => ???
-        case FilterSelectionChanged(selection: ImageFilter) => ???
-        case FilterParameterChanged(value: String) => ???
+        case PreviewModeChanged(mode: Boolean) => println(mode)
+        case FilterSelectionChanged(selection: ImageFilter) => println(selection)
+        case FilterParameterChanged(value: String) => println(value)
     }

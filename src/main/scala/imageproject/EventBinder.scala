@@ -21,7 +21,7 @@ trait EventBinder:
   def bindToValueChangeEvent[T](component: Publisher, event: T => Event, getValue: () => T, customAction: () => Unit = () => {}): Unit = 
     listenTo(component)
     component.reactions += {
-      case ValueChanged(_) => 
+      case ValueChanged(_) | ButtonClicked(_) | SelectionChanged(_) => 
         customAction()
         publish(event(getValue()))
     }

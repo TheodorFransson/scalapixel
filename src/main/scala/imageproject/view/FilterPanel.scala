@@ -16,7 +16,7 @@ import imageproject.image.filters.*
 
 class FilterPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     import FilterPanel.Events.* 
-    
+
     val filters: Array[ImageFilter] = Array(
         new BlueFilter(),
         new CryptographyFilter(), 
@@ -61,7 +61,7 @@ class FilterPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
 
     bindToEvent(applyButton, ApplyFilter())
     bindToValueChangeEvent(previewCheckbox, PreviewModeChanged.apply, () => previewCheckbox.selected)
-    bindToValueChangeEvent(comboBox, FilterSelectionChanged.apply, () => comboBox.selection.item)
+    bindToValueChangeEvent(comboBox.selection, FilterSelectionChanged.apply, () => comboBox.selection.item)
     bindToValueChangeEvent(optionField, FilterParameterChanged.apply, () => optionField.text)
 
     val panels = Seq(comboFlowpanel, optionFlowpanel, previewFlowpanel, applyFlowpanel)
