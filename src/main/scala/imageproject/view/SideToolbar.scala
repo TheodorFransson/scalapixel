@@ -15,7 +15,9 @@ import scala.collection.mutable.Buffer
 import javax.swing.JButton
 import javax.swing.border.LineBorder
 
-class SideToolbar extends ToolBar with Publisher:
+import imageproject.EventBinder
+
+class SideToolbar extends ToolBar with EventBinder:
     import SideToolbar.Events.*
 
     peer.setOrientation(Orientation.Horizontal.id)
@@ -35,24 +37,20 @@ class SideToolbar extends ToolBar with Publisher:
 
     private val zoom = new ToggleButton:
         icon = icons(0)
-        bindEventToButton(this, ZoomButtonClicked())
         tooltip = "Zoom"
 
     private val pen = new ToggleButton:
         icon = icons(1)
-        bindEventToButton(this, PenButtonClicked())
         tooltip = "Pencil"
         
     private val fill = new ToggleButton:
         icon = icons(2)
-        bindEventToButton(this, FillButtonClicked())
         tooltip = "Bucket fill"
 
     private val color = new Button:
         border = Swing.LineBorder(Colors.backgroundColorDP(7))
         peer.setContentAreaFilled(false)
         tooltip = "Color picker"
-        bindEventToButton(this, ColorButtonClicked())
         setupButton(this)
 
         override protected def paintComponent(g: Graphics2D): Unit = 
@@ -63,6 +61,11 @@ class SideToolbar extends ToolBar with Publisher:
 
             g.fillRect(0, 0, peer.getWidth(), peer.getHeight())
             super.paintComponent(g)
+
+    bindToEvent(zoom, ZoomButtonClicked(), () => toggleSelection(zoom))
+    bindToEvent(pen, PenButtonClicked(), () => toggleSelection(pen))
+    bindToEvent(fill, FillButtonClicked(), () => toggleSelection(fill))
+    bindToEvent(color, ColorButtonClicked())
 
     private val toggleButtons = Seq(zoom, pen, fill)
     private val buttons = Seq(color)
@@ -88,15 +91,6 @@ class SideToolbar extends ToolBar with Publisher:
         btn.peer.setPreferredSize(new Dimension(buttonSize, buttonSize)) 
         btn.peer.setMinimumSize(new Dimension(buttonSize, buttonSize))
         btn.peer.setMaximumSize(new Dimension(buttonSize, buttonSize))
-
-    def bindEventToButton(btn: AbstractButton, event: => Event): Unit = 
-        listenTo(btn)
-        btn.reactions += { 
-			case ButtonClicked(_) => {
-                if (btn.isInstanceOf[ToggleButton]) toggleSelection(btn.asInstanceOf[ToggleButton])
-                publish(event) 
-            }
-		}
 
 object SideToolbar:
 	object Events:

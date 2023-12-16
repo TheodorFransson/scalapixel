@@ -68,6 +68,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		else
 			saveAs()
 
+	// TODO: Move the panel to a separate file. Interact with the model instead of returning an EditorImage.
 	def createNewImage(): Option[EditorImage] =
 		import Dialog.*
 		val widthField = new TextField():

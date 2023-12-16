@@ -1,5 +1,7 @@
 package imageproject.view
 
+import imageproject.EventBinder
+
 import scala.swing.Swing.*
 import scala.swing.*
 import scala.swing.event.*
@@ -8,7 +10,9 @@ import java.awt.{Color}
 import javax.swing.SpinnerNumberModel
 import javax.swing.JSpinner
 
-class PencilPanel extends BoxPanel(Orientation.Vertical):
+class PencilPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
+    import PencilPanel.Events.*
+
     private val widthFeild = new TextField:
         text = "5"
         
@@ -25,3 +29,12 @@ class PencilPanel extends BoxPanel(Orientation.Vertical):
 
     widthFlowpanel.maximumSize = widthFlowpanel.preferredSize
     contents += widthFlowpanel
+
+    bindToSpinnerChangeEvent[Int](spinner, SpinnerValueChanged.apply, model.getNumber.intValue)
+
+    def setValue(value: Int): Unit = 
+        model.setValue(value)
+
+object PencilPanel:
+    object Events:
+        case class SpinnerValueChanged(newValue: Int) extends Event

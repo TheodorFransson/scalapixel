@@ -19,8 +19,9 @@ import java.io.File
 import javax.swing.filechooser.FileNameExtensionFilter
 import javax.imageio.ImageIO
 import javax.swing.JSpinner.NumberEditor
+import imageproject.EventBinder
 
-class TopMenu extends MenuBar with Publisher:
+class TopMenu extends MenuBar with EventBinder:
 	private val ctrlKey = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()
 
 	import TopMenu.Events.*
@@ -39,10 +40,10 @@ class TopMenu extends MenuBar with Publisher:
 
 		contents ++= Seq(newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, new Separator, exitMenuItem)
 
-		bindEventToMenuItem(openMenuItem, OpenMenuItemClicked())
-		bindEventToMenuItem(newMenuItem, NewMenuItemClicked())
-		bindEventToMenuItem(saveMenuItem, SaveMenuItemClicked())
-		bindEventToMenuItem(exitMenuItem, ExitMenuItemClicked())
+		bindToEvent(openMenuItem, OpenMenuItemClicked())
+		bindToEvent(newMenuItem, NewMenuItemClicked())
+		bindToEvent(saveMenuItem, SaveMenuItemClicked())
+		bindToEvent(exitMenuItem, ExitMenuItemClicked())
 
 	val fileMenu = new FileMenu()
 		
@@ -57,18 +58,12 @@ class TopMenu extends MenuBar with Publisher:
 
 		contents ++= Seq(undoMenuItem, redoMenuItem)
 
-		bindEventToMenuItem(undoMenuItem, UndoMenuItemClicked())
-		bindEventToMenuItem(redoMenuItem, RedoMenuItemClicked())
+		bindToEvent(undoMenuItem, UndoMenuItemClicked())
+		bindToEvent(redoMenuItem, RedoMenuItemClicked())
 
 	contents += fileMenu
 	contents += actionMenu
 
-	def bindEventToMenuItem(item: MenuItem, event: => Event): Unit = 
-		listenTo(item)
-		item.reactions += { 
-			case ButtonClicked(_) => publish(event) 
-		}
-  	
 object TopMenu:
 	object Events:
 		case class NewMenuItemClicked() extends Event
