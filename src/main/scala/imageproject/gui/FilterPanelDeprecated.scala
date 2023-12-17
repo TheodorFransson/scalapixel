@@ -13,7 +13,7 @@ import java.awt.{Color}
 import java.awt.BorderLayout
 import imageproject.image.filters.{BlueFilter, SobelFilter, GaussFilter, CryptographyFilter, GrayscaleFilter, ImageFilter, InvertFilter}
 
-class FilterPanel extends BoxPanel(Orientation.Vertical):
+class FilterPanelDeprecated extends BoxPanel(Orientation.Vertical):
     val filters: Array[ImageFilter] = Array(
         new BlueFilter(),
         new CryptographyFilter(), 

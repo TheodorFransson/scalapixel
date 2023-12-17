@@ -11,7 +11,7 @@ import scala.swing.event.*
 import java.awt.{Color, Graphics2D, Point}
 import java.awt.Image
 
-class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
+class CanvasPanelDeprecated(initSize: Dimension, val padding: Int) extends Panel:
 		updateSize(initSize, padding)
 		background = Colors.backgroundColorDP(0)
 		focusable = true
