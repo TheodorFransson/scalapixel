@@ -8,8 +8,8 @@ abstract case class ImageFilter(val name: String) extends ImageProcessor:
 
     def process(img: EditorImage): EditorImage;
 
-    def setOption(option: Double): ImageFilter = 
-        this.option = Option[Double].apply(option)
+    def setOption(option: String): ImageFilter =
+        this.option = option.toDoubleOption
         this
 
     protected def computeIntensity(img: EditorImage): Array[Array[Short]] = 

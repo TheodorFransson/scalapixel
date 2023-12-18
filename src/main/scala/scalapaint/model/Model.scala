@@ -2,41 +2,57 @@ package scalapaint.model
 
 import scalapaint.History
 import scalapaint.image.{EditorImage, ImageProcessor}
+import scalapaint.model.Model.Events.ImageUpdated
 
-class Model extends Publisher[EditorImage]:
-    private var image: EditorImage = EditorImage.ofDim(100, 100)
+import javax.swing.SwingUtilities
+import scala.collection.mutable
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.swing.{Dimension, Publisher}
+import scala.swing.event.Event
+
+class Model extends Publisher:
+    private var image: EditorImage = EditorImage.white(new Dimension(100, 100))
+    private val processQueue: mutable.Queue[() => Future[EditorImage]] = mutable.Queue()
+    private var isProcessing: Boolean = false
     private val history: History = new History()
 
     def setImage(newImage: EditorImage): EditorImage = 
         image = newImage
-        publish(image)
+        publish(ImageUpdated(image))
         image
 
     def getImage: EditorImage = image
 
-    def applyProcess(processor: ImageProcessor): EditorImage =
-        image = processor.process(image)
-        publish(image)
-        image
+    private def applyProcess(processor: ImageProcessor): Future[EditorImage] =
+        Future {
+            val processedImage = processor.process(getImage)
+            SwingUtilities.invokeLater { () =>
+                setImage(processedImage)
+            }
+            processedImage
+        }
+
+    private def processNext(): Unit =
+        if (processQueue.nonEmpty && !isProcessing)
+            isProcessing = true
+            val operation = processQueue.dequeue()
+            operation().onComplete { _ =>
+                isProcessing = false
+                processNext()
+            }
+
+    def enqueueProcess(processor: ImageProcessor): Unit =
+        processQueue.enqueue(() => applyProcess(processor))
+        processNext()
+
         // TODO: Add this to history (History keeps track of the process, the process itself keeps track of how to undo it)
 
     def undoImageProcess(): EditorImage = ??? // TODO: Undo the latest process from history, make undo return an image
 
     def redoImageProcess(): EditorImage = ???
 
+object Model:
 
-trait Publisher[T]:
-  private var subscribers: List[Subscriber[T]] = Nil
-  
-  def subscribe(subscriber: Subscriber[T]): Unit = 
-    subscribers ::= subscriber
-  
-  def unsubscribe(subscriber: Subscriber[T]): Unit = 
-    subscribers = subscribers.filterNot(_ == subscriber)
-  
-  def publish(event: T): Unit = 
-    subscribers.foreach(_.notify(event))
-
-trait Subscriber[T]:
-  def notify(event: T): Unit
-
+  object Events:
+    case class ImageUpdated(image: EditorImage) extends Event

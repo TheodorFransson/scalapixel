@@ -75,8 +75,7 @@ class FilterPanelDeprecated extends BoxPanel(Orientation.Vertical):
     
     private def applyFilter(): Unit =
         getOption() match
-            case Some(arg) => 
-                comboBox.selection.item.setOption(arg)
+            case Some(arg) =>
                 EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))
             case None => 
                 EditorWindow.setCurrentImage(comboBox.selection.item.process(EditorWindow.getCurrentImage()))

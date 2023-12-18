@@ -8,11 +8,11 @@ import scala.swing.event.*
 import BorderPanel.Position.*
 import javax.swing.JPanel
 import javax.swing.JColorChooser
-import java.awt.{Color, BorderLayout, Container}
-
+import java.awt.{BorderLayout, Color, Container}
 import model.*
 import view.*
 import controller.*
+import scalapaint.image.filters.BlueFilter
 
 object EditorWindow extends Frame:
 	title = "ScalaPaint"
@@ -50,7 +50,8 @@ object EditorWindow extends Frame:
 
 	setBackgroundColor(sideBar.peer, Colors.backgroundColorDP(1))
 
-	private val canvas = new CanvasPanel(new Dimension(1400, 800), 40)
+	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
+	val canvasPanelController = new CanvasPanelController(model, canvasPanel)
 
 	var selectedTool: Option[Tool] = None
 	var selectedColor: Color = Color.BLACK
@@ -58,7 +59,7 @@ object EditorWindow extends Frame:
 
 	private val borderPanel = new BorderPanel:
 		layout(sideBar) = West
-		layout(canvas) = Center
+		layout(canvasPanel) = Center
 
 	contents = borderPanel
 
@@ -67,8 +68,6 @@ object EditorWindow extends Frame:
 	centerOnScreen()
 	peer.toFront()
 	peer.requestFocusInWindow()
-
-	listenTo(this)
 
 	/** @return the underlying image used by the canvas. */
 	def getCurrentImage(): EditorImage = ???
@@ -98,7 +97,7 @@ object EditorWindow extends Frame:
 	def getFilterArgs(): Option[Double] = ???
 
 	/** Repaints the canvas. */
-	def repaintCanvas(): Unit = canvas.repaint()
+	def repaintCanvas(): Unit = canvasPanel.repaint()
 
 	/** Repaints the color buton to match the selected color. */
 	def repaintColorButton(): Unit = sideToolbar.repaintColorButton()
