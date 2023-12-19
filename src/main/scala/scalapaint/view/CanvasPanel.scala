@@ -2,15 +2,15 @@ package scalapaint.view
 
 import javafx.application.Platform
 import javafx.embed.swing.{JFXPanel, SwingFXUtils}
-import javafx.scene.{Scene, paint}
 import javafx.scene.canvas.Canvas
 import javafx.scene.image.WritableImage
-import javafx.scene.input.{MouseButton, MouseEvent, ScrollEvent}
+import javafx.scene.input.{KeyEvent, MouseButton, MouseEvent, ScrollEvent}
+import javafx.scene.{Scene, paint}
 import scalapaint.*
 import scalapaint.image.{DrawnImage, EditorImage, RenderImage}
 
 import java.awt.image.BufferedImage
-import java.awt.{BorderLayout, Color, FlowLayout, Graphics2D, Image, Point}
+import java.awt.{Dimension, FlowLayout, Graphics2D}
 import javax.swing.SwingUtilities
 import javax.swing.border.EmptyBorder
 import scala.swing.*
@@ -46,6 +46,8 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 		canvas.setOnMousePressed(e => publish(MousePressed(e)))
 		canvas.setOnMouseDragged(e => publish(MouseDragged(e)))
 		canvas.setOnMouseReleased(e => publish(MouseReleased(e)))
+		canvas.setOnKeyPressed(e => publish(KeyPressed(e)))
+		canvas.setOnKeyReleased(e => publish(KeyReleased(e)))
 		canvas.requestFocus()
 	})
 
@@ -99,3 +101,5 @@ object CanvasPanel:
 		case class MouseDragged(originalEvent: MouseEvent) extends Event
 		case class MouseReleased(originalEvent: MouseEvent) extends Event
 		case class KeyAction(event: Event) extends Event
+		case class KeyPressed(originalEvent: KeyEvent) extends Event
+		case class KeyReleased(originalEvent: KeyEvent) extends Event
