@@ -31,7 +31,7 @@ class FilterPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
         contents += comboBox
 
     val optionField = new TextField:
-        text = "4"
+        text = ""
 
     val optionFlowpanel = new FlowPanel:
         peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
