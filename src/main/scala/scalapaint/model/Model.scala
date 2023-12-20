@@ -2,7 +2,7 @@ package scalapaint.model
 
 import scalapaint.History
 import scalapaint.image.{EditorImage, ImageProcessor}
-import scalapaint.model.Model.Events.ImageUpdated
+import scalapaint.model.Model.Events.*
 
 import javax.swing.SwingUtilities
 import scala.collection.mutable
@@ -12,14 +12,19 @@ import scala.swing.{Dimension, Publisher}
 import scala.swing.event.Event
 
 class Model extends Publisher:
-    private var image: EditorImage = EditorImage.white(new Dimension(100, 100))
+    private var image: EditorImage = EditorImage.ofDim(100, 100)
     private val processQueue: mutable.Queue[() => Future[EditorImage]] = mutable.Queue()
     private var isProcessing: Boolean = false
     private val history: History = new History()
 
-    def setImage(newImage: EditorImage): EditorImage = 
+    private def setImage(newImage: EditorImage): EditorImage = 
         image = newImage
         publish(ImageUpdated(image))
+        image
+
+    def setNewImage(newImage: EditorImage): EditorImage =
+        image = newImage
+        publish(NewImage(image))
         image
 
     def getImage: EditorImage = image
@@ -56,3 +61,4 @@ object Model:
 
   object Events:
     case class ImageUpdated(image: EditorImage) extends Event
+    case class NewImage(image: EditorImage) extends Event

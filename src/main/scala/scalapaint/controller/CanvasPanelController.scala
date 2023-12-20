@@ -26,6 +26,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
 
     reactions += {
         case ImageUpdated(image) => view.updateImage(image)
+        case NewImage(image) => view.setNewImage(image)
         case UIElementResized(_) =>
           val newSize = view.peer.getSize()
           view.updateSize(new Dimension(newSize.width, newSize.height))
@@ -41,10 +42,9 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
         case Events.KeyPressed(event) =>
           pressedKeys += event.getCode
-          updatePanning()
+          keyPressedActions()
         case Events.KeyReleased(event) =>
           pressedKeys -= event.getCode
-          updatePanning()
     }
 
     def zoom(event: ScrollEvent): Unit =
@@ -63,17 +63,24 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
         else
             dragging = true
 
-    private def updatePanning(): Unit =
+    private def keyPressedActions(): Unit =
+      checkReset()
+      panWithKeys()
+
+    private def checkReset(): Unit =
+      if pressedKeys(KeyCode.R) then view.resetViewTransform()
+
+    private def panWithKeys(): Unit =
         if (panTask.isEmpty && pressedKeys.nonEmpty) then
             val task = new TimerTask:
                 def run(): Unit =
 
                   val direction = new Point(0, 0)
-                  if (pressedKeys(KeyCode.W) || pressedKeys(KeyCode.UP)) direction.y += 10
-                  if (pressedKeys(KeyCode.A) || pressedKeys(KeyCode.LEFT)) direction.x += 10
-                  if (pressedKeys(KeyCode.S) || pressedKeys(KeyCode.DOWN)) direction.y -= 10
-                  if (pressedKeys(KeyCode.D) || pressedKeys(KeyCode.RIGHT)) direction.x -= 10
+                  if (pressedKeys(KeyCode.W) || pressedKeys(KeyCode.UP)) direction.y += 1
+                  if (pressedKeys(KeyCode.A) || pressedKeys(KeyCode.LEFT)) direction.x += 1
+                  if (pressedKeys(KeyCode.S) || pressedKeys(KeyCode.DOWN)) direction.y -= 1
+                  if (pressedKeys(KeyCode.D) || pressedKeys(KeyCode.RIGHT)) direction.x -= 1
 
                   view.pan(direction.x, direction.y)
-            panTimer.schedule(task, 0, 25) // Adjust the period for faster/slower panning
+            panTimer.schedule(task, 0, 5) // Adjust the period for faster/slower panning
             panTask = Some(task)

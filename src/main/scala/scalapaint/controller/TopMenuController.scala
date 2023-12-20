@@ -38,7 +38,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		if chooser.showOpenDialog(view) == FileChooser.Result.Approve then
 			openFile = Some(chooser.selectedFile)
 		val image = ImageIO.read(chooser.selectedFile)
-		if image != null then model.setImage(new EditorImage(image))
+		if image != null then model.setNewImage(new EditorImage(image))
 
 	private def saveAs(): Unit =
 		val chooser = new FileChooser()
@@ -63,7 +63,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 			saveAs()
 
 	// TODO: Move the panel to a separate file. Interact with the model instead of returning an EditorImage.
-	def createNewImage(): Option[EditorImage] =
+	def createNewImage(): Unit =
 		import Dialog.*
 		val widthField = new TextField():
 			text = "1400"
@@ -87,7 +87,4 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 
 		if result == Result.Ok then
 			val newImage = EditorImage.white(new Dimension(width.getOrElse(1400), height.getOrElse(800)))
-			model.setImage(newImage)
-			Some(newImage)
-		else
-			None
+			model.setNewImage(newImage)

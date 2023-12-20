@@ -69,6 +69,8 @@ object EditorWindow extends Frame:
 	peer.toFront()
 	peer.requestFocusInWindow()
 
+	model.setNewImage(EditorImage.white(new Dimension(400, 400)))
+
 	/** @return the underlying image used by the canvas. */
 	def getCurrentImage(): EditorImage = ???
 
