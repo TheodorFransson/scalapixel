@@ -77,11 +77,25 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 			drawImageOnCanvas()
 	})
 
+	def setNewImage(editorImage: EditorImage): Unit =
+		updateImage(editorImage)
+		renderImage.reset(dim, new Dimension(editorImage.width, editorImage.height))
+
+	def resetViewTransform(): Unit =
+		renderImage.reset(dim)
+
 	private def drawImageOnCanvas(): Unit =
 		Platform.runLater(() => {
 			val graphicsContext = canvas.getGraphicsContext2D
 
-			graphicsContext.setFill(new javafx.scene.paint.Color(background.getRed().toDouble / 255.0, background.getBlue().toDouble / 255.0, background.getGreen().toDouble / 255.0, 1.0)) // Set your desired background color here
+			graphicsContext.setFill(
+				new javafx.scene.paint.Color(
+					background.getRed().toDouble / 255.0,
+					background.getBlue().toDouble / 255.0,
+					background.getGreen().toDouble / 255.0, 1.0
+				)
+			)
+
 			graphicsContext.fillRect(0, 0, canvas.getWidth, canvas.getHeight)
 
 			renderImage.render(graphicsContext)

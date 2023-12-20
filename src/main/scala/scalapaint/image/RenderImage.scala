@@ -1,6 +1,5 @@
 package scalapaint.image
 
-import javafx.geometry.Point2D
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.image.Image
 
@@ -10,9 +9,18 @@ import scala.swing.Dimension
 class RenderImage(var javafxImage: Image):
   private var zoomFactor = 1.0
   private val imageOrigin = new Point(0, 0)
+  private var size = new Dimension(javafxImage.getWidth.toInt, javafxImage.getHeight.toInt)
   private var updated: Boolean = true
 
   def needsUpdate(): Boolean = updated
+
+  def reset(referenceSize: Dimension, imageSize: Dimension = size): Unit =
+    zoomFactor = 1.0
+    imageOrigin.setLocation(
+      (referenceSize.getWidth / 2) - (imageSize.getWidth / 2),
+      (referenceSize.getHeight / 2) - (imageSize.getHeight / 2)
+    )
+    updated = true
 
   def zoom(factor: Double, target: Point, referenceSize: Dimension): Unit =
     zoomFactor *= factor
@@ -21,18 +29,6 @@ class RenderImage(var javafxImage: Image):
     val sign = if factor > 1 then 0.1 else -0.1
 
     pan((direction.x * sign).toInt, (direction.y * sign).toInt)
-    /*
-    val normalizedDirection = new Point2wD(
-      (direction.x / referenceSize.getWidth),
-      (direction.y / referenceSize.getHeight)
-    )
-
-    val sign = if factor > 1 then -1 else 1
-
-    val multipliedDirection = new Point((direction.x * normalizedDirection.getX * sign).toInt, (direction.y * normalizedDirection.getY * sign).toInt)
-
-    pan(multipliedDirection.x, multipliedDirection.y)
-     */
 
     updated = true
 
@@ -40,11 +36,11 @@ class RenderImage(var javafxImage: Image):
     imageOrigin.translate(dx, dy)
     updated = true
 
-
   def render(gc: GraphicsContext): Unit =
     gc.drawImage(javafxImage, imageOrigin.getX, imageOrigin.getY, javafxImage.getWidth * zoomFactor, javafxImage.getHeight * zoomFactor)
     updated = false
 
   def updateImage(newImage: Image): Unit =
     javafxImage = newImage
+    size = new Dimension(javafxImage.getWidth.toInt, javafxImage.getHeight.toInt)
     updated = true
