@@ -23,7 +23,7 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 
 	private val layout = new FlowLayout()
 
-	private val dim = new Dimension(initSize.width, initSize.height)
+	private var dim = new Dimension(initSize.width, initSize.height)
 	private val renderImage: RenderImage = new RenderImage(WritableImage(dim.width, dim.height))
 
 	private val jfxPanel = new JFXPanel()
@@ -52,8 +52,9 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 	})
 
 	def updateSize(size: Dimension, padding: Int = padding): Unit =
-		preferredSize = new Dimension(size.width, size.height)
-		jfxPanel.setPreferredSize(new Dimension(size.width, size.height))
+		dim = new Dimension(size.width, size.height)
+		preferredSize = new Dimension(dim.width, dim.height)
+		jfxPanel.setPreferredSize(new Dimension(dim.width, dim.height))
 
 		Platform.runLater(() => {
 			canvas.setWidth(jfxPanel.getWidth)
@@ -86,8 +87,8 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 			renderImage.render(graphicsContext)
 		})
 
-	def zoom(factor: Double): Unit =
-		renderImage.zoom(factor)
+	def zoom(factor: Double, target: Point = new Point(dim.width / 2, dim.height / 2)): Unit =
+		renderImage.zoom(factor, target, dim)
 		drawImageOnCanvas()
 
 	def pan(dx: Int, dy: Int): Unit =

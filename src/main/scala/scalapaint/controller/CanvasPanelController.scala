@@ -48,8 +48,9 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
     }
 
     def zoom(event: ScrollEvent): Unit =
+        val target = new Point(event.getX.toInt, event.getY.toInt)
         val zoomFactor = if (event.getDeltaY < 0) 0.9 else 1.1
-        view.zoom(zoomFactor)
+        view.zoom(zoomFactor, target)
 
     private def panWithMouse(event: MouseEvent): Unit =
         val point = new Point(event.getX.toInt, event.getY.toInt)
