@@ -2,6 +2,7 @@ package scalapaint.controller
 
 import org.kordamp.ikonli.*
 import org.kordamp.ikonli.swing.FontIcon
+import scalapaint.EditorWindow
 import scalapaint.image.EditorImage
 import scalapaint.model.Model
 import scalapaint.view.TopMenu
@@ -25,7 +26,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		case OpenMenuItemClicked() => fileChooser()
 		case NewMenuItemClicked() => createNewImage()
 		case SaveMenuItemClicked() => save()
-		case ExitMenuItemClicked() => // TODO: Figure out how to close the program prefferably without a reference to the EditorWindow
+		case ExitMenuItemClicked() => EditorWindow.closeOperation()
 		case UndoMenuItemClicked() => model.undoImageProcess()
 		case RedoMenuItemClicked() => model.redoImageProcess()
 	}
@@ -62,7 +63,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		else
 			saveAs()
 
-	// TODO: Move the panel to a separate file. Interact with the model instead of returning an EditorImage.
+	// TODO: Move the panel to a separate file.
 	def createNewImage(): Unit =
 		import Dialog.*
 		val widthField = new TextField():

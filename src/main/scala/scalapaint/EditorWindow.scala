@@ -12,6 +12,7 @@ import java.awt.{BorderLayout, Color, Container}
 import model.*
 import view.*
 import controller.*
+import javafx.application.Platform
 import scalapaint.image.filters.BlueFilter
 
 object EditorWindow extends Frame:
@@ -128,4 +129,8 @@ object EditorWindow extends Frame:
 				setBackgroundColor(c.asInstanceOf[Container], color)
 		)
 
-	override def closeOperation(): Unit = dispose()
+	override def closeOperation(): Unit =
+		canvasPanelController.cleanup()
+		Platform.exit()
+		dispose()
+		System.exit(0)
