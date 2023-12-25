@@ -85,7 +85,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
             panTimer.schedule(task, 0, 5) // Adjust the period for faster/slower panning
             panTask = Some(task)
 
-    def cleanup(): Unit = {
+    def dispose(): Unit = {
       panTask.foreach(_.cancel())
       panTimer.cancel()
       panTimer.purge()
