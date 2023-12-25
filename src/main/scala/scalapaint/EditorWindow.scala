@@ -4,16 +4,14 @@ import tools.Tool
 import image.*
 
 import scala.swing.*
-import scala.swing.event.*
 import BorderPanel.Position.*
 import javax.swing.JPanel
 import javax.swing.JColorChooser
-import java.awt.{BorderLayout, Color, Container}
+import java.awt.{Color, Container}
 import model.*
 import view.*
 import controller.*
 import javafx.application.Platform
-import scalapaint.image.filters.BlueFilter
 
 object EditorWindow extends Frame:
 	title = "ScalaPaint"
@@ -130,7 +128,7 @@ object EditorWindow extends Frame:
 		)
 
 	override def closeOperation(): Unit =
-		canvasPanelController.cleanup()
+		canvasPanelController.dispose()
 		Platform.exit()
 		dispose()
 		System.exit(0)
