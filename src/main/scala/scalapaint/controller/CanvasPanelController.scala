@@ -5,7 +5,7 @@ import javafx.scene.input.{KeyCode, MouseButton, MouseEvent, ScrollEvent}
 import scalapaint.model.Model
 import scalapaint.model.Model.Events.*
 import scalapaint.view.CanvasPanel
-import scalapaint.view.CanvasPanel.Events
+import scalapaint.view.CanvasPanel.Events.*
 
 import java.util.TimerTask
 import scala.swing.*
@@ -28,20 +28,20 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
         case UIElementResized(_) =>
           val newSize = view.peer.getSize()
           view.updateSize(new Dimension(newSize.width, newSize.height))
-        case Events.ZoomEvent(event) => zoom(event)
-        case Events.MousePressed(event) =>
+        case ZoomEvent(event) => zoom(event)
+        case MousePressed(event) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case Events.MouseDragged(event) =>
+        case MouseDragged(event) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case Events.MouseReleased(event) =>
+        case MouseReleased(event) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case Events.KeyPressed(event) =>
+        case KeyPressed(event) =>
           pressedKeys += event.getCode
           keyPressedActions()
-        case Events.KeyReleased(event) =>
+        case KeyReleased(event) =>
           pressedKeys -= event.getCode
     }
 
