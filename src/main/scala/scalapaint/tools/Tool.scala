@@ -1,9 +1,10 @@
 package scalapaint.tools
 
 import scalapaint.image.ImageProcessor
+import scalapaint.model.Model
 import scalapaint.view.CanvasPanel.Events.*
 
-abstract class Tool extends ImageProcessor:
+abstract class Tool(model: Model) extends ImageProcessor:
   def mousePressed(e: MousePressed): Unit
 
   def mouseReleased(e: MouseReleased): Unit
