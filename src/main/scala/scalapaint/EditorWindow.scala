@@ -1,6 +1,6 @@
 package scalapaint
 
-import tools.Tool
+import tools.ToolDeprecated
 import image.*
 
 import scala.swing.*
@@ -52,7 +52,7 @@ object EditorWindow extends Frame:
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel)
 
-	var selectedTool: Option[Tool] = None
+	var selectedTool: Option[ToolDeprecated] = None
 	var selectedColor: Color = Color.BLACK
 	val history = new History()
 

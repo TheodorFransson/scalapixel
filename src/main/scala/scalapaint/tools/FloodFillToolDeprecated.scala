@@ -7,7 +7,7 @@ import scala.swing.event.MousePressed
 import java.awt.{Color, Point}
 import java.awt.image.BufferedImage
 
-class FloodFillTool extends Tool:
+class FloodFillToolDeprecated extends ToolDeprecated:
     private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
 
     override def mousePressed(e: MousePressed, p: Point): Unit = floodFill(p)

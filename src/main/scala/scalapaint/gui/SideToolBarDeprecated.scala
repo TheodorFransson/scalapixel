@@ -67,13 +67,13 @@ class SideToolBarDeprecated extends ToolBar:
     reactions += {
         case ButtonClicked(`zoom`) => 
             toggleSelection(toggleButtons, zoom)
-            EditorWindow.selectedTool = Some(new ZoomTool())
+            EditorWindow.selectedTool = Some(new ZoomToolDeprecated())
         case ButtonClicked(`pen`) => 
             toggleSelection(toggleButtons, pen)
-            EditorWindow.selectedTool = Some(new PencilTool())
+            EditorWindow.selectedTool = Some(new PencilToolDeprecated())
         case ButtonClicked(`fill`) => 
             toggleSelection(toggleButtons, fill)
-            EditorWindow.selectedTool = Some(new FloodFillTool())
+            EditorWindow.selectedTool = Some(new FloodFillToolDeprecated())
         case ButtonClicked(`color`) => 
             color.background = EditorWindow.chooseColor()
     }

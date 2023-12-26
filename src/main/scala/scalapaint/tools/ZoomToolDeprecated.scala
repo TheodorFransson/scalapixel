@@ -6,7 +6,7 @@ import scala.swing.event.MouseReleased
 import java.awt.event.MouseEvent
 import java.awt.Point
 
-class ZoomTool extends Tool:
+class ZoomToolDeprecated extends ToolDeprecated:
     override def mouseReleased(e: MouseReleased, p: Point): Unit =
         val drawnImage = EditorWindow.getDrawnImage()
         e.peer.getButton() match

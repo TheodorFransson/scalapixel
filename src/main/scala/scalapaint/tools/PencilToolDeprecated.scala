@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent
 import java.awt.BasicStroke
 import java.awt.{Color, Point, geom}
 
-class PencilTool extends Tool:
+class PencilToolDeprecated extends ToolDeprecated:
     override def mousePressed(e: MousePressed, p: Point): Unit = 
         e.peer.getButton() match
             case MouseEvent.BUTTON1 =>  

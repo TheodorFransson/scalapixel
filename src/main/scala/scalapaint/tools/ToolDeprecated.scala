@@ -7,7 +7,8 @@ import scala.swing.event.MouseWheelMoved
 
 import java.awt.Point
 
-abstract class Tool:
+abstract class ToolDeprecated:
+
     def mousePressed(e: MousePressed, p: Point): Unit = activate(e.point)
 
     def mouseReleased(e: MouseReleased, p: Point): Unit = activate(e.point)
