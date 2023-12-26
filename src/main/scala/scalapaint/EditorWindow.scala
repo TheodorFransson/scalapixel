@@ -51,6 +51,7 @@ object EditorWindow extends Frame:
 
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel)
+	sideToolbarController.listenTo(canvasPanel)
 
 	var selectedTool: Option[ToolDeprecated] = None
 	var selectedColor: Color = Color.BLACK
