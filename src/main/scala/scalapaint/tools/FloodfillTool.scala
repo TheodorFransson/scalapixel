@@ -13,8 +13,8 @@ class FloodfillTool(model: Model) extends Tool(model):
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
 
-  override def mousePressed(e: Events.MousePressed): Unit =
-    mousePosition.setLocation(e.originalEvent.getX, e.originalEvent.getY)
+  override def mousePressed(event: Events.MousePressed): Unit =
+    mousePosition.setLocation(event.pointOnImage)
     model.enqueueProcess(this)
 
   override def process(image: EditorImage): EditorImage =
