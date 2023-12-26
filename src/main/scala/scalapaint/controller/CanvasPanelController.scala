@@ -1,8 +1,7 @@
 package scalapaint.controller
 
 
-import javafx.scene.input.{KeyCode, KeyEvent, MouseButton, MouseEvent, ScrollEvent}
-import scalapaint.image.filters.BlueFilter
+import javafx.scene.input.{KeyCode, MouseButton, MouseEvent, ScrollEvent}
 import scalapaint.model.Model
 import scalapaint.model.Model.Events.*
 import scalapaint.view.CanvasPanel
@@ -10,7 +9,6 @@ import scalapaint.view.CanvasPanel.Events
 
 import java.util.TimerTask
 import scala.swing.*
-import scala.swing.Swing.*
 import scala.swing.event.UIElementResized
 
 class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:

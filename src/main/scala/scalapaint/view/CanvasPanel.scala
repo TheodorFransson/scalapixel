@@ -7,16 +7,12 @@ import javafx.scene.image.WritableImage
 import javafx.scene.input.{KeyEvent, MouseButton, MouseEvent, ScrollEvent}
 import javafx.scene.{Scene, paint}
 import scalapaint.*
-import scalapaint.image.{DrawnImage, EditorImage, RenderImage}
+import scalapaint.image.{EditorImage, RenderImage}
 
-import java.awt.image.BufferedImage
 import java.awt.{Dimension, FlowLayout, Graphics2D}
-import javax.swing.SwingUtilities
-import javax.swing.border.EmptyBorder
 import scala.swing.*
-import scala.swing.BorderPanel.Position.Center
 import scala.swing.Swing.*
-import scala.swing.event.*
+import scala.swing.event.Event
 
 class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 	import CanvasPanel.Events.*
