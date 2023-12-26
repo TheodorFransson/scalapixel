@@ -59,10 +59,10 @@ class SideToolbar extends ToolBar with EventBinder:
             g.fillRect(0, 0, peer.getWidth(), peer.getHeight())
             super.paintComponent(g)
 
-    bindToEvent(zoom, ZoomButtonClicked(), () => toggleSelection(zoom))
-    bindToEvent(pen, PenButtonClicked(), () => toggleSelection(pen))
-    bindToEvent(fill, FillButtonClicked(), () => toggleSelection(fill))
-    bindToEvent(color, ColorButtonClicked())
+    bindToEvent(zoom, ZoomToolActivated(), () => toggleSelection(zoom))
+    bindToEvent(pen, PencilToolActivated(), () => toggleSelection(pen))
+    bindToEvent(fill, FloodfillToolActivated(), () => toggleSelection(fill))
+    bindToEvent(color, ColorChooserActivated())
 
     private val toggleButtons = Seq(zoom, pen, fill)
     private val buttons = Seq(color)
@@ -79,19 +79,19 @@ class SideToolbar extends ToolBar with EventBinder:
             toggleButtons(i).selected = false
             icons(i).setIconColor(buttonColor)
 
-    private def toggleSelection(btn: ToggleButton): Unit = 
+    private def toggleSelection(btn: ToggleButton): Unit =
         disableAll()
         btn.selected = true
         icons(toggleButtons.indexOf(btn)).setIconColor(selectedButtonColor)
 
     private def setupButton(btn: AbstractButton): Unit =
-        btn.peer.setPreferredSize(new Dimension(buttonSize, buttonSize)) 
+        btn.peer.setPreferredSize(new Dimension(buttonSize, buttonSize))
         btn.peer.setMinimumSize(new Dimension(buttonSize, buttonSize))
         btn.peer.setMaximumSize(new Dimension(buttonSize, buttonSize))
 
 object SideToolbar:
 	object Events:
-		case class ZoomButtonClicked() extends Event
-		case class PenButtonClicked() extends Event
-		case class FillButtonClicked() extends Event
-		case class ColorButtonClicked() extends Event
+		case class ZoomToolActivated() extends Event
+		case class PencilToolActivated() extends Event
+		case class FloodfillToolActivated() extends Event
+		case class ColorChooserActivated() extends Event
