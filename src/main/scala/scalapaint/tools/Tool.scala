@@ -5,14 +5,14 @@ import scalapaint.model.Model
 import scalapaint.view.CanvasPanel.Events.*
 
 abstract class Tool(model: Model) extends ImageProcessor:
-  def mousePressed(e: MousePressed): Unit = ()
+  def mousePressed(event: MousePressed): Unit = ()
 
-  def mouseReleased(e: MouseReleased): Unit = ()
+  def mouseReleased(event: MouseReleased): Unit = ()
 
-  def mouseDragged(e: MouseDragged): Unit = ()
+  def mouseDragged(event: MouseDragged): Unit = ()
 
-  def mouseWheelMoved(e: ZoomEvent): Unit = ()
+  def mouseWheelMoved(event: ZoomEvent): Unit = ()
 
-  def keyPressed(e: KeyPressed): Unit = ()
+  def keyPressed(event: KeyPressed): Unit = ()
 
-  def keyReleased(e: KeyReleased): Unit = ()
+  def keyReleased(event: KeyReleased): Unit = ()
