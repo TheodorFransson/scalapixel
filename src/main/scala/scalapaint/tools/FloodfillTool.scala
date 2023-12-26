@@ -17,16 +17,6 @@ class FloodfillTool(model: Model) extends Tool(model):
     mousePosition.setLocation(e.originalEvent.getX, e.originalEvent.getY)
     model.enqueueProcess(this)
 
-  override def mouseReleased(e: Events.MouseReleased): Unit = ()
-
-  override def mouseDragged(e: Events.MouseDragged): Unit = ()
-
-  override def mouseWheelMoved(e: Events.ZoomEvent): Unit = ()
-
-  override def keyPressed(e: Events.KeyPressed): Unit = ()
-
-  override def keyReleased(e: Events.KeyReleased): Unit = ()
-
   override def process(image: EditorImage): EditorImage =
     EditorImage(floodFill(image))
 
