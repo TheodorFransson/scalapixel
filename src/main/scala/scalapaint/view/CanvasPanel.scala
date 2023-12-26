@@ -39,13 +39,15 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 		jfxPanel.setScene(scene)
 
 		canvas.setOnScroll(e => publish(ZoomEvent(e)))
-		canvas.setOnMousePressed(e => publish(MousePressed(e)))
-		canvas.setOnMouseDragged(e => publish(MouseDragged(e)))
-		canvas.setOnMouseReleased(e => publish(MouseReleased(e)))
+		canvas.setOnMousePressed(e => publish(MousePressed(e, renderImage.getPointOnImage(getPointFromEvent(e)))))
+		canvas.setOnMouseDragged(e => publish(MouseDragged(e, renderImage.getPointOnImage(getPointFromEvent(e)))))
+		canvas.setOnMouseReleased(e => publish(MouseReleased(e, renderImage.getPointOnImage(getPointFromEvent(e)))))
 		canvas.setOnKeyPressed(e => publish(KeyPressed(e)))
 		canvas.setOnKeyReleased(e => publish(KeyReleased(e)))
 		canvas.requestFocus()
 	})
+
+	def getPointFromEvent(event: MouseEvent): Point = new Point(event.getX.toInt, event.getY.toInt)
 
 	def updateSize(size: Dimension, padding: Int = padding): Unit =
 		dim = new Dimension(size.width, size.height)
@@ -108,9 +110,9 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 object CanvasPanel:
 	object Events:
 		case class ZoomEvent(originalEvent: ScrollEvent) extends Event
-		case class MousePressed(originalEvent: MouseEvent) extends Event
-		case class MouseDragged(originalEvent: MouseEvent) extends Event
-		case class MouseReleased(originalEvent: MouseEvent) extends Event
+		case class MousePressed(originalEvent: MouseEvent, pointOnImage: Point) extends Event
+		case class MouseDragged(originalEvent: MouseEvent, pointOnImage: Point) extends Event
+		case class MouseReleased(originalEvent: MouseEvent, pointOnImage: Point) extends Event
 		case class KeyAction(event: Event) extends Event
 		case class KeyPressed(originalEvent: KeyEvent) extends Event
 		case class KeyReleased(originalEvent: KeyEvent) extends Event

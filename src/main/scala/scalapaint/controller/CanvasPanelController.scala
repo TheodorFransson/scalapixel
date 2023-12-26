@@ -29,13 +29,13 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
           val newSize = view.peer.getSize()
           view.updateSize(new Dimension(newSize.width, newSize.height))
         case ZoomEvent(event) => zoom(event)
-        case MousePressed(event) =>
+        case MousePressed(event, point) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case MouseDragged(event) =>
+        case MouseDragged(event, point) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case MouseReleased(event) =>
+        case MouseReleased(event, point) =>
           if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
           mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
         case KeyPressed(event) =>

@@ -44,3 +44,12 @@ class RenderImage(var javafxImage: Image):
     javafxImage = newImage
     size = new Dimension(javafxImage.getWidth.toInt, javafxImage.getHeight.toInt)
     updated = true
+
+  def getPointOnImage(point: Point): Point =
+    val adjustedX = point.x - imageOrigin.x
+    val adjustedY = point.y - imageOrigin.y
+
+    val imageX = adjustedX / zoomFactor
+    val imageY = adjustedY / zoomFactor
+
+    new Point(imageX.toInt, imageY.toInt)
