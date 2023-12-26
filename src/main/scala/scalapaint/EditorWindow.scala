@@ -93,7 +93,7 @@ object EditorWindow extends Frame:
 	def createNewImage(): Option[EditorImage] = ???
 
 	/** @return an int that represents the width from the pencilPanel. */
-	def getPencilWidth(): Int = ???
+	def getPencilWidth(): Int = 2
 
 	/** @return args from filterPanel as Option. */
 	def getFilterArgs(): Option[Double] = ???
