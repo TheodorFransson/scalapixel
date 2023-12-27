@@ -23,7 +23,7 @@ class FloodfillTool(model: Model) extends Tool(model):
   private val queue = mutable.Queue[Point]()
 
   private def floodFill(image: EditorImage): BufferedImage =
-    val buffer = image.deepClone.buffer
+    val buffer = image.buffer
 
     if isInBounds(mousePosition, buffer) then
       val startColor = buffer.getRGB(mousePosition.x, mousePosition.y)
