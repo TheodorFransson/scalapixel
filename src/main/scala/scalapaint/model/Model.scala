@@ -4,6 +4,7 @@ import scalapaint.History
 import scalapaint.image.{EditorImage, ImageProcessor}
 import scalapaint.model.Model.Events.*
 
+import java.awt.Graphics2D
 import javax.swing.SwingUtilities
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,14 +14,9 @@ import scala.swing.event.Event
 
 class Model extends Publisher:
     private var image: EditorImage = EditorImage.ofDim(100, 100)
-    private val processQueue: mutable.Queue[() => Future[EditorImage]] = mutable.Queue()
+    private val processQueue: mutable.Queue[() => Future[Unit]] = mutable.Queue()
     private var isProcessing: Boolean = false
     private val history: History = new History()
-
-    private def setImage(newImage: EditorImage): EditorImage = 
-        image = newImage
-        publish(ImageUpdated(image))
-        image
 
     def setNewImage(newImage: EditorImage): EditorImage =
         image = newImage
@@ -29,13 +25,12 @@ class Model extends Publisher:
 
     def getImage: EditorImage = image
 
-    private def applyProcess(processor: ImageProcessor): Future[EditorImage] =
+    def getImageGraphics: Graphics2D = image.graphics
+
+    private def applyProcess(processor: ImageProcessor): Future[Unit] =
         Future {
-            val processedImage = processor.process(getImage)
-            SwingUtilities.invokeLater { () =>
-                setImage(processedImage)
-            }
-            processedImage
+            processor.process(getImage)
+            publish(ImageUpdated(image))
         }
 
     private def processNext(): Unit =
