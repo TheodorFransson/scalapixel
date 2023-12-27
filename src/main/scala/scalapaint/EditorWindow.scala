@@ -1,6 +1,5 @@
 package scalapaint
 
-import tools.ToolDeprecated
 import image.*
 
 import scala.swing.*
@@ -53,7 +52,6 @@ object EditorWindow extends Frame:
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel)
 	sideToolbarController.listenTo(canvasPanel)
 
-	var selectedTool: Option[ToolDeprecated] = None
 	var selectedColor: Color = Color.BLACK
 	val history = new History()
 
@@ -71,32 +69,8 @@ object EditorWindow extends Frame:
 
 	model.setNewImage(EditorImage.white(new Dimension(400, 400)))
 
-	/** @return the underlying image used by the canvas. */
-	def getCurrentImage(): EditorImage = ???
-
-	/** @return the image drawn by the canvas. */
-	def getDrawnImage(): DrawnImage = ???
-
-	/** Calls setNewImage on canvas to set a new underlying image
-	 * @param image a new EditorImage to use
-	 */
-	def setCurrentImage(image: EditorImage): Unit = ???
-
-	/** Sets the underlying image used by the canvas directly, thus not saving the last image to history
-	 * @param image a new EditorImage to use
-	 */
-	def setCurrentImageWithoutSaving(image: EditorImage): Unit = ???
-
-	/** Calls createNewImage on topMenu to create a new image by allowing user to specify dimensions
-	 * @return an option EditorImage
-	 */
-	def createNewImage(): Option[EditorImage] = ???
-
 	/** @return an int that represents the width from the pencilPanel. */
 	def getPencilWidth(): Int = 2
-
-	/** @return args from filterPanel as Option. */
-	def getFilterArgs(): Option[Double] = ???
 
 	/** Repaints the canvas. */
 	def repaintCanvas(): Unit = canvasPanel.repaint()
