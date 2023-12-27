@@ -3,7 +3,10 @@ package scalapaint.tools
 import scalapaint.EditorWindow
 import scalapaint.image.EditorImage
 import scalapaint.model.Model
-import scalapaint.view.CanvasPanel.Events
+import scalapaint.view.CanvasPanel.Events.*
+
+
+import javafx.scene.input.{MouseButton}
 
 import java.awt.geom.GeneralPath
 import java.awt.{BasicStroke, Point, geom}
@@ -19,18 +22,21 @@ class PencilTool(model: Model) extends Tool(model):
 
     image
 
-  override def mousePressed(event: Events.MousePressed): Unit =
-    path = new GeneralPath()
-    moveTo(event.pointOnImage)
+  override def mousePressed(event: MousePressed): Unit =
+    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+      path = new GeneralPath()
+      moveTo(event.pointOnImage)
 
-  override def mouseDragged(event: Events.MouseDragged): Unit =
-    lineTo(event.pointOnImage)
-    model.enqueueProcess(this)
+  override def mouseDragged(event: MouseDragged): Unit =
+    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+      lineTo(event.pointOnImage)
+      model.enqueueProcess(this)
 
-  override def mouseReleased(event: Events.MouseReleased): Unit =
-    lineTo(event.pointOnImage)
-    path = new GeneralPath()
-    model.enqueueProcess(this)
+  override def mouseReleased(event: MouseReleased): Unit =
+    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+      lineTo(event.pointOnImage)
+      path = new GeneralPath()
+      model.enqueueProcess(this)
 
   private def lineTo(point: Point): Unit = path.lineTo(point.x.toFloat, point.y.toFloat)
 
