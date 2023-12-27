@@ -30,7 +30,9 @@ class Model extends Publisher:
     private def applyProcess(processor: ImageProcessor): Future[Unit] =
         Future {
             processor.process(getImage)
-            publish(ImageUpdated(image))
+            SwingUtilities.invokeLater(() => {
+              publish(ImageUpdated(image))
+            })
         }
 
     private def processNext(): Unit =
