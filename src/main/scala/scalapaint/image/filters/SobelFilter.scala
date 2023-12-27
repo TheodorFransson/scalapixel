@@ -7,9 +7,6 @@ class SobelFilter extends ImageFilter("Sobel"):
     def process(image: EditorImage): EditorImage = 
         val threshold = if option.isDefined then option.get.toInt else 122
 
-        val outImage = EditorImage.ofDim(image.width, image.height)
-        val matrix = image.getColorMatrix
-
         val intensity = computeIntensity(image)
 
         val xSobel: Array[Array[Short]] = Array(Array(-1, 0, 1), Array(-2, 0, 2), Array(-1, 0, 1)).map(_.map(_.toShort))
@@ -24,7 +21,7 @@ class SobelFilter extends ImageFilter("Sobel"):
                 val value = math.abs(xs) + math.abs(ys)
                 
                 if value > threshold then
-                    outImage.buffer.setRGB(j, i, 0xFF000000)
+                    image.buffer.setRGB(j, i, 0xFF000000)
                 else
-                    outImage.buffer.setRGB(j, i, 0xFFFFFFFF)
-        outImage
+                    image.buffer.setRGB(j, i, 0xFFFFFFFF)
+        image
