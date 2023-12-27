@@ -1,6 +1,5 @@
 package scalapaint.model
 
-import scalapaint.History
 import scalapaint.image.{EditorImage, ImageProcessor}
 import scalapaint.model.Model.Events.*
 
@@ -16,7 +15,6 @@ class Model extends Publisher:
     private var image: EditorImage = EditorImage.ofDim(100, 100)
     private val processQueue: mutable.Queue[() => Future[Unit]] = mutable.Queue()
     private var isProcessing: Boolean = false
-    private val history: History = new History()
 
     def setNewImage(newImage: EditorImage): EditorImage =
         image = newImage

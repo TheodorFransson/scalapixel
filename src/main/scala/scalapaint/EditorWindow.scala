@@ -53,7 +53,6 @@ object EditorWindow extends Frame:
 	sideToolbarController.listenTo(canvasPanel)
 
 	var selectedColor: Color = Color.BLACK
-	val history = new History()
 
 	private val borderPanel = new BorderPanel:
 		layout(sideBar) = West
