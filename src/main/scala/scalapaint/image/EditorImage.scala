@@ -4,12 +4,13 @@ import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
 import java.io.File
-import java.awt.Color
-import java.awt.Dimension
+import java.awt.{Color, Dimension, Graphics2D}
 
 class EditorImage(val buffer: BufferedImage):
-  val height = buffer.getHeight
-  val width = buffer.getWidth
+  val height: Int = buffer.getHeight
+  val width: Int = buffer.getWidth
+
+  lazy val graphics: Graphics2D = buffer.createGraphics()
 
   def getColorMatrix: Array[Array[Color]] =
     val pixels: Array[Array[Color]] = Array.ofDim(height, width)
@@ -26,8 +27,8 @@ class EditorImage(val buffer: BufferedImage):
       buffer.setRGB(j, i, pixels(i)(j).getRGB)
 
   def deepClone: EditorImage =
-    val colorModel = buffer.getColorModel()
-    val premult = colorModel.isAlphaPremultiplied()
+    val colorModel = buffer.getColorModel
+    val premult = colorModel.isAlphaPremultiplied
     val raster = buffer.copyData(null)
     val newBuffer = new BufferedImage(colorModel, raster, premult, null)
     new EditorImage(newBuffer)
