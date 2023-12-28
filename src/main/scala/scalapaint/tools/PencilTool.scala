@@ -11,6 +11,10 @@ import java.awt.{BasicStroke, Point, geom}
 
 class PencilTool(model: Model) extends Tool(model):
   private var path = new GeneralPath()
+  private var lastPoint: Option[Point] = None
+  private val pointAddInterval = 25 // milliseconds
+  private var lastAddTime = System.currentTimeMillis()
+
 
   override def process(image: EditorImage): EditorImage =
     val g = image.graphics
@@ -18,25 +22,33 @@ class PencilTool(model: Model) extends Tool(model):
     g.setStroke(new BasicStroke(EditorWindow.getPencilWidth().toFloat, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
     g.draw(path)
 
-    path = new GeneralPath()
-
     image
 
   override def mousePressed(event: MousePressed): Unit =
     if (event.originalEvent.getButton == MouseButton.PRIMARY) then
       path = new GeneralPath()
       moveTo(event.pointOnImage)
+      lastPoint = Some(event.pointOnImage)
+      lastAddTime = System.currentTimeMillis()
 
   override def mouseDragged(event: MouseDragged): Unit =
     if (event.originalEvent.getButton == MouseButton.PRIMARY) then
-      lineTo(event.pointOnImage)
-      //model.enqueueProcess(this)
+      lastPoint = Some(event.pointOnImage)
+      val currentTime = System.currentTimeMillis()
+      if (currentTime - lastAddTime >= pointAddInterval) {
+        lineTo(event.pointOnImage)
+        lastAddTime = currentTime
+      }
+      model.enqueueProcess(this) // Immediate drawing
 
   override def mouseReleased(event: MouseReleased): Unit =
     if (event.originalEvent.getButton == MouseButton.PRIMARY) then
-      lineTo(event.pointOnImage)
+      lastPoint.foreach(point => lineTo(point))
       model.enqueueProcess(this)
+      lastPoint = None
 
-  private def lineTo(point: Point): Unit = path.lineTo(point.x.toFloat, point.y.toFloat)
+  private def lineTo(point: Point): Unit =
+    path.lineTo(point.x.toFloat, point.y.toFloat)
 
-  private def moveTo(point: Point): Unit = path.moveTo(point.x.toFloat, point.y.toFloat)
+  private def moveTo(point: Point): Unit =
+    path.moveTo(point.x.toFloat, point.y.toFloat)
