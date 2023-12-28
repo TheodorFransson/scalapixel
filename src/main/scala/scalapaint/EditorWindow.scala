@@ -103,6 +103,12 @@ object EditorWindow extends Frame:
 
 	override def closeOperation(): Unit =
 		canvasPanelController.dispose()
-		Platform.exit()
 		dispose()
-		System.exit(0)
+
+		val timer = new java.util.Timer()
+		timer.schedule(new java.util.TimerTask {
+			override def run(): Unit = {
+				Platform.exit()
+				System.exit(0)
+			}
+		}, 500)
