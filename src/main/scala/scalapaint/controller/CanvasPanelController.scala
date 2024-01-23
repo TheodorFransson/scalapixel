@@ -1,15 +1,14 @@
 package scalapaint.controller
 
-
-import javafx.scene.input.{KeyCode, MouseButton, MouseEvent, ScrollEvent}
 import scalapaint.model.Model
 import scalapaint.model.Model.Events.*
 import scalapaint.view.CanvasPanel
 import scalapaint.view.CanvasPanel.Events.*
 
+import java.awt.event.*
 import java.util.TimerTask
 import scala.swing.*
-import scala.swing.event.UIElementResized
+import scala.swing.event.{Key, KeyPressed, MouseEvent, MouseWheelMoved, UIElementResized}
 
 class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
     private var mouseOrigin = new Point(0, 0)
@@ -17,7 +16,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
 
     private val panTimer = new java.util.Timer()
     private var panTask: Option[TimerTask] = None
-    private val pressedKeys = scala.collection.mutable.Set[KeyCode]()
+    private val pressedKeys = scala.collection.mutable.Set[event.Key.Value]()
 
     listenTo(view)
     listenTo(model)
@@ -29,44 +28,43 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
           val newSize = view.peer.getSize()
           view.updateSize(new Dimension(newSize.width, newSize.height))
         case ZoomEvent(event) => zoom(event)
-        case MousePressed(event, point) =>
-          if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
-          mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case MouseDragged(event, point) =>
-          if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
-          mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case MouseReleased(event, point) =>
-          if event.getButton == MouseButton.MIDDLE then panWithMouse(event)
-          mouseOrigin = new Point(event.getX.toInt, event.getY.toInt)
-        case KeyPressed(event) =>
-          pressedKeys += event.getCode
+        case MousePressedCanvas(event, point) =>
+          if event.peer.getButton == MouseEvent.BUTTON2 then startPanning(event)
+          mouseOrigin = event.point
+        case MouseDraggedCanvas(event, point) =>
+          pan(event)
+          mouseOrigin = event.point
+        case MouseReleasedCanvas(event, point) =>
+          if event.peer.getButton == MouseEvent.BUTTON2 then stopPanning(event)
+          mouseOrigin = event.point
+        case KeyPressedCanvas(event) =>
+          pressedKeys += event.key
           keyPressedActions()
-        case KeyReleased(event) =>
-          pressedKeys -= event.getCode
+        case KeyReleasedCanvas(event) =>
+          pressedKeys -= event.key
     }
 
-    def zoom(event: ScrollEvent): Unit =
-        val target = new Point(event.getX.toInt, event.getY.toInt)
-        val zoomFactor = if (event.getDeltaY < 0) 0.9 else 1.1
+    def zoom(event: MouseWheelMoved): Unit =
+        val target = event.point
+        val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
         view.zoom(zoomFactor, target)
 
-    private def panWithMouse(event: MouseEvent): Unit =
-        val point = new Point(event.getX.toInt, event.getY.toInt)
+    private def stopPanning(event: MouseEvent): Unit =
+        view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+        dragging = false
 
-        if event.getEventType == MouseEvent.MOUSE_RELEASED then
-            view.pan(point.x - mouseOrigin.x, point.y - mouseOrigin.y)
-            dragging = false
-        else if dragging then
-            view.pan(point.x - mouseOrigin.x, point.y - mouseOrigin.y)
-        else
-            dragging = true
+    private def pan(event: MouseEvent): Unit =
+        if dragging then view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+
+    private def startPanning(event: MouseEvent): Unit =
+        dragging = true
 
     private def keyPressedActions(): Unit =
       checkReset()
       panWithKeys()
 
     private def checkReset(): Unit =
-      if pressedKeys(KeyCode.R) then view.resetViewTransform()
+      if pressedKeys(Key.R) then view.resetViewTransform()
 
     private def panWithKeys(): Unit =
         if (panTask.isEmpty && pressedKeys.nonEmpty) then
@@ -74,10 +72,10 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
                 def run(): Unit =
 
                   val direction = new Point(0, 0)
-                  if (pressedKeys(KeyCode.W) || pressedKeys(KeyCode.UP)) direction.y += 1
-                  if (pressedKeys(KeyCode.A) || pressedKeys(KeyCode.LEFT)) direction.x += 1
-                  if (pressedKeys(KeyCode.S) || pressedKeys(KeyCode.DOWN)) direction.y -= 1
-                  if (pressedKeys(KeyCode.D) || pressedKeys(KeyCode.RIGHT)) direction.x -= 1
+                  if (pressedKeys(Key.W) || pressedKeys(Key.Up)) direction.y += 1
+                  if (pressedKeys(Key.A) || pressedKeys(Key.Left)) direction.x += 1
+                  if (pressedKeys(Key.S) || pressedKeys(Key.Down)) direction.y -= 1
+                  if (pressedKeys(Key.D) || pressedKeys(Key.Right)) direction.x -= 1
 
                   view.pan(direction.x, direction.y)
             panTimer.schedule(task, 0, 5) // Adjust the period for faster/slower panning

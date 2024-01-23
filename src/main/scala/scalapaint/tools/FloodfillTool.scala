@@ -2,7 +2,7 @@ package scalapaint.tools
 import scalapaint.EditorWindow
 import scalapaint.image.EditorImage
 import scalapaint.model.Model
-import scalapaint.view.CanvasPanel.Events
+import scalapaint.view.CanvasPanel.Events.*
 
 import java.awt.Point
 import java.awt.image.BufferedImage
@@ -13,7 +13,7 @@ class FloodfillTool(model: Model) extends Tool(model):
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
 
-  override def mousePressed(event: Events.MousePressed): Unit =
+  override def mousePressed(event: MousePressedCanvas): Unit =
     mousePosition.setLocation(event.pointOnImage)
     model.enqueueProcess(this)
 

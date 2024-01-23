@@ -1,6 +1,5 @@
 package scalapaint.tools
 
-import javafx.scene.input.MouseButton
 import scalapaint.EditorWindow
 import scalapaint.image.EditorImage
 import scalapaint.model.Model
@@ -8,12 +7,13 @@ import scalapaint.view.CanvasPanel.Events.*
 
 import java.awt.geom.GeneralPath
 import java.awt.{BasicStroke, Point, geom}
-
+import java.awt.event.MouseEvent
 class PencilTool(model: Model) extends Tool(model):
   private var path = new GeneralPath()
   private var lastPoint: Option[Point] = None
-  private val pointAddInterval = 25 // milliseconds
+  private val pointAddInterval = -1 // milliseconds
   private var lastAddTime = System.currentTimeMillis()
+  private var dragging = false
 
 
   override def process(image: EditorImage): EditorImage =
@@ -24,15 +24,16 @@ class PencilTool(model: Model) extends Tool(model):
 
     image
 
-  override def mousePressed(event: MousePressed): Unit =
-    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+  override def mousePressed(event: MousePressedCanvas): Unit =
+    if event.originalEvent.peer.getButton == MouseEvent.BUTTON1 then
       path = new GeneralPath()
       moveTo(event.pointOnImage)
       lastPoint = Some(event.pointOnImage)
       lastAddTime = System.currentTimeMillis()
+      dragging = true
 
-  override def mouseDragged(event: MouseDragged): Unit =
-    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+  override def mouseDragged(event: MouseDraggedCanvas): Unit =
+    if dragging then
       lastPoint = Some(event.pointOnImage)
       val currentTime = System.currentTimeMillis()
       if (currentTime - lastAddTime >= pointAddInterval) {
@@ -41,11 +42,12 @@ class PencilTool(model: Model) extends Tool(model):
       }
       model.enqueueProcess(this) // Immediate drawing
 
-  override def mouseReleased(event: MouseReleased): Unit =
-    if (event.originalEvent.getButton == MouseButton.PRIMARY) then
+  override def mouseReleased(event: MouseReleasedCanvas): Unit =
+    if event.originalEvent.peer.getButton == MouseEvent.BUTTON1 then
       lastPoint.foreach(point => lineTo(point))
       model.enqueueProcess(this)
       lastPoint = None
+      dragging = false
 
   private def lineTo(point: Point): Unit =
     path.lineTo(point.x.toFloat, point.y.toFloat)

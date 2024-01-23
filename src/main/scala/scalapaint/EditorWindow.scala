@@ -64,7 +64,7 @@ object EditorWindow extends Frame:
 	visible = true
 	centerOnScreen()
 	peer.toFront()
-	peer.requestFocusInWindow()
+	canvasPanel.requestFocus()
 
 	model.setNewImage(EditorImage.white(new Dimension(400, 400)))
 

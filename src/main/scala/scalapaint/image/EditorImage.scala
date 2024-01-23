@@ -36,12 +36,12 @@ class EditorImage(val buffer: BufferedImage):
 
 object EditorImage:
   def blank(size: Dimension, color: Color): EditorImage = 
-    val buffer = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_ARGB)
+    val buffer = new BufferedImage(size.width, size.height, BufferedImage.TYPE_INT_RGB)
     val graphics = buffer.createGraphics()
     graphics.setPaint(color)
     graphics.fillRect(0, 0, size.width, size.height)
     new EditorImage(buffer)
 
-  def ofDim(width: Int, height: Int): EditorImage = new EditorImage(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB))
+  def ofDim(width: Int, height: Int): EditorImage = new EditorImage(new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB))
 
   def white(size: Dimension): EditorImage = blank(size, Color.WHITE)
