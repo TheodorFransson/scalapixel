@@ -1,18 +1,16 @@
 package scalapaint.image
 
+import scalapaint.Colors
 import scalapaint.image.EditorImage
 
 import java.awt.image.BufferedImage
+import scala.collection.mutable.HashSet
 import scala.swing.{Dimension, Graphics2D, Image, Point}
-
 
 class RenderImage(var editorImage: EditorImage):
   private var zoomFactor: Double = 1.0
   private val imageOrigin = new Point(0, 0)
   private var updated: Boolean = true
-
-  private var scaledImage: BufferedImage = new BufferedImage(editorImage.width, editorImage.height, BufferedImage.TYPE_INT_RGB)
-  private var graphics = scaledImage.createGraphics()
 
   private def size = new Dimension(editorImage.width, editorImage.height)
   private def scaledWidth = (editorImage.width * zoomFactor).toInt
@@ -20,14 +18,13 @@ class RenderImage(var editorImage: EditorImage):
 
   def needsUpdate(): Boolean = updated
 
-  def reset(referenceSize: Dimension, imageSize: Dimension = size): Unit =
+  def reset(reference: Dimension, imageSize: Dimension = size): Unit =
     zoomFactor = 1.0
     imageOrigin.setLocation(
-      (referenceSize.getWidth / 2) - (imageSize.getWidth / 2),
-      (referenceSize.getHeight / 2) - (imageSize.getHeight / 2)
+      (reference.getWidth / 2) - (imageSize.getWidth / 2),
+      (reference.getHeight / 2) - (imageSize.getHeight / 2)
     )
 
-    scaleImage()
     updated = true
 
   def zoom(factor: Double, target: Point, referenceSize: Dimension): Unit =
@@ -38,36 +35,20 @@ class RenderImage(var editorImage: EditorImage):
 
     pan((direction.x * sign).toInt, (direction.y * sign).toInt)
 
-    scaleImage()
-
     updated = true
 
   def pan(dx: Int, dy: Int): Unit =
     imageOrigin.translate(dx, dy)
     updated = true
 
-  def render(g: Graphics2D): Unit =
-    g.drawImage(scaledImage, imageOrigin.x, imageOrigin.y, null)
+  def render(g: Graphics2D, reference: Dimension): Unit =
+    g.drawImage(editorImage.buffer, imageOrigin.x, imageOrigin.y, scaledWidth, scaledHeight, null)
+
     updated = false
 
   def updateImage(editorImage: EditorImage): Unit =
     this.editorImage = editorImage
-    updatePortion(0, 0, editorImage.width, editorImage.height)
-
-  def scaleImage(): Unit =
-    scaledImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_RGB)
-    graphics = scaledImage.createGraphics()
-    graphics.drawImage(editorImage.buffer, 0, 0, scaledWidth, scaledHeight, null)
-
-  def updatePortion(x: Int, y: Int, width: Int, height: Int): Unit =
-    val scaledRectX = (x * scaledWidth)
-    val scaledRectY = (y * scaledHeight)
-    val scaledRectWidth = (width * zoomFactor).toInt
-    val scaledRectHeight = (height * zoomFactor).toInt
-
-    val subImage = editorImage.buffer.getSubimage(x, y, width, height)
-
-    graphics.drawImage(subImage, scaledRectX, scaledRectY, scaledRectWidth, scaledRectHeight, null)
+    updated = true
 
   def getPointOnImage(point: Point): Point =
     val adjustedX = point.x - imageOrigin.x
@@ -77,3 +58,12 @@ class RenderImage(var editorImage: EditorImage):
     val imageY = adjustedY / zoomFactor
 
     new Point(imageX.toInt, imageY.toInt)
+
+  def getPointOnImageInverse(point: Point): Point =
+    val scaledX = point.x * zoomFactor
+    val scaledY = point.y * zoomFactor
+
+    val referenceX = scaledX + imageOrigin.x
+    val referenceY = scaledY + imageOrigin.y
+
+    new Point(referenceX.toInt, referenceY.toInt)

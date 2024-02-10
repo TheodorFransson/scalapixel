@@ -28,8 +28,9 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 
 	override def paintComponent(g: Graphics2D): Unit =
 		super.paintComponent(g)
-		renderImage.render(g)
+		g.setClip(0, 0, dim.width, dim.height)
 
+		renderImage.render(g, dim)
 
 	def updateImage(editorImage: EditorImage): Unit =
 		renderImage.updateImage(editorImage)

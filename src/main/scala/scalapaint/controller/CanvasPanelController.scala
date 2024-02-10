@@ -26,7 +26,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
         case NewImage(image) => view.setNewImage(image)
         case UIElementResized(_) =>
           val newSize = view.peer.getSize()
-          view.updateSize(new Dimension(newSize.width, newSize.height))
+          view.updateSize(newSize)
         case ZoomEvent(event) => zoom(event)
         case MousePressedCanvas(event, point) =>
           if event.peer.getButton == MouseEvent.BUTTON2 then startPanning(event)
@@ -45,19 +45,19 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
     }
 
     def zoom(event: MouseWheelMoved): Unit =
-        val target = event.point
-        val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
-        view.zoom(zoomFactor, target)
+      val target = event.point
+      val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
+      view.zoom(zoomFactor, target)
 
     private def stopPanning(event: MouseEvent): Unit =
-        view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
-        dragging = false
+      view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+      dragging = false
 
     private def pan(event: MouseEvent): Unit =
-        if dragging then view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+      if dragging then view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
 
     private def startPanning(event: MouseEvent): Unit =
-        dragging = true
+      dragging = true
 
     private def keyPressedActions(): Unit =
       checkReset()
@@ -77,8 +77,8 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
                   if (pressedKeys(Key.S) || pressedKeys(Key.Down)) direction.y -= 1
                   if (pressedKeys(Key.D) || pressedKeys(Key.Right)) direction.x -= 1
 
-                  view.pan(direction.x, direction.y)
-            panTimer.schedule(task, 0, 5) // Adjust the period for faster/slower panning
+                  if (direction.x != 0 || direction.y != 0) view.pan(direction.x, direction.y)
+            panTimer.schedule(task, 0, 5)
             panTask = Some(task)
 
     def dispose(): Unit = {
