@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import java.awt.Color
 
 class GaussFilter extends ImageFilter("Blur"):
-    def process(image: EditorImage): EditorImage = 
+    def process(image: EditorImage): Unit =
         val middle = if option.isDefined then option.get.toInt else 4
 
         val clone = image.deepClone
@@ -26,4 +26,3 @@ class GaussFilter extends ImageFilter("Blur"):
                     val g = convolve(green, i, j, kernel, weight)
                     val b = convolve(blue, i, j, kernel, weight)
                     image.buffer.setRGB(j, i, (255 << 24) | (r << 16) | (g << 8) | (b))
-        image

@@ -8,6 +8,7 @@ import scalapaint.view.CanvasPanel.Events.*
 import java.awt.geom.GeneralPath
 import java.awt.{BasicStroke, Point, geom}
 import java.awt.event.MouseEvent
+import scala.swing.Rectangle
 class PencilTool(model: Model) extends Tool(model):
   private var path = new GeneralPath()
   private var lastPoint: Option[Point] = None
@@ -16,13 +17,11 @@ class PencilTool(model: Model) extends Tool(model):
   private var dragging = false
 
 
-  override def process(image: EditorImage): EditorImage =
+  override def process(image: EditorImage): Unit =
     val g = image.graphics
     g.setColor(EditorWindow.selectedColor)
     g.setStroke(new BasicStroke(EditorWindow.getPencilWidth().toFloat, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
     g.draw(path)
-
-    image
 
   override def mousePressed(event: MousePressedCanvas): Unit =
     if event.originalEvent.peer.getButton == MouseEvent.BUTTON1 then
@@ -51,6 +50,10 @@ class PencilTool(model: Model) extends Tool(model):
 
   private def lineTo(point: Point): Unit =
     path.lineTo(point.x.toFloat, point.y.toFloat)
+
+  override def undo(image: EditorImage): Unit = ???
+
+  override def getAffectedArea(): Rectangle = ???
 
   private def moveTo(point: Point): Unit =
     path.moveTo(point.x.toFloat, point.y.toFloat)

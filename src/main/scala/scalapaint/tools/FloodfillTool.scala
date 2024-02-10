@@ -8,6 +8,7 @@ import java.awt.Point
 import java.awt.image.BufferedImage
 import scala.collection.mutable
 import scala.collection.mutable.Queue
+import scala.swing.Rectangle
 
 class FloodfillTool(model: Model) extends Tool(model):
   private val mousePosition = new Point(0, 0)
@@ -17,8 +18,7 @@ class FloodfillTool(model: Model) extends Tool(model):
     mousePosition.setLocation(event.pointOnImage)
     model.enqueueProcess(this)
 
-  override def process(image: EditorImage): EditorImage =
-    EditorImage(floodFill(image))
+  override def process(image: EditorImage): Unit = floodFill(image)
 
   private val queue = mutable.Queue[Point]()
 
@@ -45,5 +45,9 @@ class FloodfillTool(model: Model) extends Tool(model):
         if isInBounds(newPoint, buffer) then
           if buffer.getRGB(newPoint.x, newPoint.y) == startColor && buffer.getRGB(newPoint.x, newPoint.y) != targetColor then queue += newPoint
       })
+
+  override def undo(image: EditorImage): Unit = ???
+
+  override def getAffectedArea(): Rectangle = ???
 
   private def isInBounds(point: Point, buffer: BufferedImage): Boolean = point.y < buffer.getHeight() && point.y >= 0 && point.x < buffer.getWidth() && point.x >= 0

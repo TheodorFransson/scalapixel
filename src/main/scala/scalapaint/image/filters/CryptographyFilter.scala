@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import java.awt.Color
 
 class CryptographyFilter extends ImageFilter("Encrypt"):
-    def process(image: EditorImage): EditorImage =
+    def process(image: EditorImage): Unit =
         import scala.util.Random
 
         val seed = if option.isDefined then option.get.toInt else Random().nextInt()
@@ -17,4 +17,3 @@ class CryptographyFilter extends ImageFilter("Encrypt"):
                 val b = (image.buffer.getRGB(j, i) & 0x0ff) ^ random.nextInt(255) 
 
                 image.buffer.setRGB(j, i, (255 << 24) | (r << 16) | (g << 8) | (b & 0x0ff))
-        image

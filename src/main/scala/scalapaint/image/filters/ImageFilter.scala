@@ -3,10 +3,12 @@ package scalapaint.image.filters
 import scalapaint.image.EditorImage
 import scalapaint.image.ImageProcessor
 
+import scala.swing.Rectangle
+
 abstract case class ImageFilter(val name: String) extends ImageProcessor:
     protected var option: Option[Double] = None
 
-    def process(img: EditorImage): EditorImage;
+    def process(img: EditorImage): Unit;
 
     def setOption(option: String): ImageFilter =
         this.option = option.toDoubleOption
@@ -33,3 +35,7 @@ abstract case class ImageFilter(val name: String) extends ImageProcessor:
         (sum / weight).round.toShort
 
     override def toString(): String = name
+
+    def undo(editorImage: EditorImage): Unit = ???
+
+    override def getAffectedArea(): Rectangle = ???
