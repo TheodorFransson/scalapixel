@@ -11,7 +11,13 @@ class EditorImage(val buffer: BufferedImage):
   val height: Int = buffer.getHeight
   val width: Int = buffer.getWidth
 
+  // A buffer used for history management
+  private val internalBuffer: BufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+
   lazy val graphics: Graphics2D = buffer.createGraphics()
+  lazy val internalGraphics: Graphics2D = internalBuffer.createGraphics()
+
+  writeInteralBuffer()
 
   def getColorMatrix: Array[Array[Color]] =
     val pixels: Array[Array[Color]] = Array.ofDim(height, width)
@@ -26,6 +32,10 @@ class EditorImage(val buffer: BufferedImage):
 
     for i <- 0 until height; j <- 0 until width do
       buffer.setRGB(j, i, pixels(i)(j).getRGB)
+
+  def writeInteralBuffer(): Unit = internalGraphics.drawImage(buffer, 0, 0, null)
+
+  def getInternalBuffer(): BufferedImage = internalBuffer
 
   def deepClone: EditorImage =
     val colorModel = buffer.getColorModel
