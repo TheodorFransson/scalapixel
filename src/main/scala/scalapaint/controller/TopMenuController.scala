@@ -27,7 +27,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		case NewMenuItemClicked() => createNewImage()
 		case SaveMenuItemClicked() => save()
 		case ExitMenuItemClicked() => EditorWindow.closeOperation()
-		case UndoMenuItemClicked() => model.undoImageProcess()
+		case UndoMenuItemClicked() => model.enqueueUndo()
 		case RedoMenuItemClicked() => model.redoImageProcess()
 	}
 	

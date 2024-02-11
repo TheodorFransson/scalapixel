@@ -32,8 +32,9 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 
 		renderImage.render(g, dim)
 
-	def updateImage(editorImage: EditorImage): Unit =
+	def updateImage(editorImage: EditorImage, area: Rectangle): Unit =
 		renderImage.updateImage(editorImage)
+
 		repaint()
 
 	def setNewImage(editorImage: EditorImage): Unit =

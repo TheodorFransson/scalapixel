@@ -1,5 +1,6 @@
 package scalapaint.tools
 import scalapaint.EditorWindow
+import scalapaint.history.{HistoryEntry, SimpleHistoryEntry}
 import scalapaint.image.EditorImage
 import scalapaint.model.Model
 import scalapaint.view.CanvasPanel.Events.*
@@ -16,9 +17,15 @@ class FloodfillTool(model: Model) extends Tool(model):
 
   override def mousePressed(event: MousePressedCanvas): Unit =
     mousePosition.setLocation(event.pointOnImage)
-    model.enqueueProcess(this)
+    model.enqueueApply(this)
 
-  override def process(image: EditorImage): Unit = floodFill(image)
+  override def process(image: EditorImage): HistoryEntry =
+    val historyEntry = new SimpleHistoryEntry()
+    historyEntry.saveSnapshot(image, new Rectangle(0, 0, image.width, image.height))
+
+    floodFill(image)
+
+    historyEntry
 
   private val queue = mutable.Queue[Point]()
 
@@ -45,9 +52,5 @@ class FloodfillTool(model: Model) extends Tool(model):
         if isInBounds(newPoint, buffer) then
           if buffer.getRGB(newPoint.x, newPoint.y) == startColor && buffer.getRGB(newPoint.x, newPoint.y) != targetColor then queue += newPoint
       })
-
-  override def undo(image: EditorImage): Unit = ???
-
-  override def getAffectedArea(): Rectangle = ???
 
   private def isInBounds(point: Point, buffer: BufferedImage): Boolean = point.y < buffer.getHeight() && point.y >= 0 && point.x < buffer.getWidth() && point.x >= 0

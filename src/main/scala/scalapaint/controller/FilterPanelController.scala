@@ -14,7 +14,7 @@ class FilterPanelController(model: Model, view: FilterPanel) extends Reactor:
     
     listenTo(view)
     reactions += {
-        case ApplyFilter() => model.enqueueProcess(selectedFilter)
+        case ApplyFilter() => model.enqueueApply(selectedFilter)
         case PreviewModeChanged(mode: Boolean) => println(mode)
         case FilterSelectionChanged(selection: ImageFilter) => selectedFilter = selection
         case FilterParameterChanged(value: String) => selectedFilter.setOption(value)
