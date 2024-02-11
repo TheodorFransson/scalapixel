@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import java.awt.Color
 
 class InvertFilter extends ImageFilter("Invert"):
-    def process(image: EditorImage): Unit =
+    def applyFilter(image: EditorImage): Unit =
         for i <- 0 until image.height do
             for j <- 0 until image.width do
                 val r = 255 - ((image.buffer.getRGB(j, i) >> 16) & 0x0ff)

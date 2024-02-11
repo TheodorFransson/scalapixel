@@ -1,5 +1,6 @@
 package scalapaint.image.filters
 
+import scalapaint.history.{HistoryEntry, SimpleHistoryEntry}
 import scalapaint.image.EditorImage
 import scalapaint.image.ImageProcessor
 
@@ -8,7 +9,15 @@ import scala.swing.Rectangle
 abstract case class ImageFilter(val name: String) extends ImageProcessor:
     protected var option: Option[Double] = None
 
-    def process(img: EditorImage): Unit;
+    def process(img: EditorImage): HistoryEntry =
+        val historyEntry = new SimpleHistoryEntry()
+        historyEntry.saveSnapshot(img)()
+
+        applyFilter(img)
+
+        historyEntry
+
+    def applyFilter(img: EditorImage): Unit
 
     def setOption(option: String): ImageFilter =
         this.option = option.toDoubleOption
@@ -35,7 +44,3 @@ abstract case class ImageFilter(val name: String) extends ImageProcessor:
         (sum / weight).round.toShort
 
     override def toString(): String = name
-
-    def undo(editorImage: EditorImage): Unit = ???
-
-    override def getAffectedArea(): Rectangle = ???

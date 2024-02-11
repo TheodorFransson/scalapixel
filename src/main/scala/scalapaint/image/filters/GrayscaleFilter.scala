@@ -5,7 +5,7 @@ import scalapaint.image.filters.ImageFilter
 import java.awt.Color
 
 class GrayscaleFilter extends ImageFilter("Grayscale"):
-    def process(image: EditorImage): Unit =
+    def applyFilter(image: EditorImage): Unit =
         for i <- 0 until image.height do
             for j <- 0 until image.width do
                 val rgb = image.buffer.getRGB(j, i)

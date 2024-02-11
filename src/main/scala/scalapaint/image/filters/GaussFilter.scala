@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import java.awt.Color
 
 class GaussFilter extends ImageFilter("Blur"):
-    def process(image: EditorImage): Unit =
+    def applyFilter(image: EditorImage): Unit =
         val middle = if option.isDefined then option.get.toInt else 4
 
         val clone = image.deepClone

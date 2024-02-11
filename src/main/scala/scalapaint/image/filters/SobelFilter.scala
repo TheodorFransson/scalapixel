@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import java.awt.Color
 
 class SobelFilter extends ImageFilter("Sobel"):
-    def process(image: EditorImage): Unit =
+    def applyFilter(image: EditorImage): Unit =
         val threshold = if option.isDefined then option.get.toInt else 122
 
         val intensity = computeIntensity(image)

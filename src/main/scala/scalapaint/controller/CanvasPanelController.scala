@@ -22,7 +22,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
     listenTo(model)
 
     reactions += {
-        case ImageUpdated(image) => view.updateImage(image)
+        case ImageUpdated(image, area) => view.updateImage(image, area)
         case NewImage(image) => view.setNewImage(image)
         case UIElementResized(_) =>
           val newSize = view.peer.getSize()
