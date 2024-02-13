@@ -21,7 +21,7 @@ class FloodfillTool(model: Model) extends Tool(model):
 
   override def process(image: EditorImage): HistoryEntry =
     val historyEntry = new SimpleHistoryEntry()
-    historyEntry.saveSnapshot(image, new Rectangle(0, 0, image.width, image.height))
+    historyEntry.saveSnapshot(image)(new Rectangle(0, 0, image.width, image.height))
 
     floodFill(image)
 

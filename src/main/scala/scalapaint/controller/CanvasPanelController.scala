@@ -2,15 +2,16 @@ package scalapaint.controller
 
 import scalapaint.model.Model
 import scalapaint.model.Model.Events.*
-import scalapaint.view.CanvasPanel
+import scalapaint.view.{CanvasPanel, CanvasScrollPanel}
 import scalapaint.view.CanvasPanel.Events.*
+import scalapaint.view.CanvasScrollPanel.Events.*
 
 import java.awt.event.*
 import java.util.TimerTask
 import scala.swing.*
 import scala.swing.event.{Key, KeyPressed, MouseEvent, MouseWheelMoved, UIElementResized}
 
-class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
+class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel: CanvasScrollPanel) extends Reactor:
     private var mouseOrigin = new Point(0, 0)
     private var dragging = false
 
@@ -18,15 +19,19 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
     private var panTask: Option[TimerTask] = None
     private val pressedKeys = scala.collection.mutable.Set[event.Key.Value]()
 
-    listenTo(view)
+    listenTo(canvasPanel)
+    listenTo(scrollPanel)
     listenTo(model)
 
     reactions += {
-        case ImageUpdated(image, area) => view.updateImage(image, area)
-        case NewImage(image) => view.setNewImage(image)
+        case ImageUpdated(image, area) => canvasPanel.updateImage(image, area)
+        case NewImage(image) =>
+          canvasPanel.setNewImage(image)
+          updateScrollBars()
         case UIElementResized(_) =>
-          val newSize = view.peer.getSize()
-          view.updateSize(newSize)
+          val newSize = canvasPanel.peer.getSize()
+          canvasPanel.updateSize(newSize)
+          updateScrollBars()
         case ZoomEvent(event) => zoom(event)
         case MousePressedCanvas(event, point) =>
           if event.peer.getButton == MouseEvent.BUTTON2 then startPanning(event)
@@ -42,19 +47,35 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
           keyPressedActions()
         case KeyReleasedCanvas(event) =>
           pressedKeys -= event.key
+        case HorizontalScroll(value) =>
+          canvasPanel.pan(-value, 0)
+        case VerticalScroll(value) =>
+          canvasPanel.pan(0, -value)
     }
 
-    def zoom(event: MouseWheelMoved): Unit =
+    def dispose(): Unit = {
+      panTask.foreach(_.cancel())
+      panTimer.cancel()
+      panTimer.purge()
+    }
+
+    private def zoom(event: MouseWheelMoved): Unit =
       val target = event.point
       val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
-      view.zoom(zoomFactor, target)
+      canvasPanel.zoom(zoomFactor, target)
+      updateScrollBars()
+
+    private def callPanOnCanvasPanel(dx: Int, dy: Int): Unit =
+      canvasPanel.pan(dx, dy)
+      updateScrollBars()
 
     private def stopPanning(event: MouseEvent): Unit =
-      view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+      callPanOnCanvasPanel(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
       dragging = false
 
     private def pan(event: MouseEvent): Unit =
-      if dragging then view.pan(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
+      if dragging then
+        callPanOnCanvasPanel(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
 
     private def startPanning(event: MouseEvent): Unit =
       dragging = true
@@ -64,7 +85,7 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
       panWithKeys()
 
     private def checkReset(): Unit =
-      if pressedKeys(Key.R) then view.resetViewTransform()
+      if pressedKeys(Key.R) then canvasPanel.resetViewTransform()
 
     private def panWithKeys(): Unit =
         if (panTask.isEmpty && pressedKeys.nonEmpty) then
@@ -77,12 +98,26 @@ class CanvasPanelController(model: Model, view: CanvasPanel) extends Reactor:
                   if (pressedKeys(Key.S) || pressedKeys(Key.Down)) direction.y -= 1
                   if (pressedKeys(Key.D) || pressedKeys(Key.Right)) direction.x -= 1
 
-                  if (direction.x != 0 || direction.y != 0) view.pan(direction.x, direction.y)
+                  if (direction.x != 0 || direction.y != 0) callPanOnCanvasPanel(direction.x, direction.y)
             panTimer.schedule(task, 0, 5)
             panTask = Some(task)
 
-    def dispose(): Unit = {
-      panTask.foreach(_.cancel())
-      panTimer.cancel()
-      panTimer.purge()
-    }
+    private def updateScrollBars(): Unit =
+      val (canvasPanelDimension, imageBounds, imagePosition): (Dimension, Rectangle, Point) =
+        canvasPanel.getPositionalParameters()
+
+      val horizontalValue = imageBounds.x + imageBounds.width - imagePosition.x
+      val horizontalExtent = canvasPanelDimension.width / 2
+      val verticalValue = imageBounds.y + imageBounds.height - imagePosition.y
+      val verticalExtent = canvasPanelDimension.height / 2
+
+      scrollPanel.setHorizontalScrollbarParameters(
+        horizontalValue,
+        horizontalExtent,
+        imageBounds.x,
+        imageBounds.width + horizontalExtent)
+      scrollPanel.setVerticalScrollbarParameters(
+        verticalValue,
+        verticalExtent,
+        imageBounds.y,
+        imageBounds.height + verticalExtent)

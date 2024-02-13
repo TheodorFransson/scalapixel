@@ -3,8 +3,8 @@ package scalapaint.view
 import scalapaint.*
 import scalapaint.image.{EditorImage, RenderImage}
 
-import java.awt.{Dimension, Graphics2D}
-import scala.swing.*
+import java.awt.Graphics2D
+import scala.swing.{Dimension, Panel, Point, Rectangle}
 import scala.swing.Swing.*
 import scala.swing.event.{Event, KeyPressed, KeyReleased, MouseDragged, MouseEvent, MousePressed, MouseReleased, MouseWheelMoved}
 
@@ -49,8 +49,10 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 		repaint()
 
 	def pan(dx: Int, dy: Int): Unit =
-		renderImage.pan(dx, dy)
+		renderImage.pan(dx, dy, dim)
 		repaint()
+
+	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dim, renderImage.getBounds(dim), renderImage.getPosition)
 
 	listenTo(mouse.clicks, mouse.wheel, mouse.moves, keys)
 	reactions += {

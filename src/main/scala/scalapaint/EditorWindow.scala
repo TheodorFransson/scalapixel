@@ -49,14 +49,15 @@ object EditorWindow extends Frame:
 	setBackgroundColor(sideBar.peer, Colors.backgroundColorDP(1))
 
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
-	val canvasPanelController = new CanvasPanelController(model, canvasPanel)
+	val canvasScrollPanel = new CanvasScrollPanel(canvasPanel)
+	val canvasPanelController = new CanvasPanelController(model, canvasPanel, canvasScrollPanel)
 	sideToolbarController.listenTo(canvasPanel)
 
 	var selectedColor: Color = Color.BLACK
 
 	private val borderPanel = new BorderPanel:
 		layout(sideBar) = West
-		layout(canvasPanel) = Center
+		layout(canvasScrollPanel) = Center
 
 	contents = borderPanel
 
