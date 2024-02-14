@@ -49,7 +49,7 @@ object EditorWindow extends Frame:
 			pages += new TabbedPane.Page("Color", colorPanel)
 
 		val splitPane = new SplitPane(Orientation.Horizontal, parameterPanel, lowerPanel):
-			dividerLocation = 400
+			dividerLocation = 200
 
 		val borderPanel = new BorderPanel:
 			layout(sideBar) = West

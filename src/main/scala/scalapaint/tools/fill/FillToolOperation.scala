@@ -18,6 +18,10 @@ class FillToolOperation(model: Model) extends ToolOperation(model) with ImagePro
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()
 
+  private var tolerance = 150
+
+  def setTolerance(value: Int): Unit = tolerance = value
+
   override def mousePressed(event: MousePressedCanvas): Unit =
     val mouseEvent = event.originalEvent.peer
 
@@ -57,9 +61,25 @@ class FillToolOperation(model: Model) extends ToolOperation(model) with ImagePro
       neighbours.foreach(n => {
         val newPoint = new Point(point.x + n._1, point.y + n._2)
         if isInBounds(newPoint, buffer) then
-          if buffer.getRGB(newPoint.x, newPoint.y) == startColor && buffer.getRGB(newPoint.x, newPoint.y) != targetColor then queue += newPoint
+          if isWithinTolerance(buffer.getRGB(newPoint.x, newPoint.y), startColor)
+            && buffer.getRGB(newPoint.x, newPoint.y) != targetColor
+          then queue += newPoint
       })
 
-  private def isInBounds(point: Point, buffer: BufferedImage): Boolean = point.y < buffer.getHeight() && point.y >= 0 && point.x < buffer.getWidth() && point.x >= 0
+  private def isWithinTolerance(color: Int, referenceColor: Int): Boolean =
+    val r1 = (color >> 16) & 0xFF
+    val g1 = (color >> 8) & 0xFF
+    val b1 = color & 0xFF
+
+    val r2 = (referenceColor >> 16) & 0xFF
+    val g2 = (referenceColor >> 8) & 0xFF
+    val b2 = referenceColor & 0xFF
+
+    val distance = math.sqrt((r2 - r1) * (r2 - r1) + (g2 - g1) * (g2 - g1) + (b2 - b1) * (b2 - b1))
+
+    distance <= tolerance
+
+  private def isInBounds(point: Point, buffer: BufferedImage): Boolean =
+    point.y < buffer.getHeight() && point.y >= 0 && point.x < buffer.getWidth() && point.x >= 0
 
 

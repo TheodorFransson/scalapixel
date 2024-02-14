@@ -17,6 +17,8 @@ import scala.swing.Rectangle
 class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
   private var pencilWidth: Int = 5
   private var pencilColor: Color = Colors.getPrimaryColor()
+  private var strokeCap: Int = BasicStroke.CAP_ROUND
+  private var strokeJoin: Int = BasicStroke.JOIN_ROUND
 
   private var path = new GeneralPath()
   private var lastPoint: Option[Point] = None
@@ -37,7 +39,7 @@ class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageP
       historyEntry.saveFinalSnapshot(image, getExtendedPathBounds(path, image.width, image.height))
 
     g.setColor(pencilColor)
-    g.setStroke(new BasicStroke(pencilWidth.toFloat, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
+    g.setStroke(new BasicStroke(pencilWidth.toFloat, strokeCap, strokeJoin))
     g.draw(path)
 
     historyEntry
@@ -80,6 +82,10 @@ class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageP
 
   def setPencilWidth(width: Int): Unit =
     pencilWidth = if width > 0 then width else 5
+
+  def setStrokeCap(value: Int): Unit = strokeCap = value
+
+  def setStrokeJoin(value: Int): Unit = strokeJoin = value
 
   private def lineTo(point: Point): Unit =
     path.lineTo(point.x.toFloat, point.y.toFloat)
