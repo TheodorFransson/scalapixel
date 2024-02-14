@@ -26,9 +26,9 @@ trait EventBinder:
         publish(event(getValue()))
     }
 
-  def bindToSpinnerChangeEvent[T](spinner: javax.swing.JSpinner, event: T => Event, getValue: () => T): Unit =
+  def bindToSpinnerChangeEvent(spinner: javax.swing.JSpinner, event: Int => Event, getValue: () => Number): Unit =
     spinner.addChangeListener(new javax.swing.event.ChangeListener {
       override def stateChanged(e: javax.swing.event.ChangeEvent): Unit = {
-        publish(event(getValue()))
+        publish(event(getValue().intValue))
       }
     })

@@ -2,17 +2,12 @@ package scalapaint.tools
 
 import scalapaint.image.ImageProcessor
 import scalapaint.model.Model
-import scalapaint.view.CanvasPanel.Events.*
 
-abstract class Tool(model: Model) extends ImageProcessor:
-  def mousePressed(event: MousePressedCanvas): Unit = ()
+import scala.swing.{Panel, Reactor}
 
-  def mouseReleased(event: MouseReleasedCanvas): Unit = ()
+abstract class Tool(operation: ToolOperation, panel: Panel) extends Reactor:
+  listenTo(panel)
 
-  def mouseDragged(event: MouseDraggedCanvas): Unit = ()
+  def getOperation(): ToolOperation = operation
 
-  def mouseWheelMoved(event: ZoomEvent): Unit = ()
-
-  def keyPressed(event: KeyPressedCanvas): Unit = ()
-
-  def keyReleased(event: KeyReleasedCanvas): Unit = ()
+  def getPanel(): Panel = panel

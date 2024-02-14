@@ -1,23 +1,31 @@
-package scalapaint.tools
-import scalapaint.EditorWindow
-import scalapaint.history.{HistoryEntry, SimpleHistoryEntry}
-import scalapaint.image.EditorImage
-import scalapaint.model.Model
-import scalapaint.view.CanvasPanel.Events.*
+package scalapaint.tools.fill
 
-import java.awt.Point
+import scalapaint.{Colors, EditorWindow}
+import scalapaint.history.{HistoryEntry, SimpleHistoryEntry}
+import scalapaint.image.{EditorImage, ImageProcessor}
+import scalapaint.model.Model
+import scalapaint.tools.ToolOperation
+import scalapaint.view.CanvasPanel.Events.MousePressedCanvas
+
+import java.awt.{Color, Point}
+import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import scala.collection.mutable
-import scala.collection.mutable.Queue
 import scala.swing.Rectangle
 
-class FloodfillTool(model: Model) extends Tool(model):
+class FillToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
+  private var targetColor: Color = Colors.getPrimaryColor()
 
   override def mousePressed(event: MousePressedCanvas): Unit =
-    mousePosition.setLocation(event.pointOnImage)
-    model.enqueueApply(this)
+    val mouseEvent = event.originalEvent.peer
+
+    targetColor = if isPrimary(mouseEvent) then Colors.getPrimaryColor() else Colors.getSecondaryColor()
+
+    if isPrimary(mouseEvent) || isSecondary(mouseEvent) then
+      mousePosition.setLocation(event.pointOnImage)
+      model.enqueueApply(this)
 
   override def process(image: EditorImage): HistoryEntry =
     val historyEntry = new SimpleHistoryEntry()
@@ -34,12 +42,11 @@ class FloodfillTool(model: Model) extends Tool(model):
 
     if isInBounds(mousePosition, buffer) then
       val startColor = buffer.getRGB(mousePosition.x, mousePosition.y)
-      val targetColor = EditorWindow.selectedColor.getRGB
 
       queue += mousePosition
 
       while queue.nonEmpty do
-        fillNeighbour(queue.dequeue, buffer, startColor, targetColor)
+        fillNeighbour(queue.dequeue, buffer, startColor, targetColor.getRGB)
 
     buffer
 
@@ -54,3 +61,5 @@ class FloodfillTool(model: Model) extends Tool(model):
       })
 
   private def isInBounds(point: Point, buffer: BufferedImage): Boolean = point.y < buffer.getHeight() && point.y >= 0 && point.x < buffer.getWidth() && point.x >= 0
+
+

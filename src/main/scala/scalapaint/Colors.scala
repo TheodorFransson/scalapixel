@@ -16,9 +16,25 @@ object Colors:
         Color(0x383838),
     )
 
-    def backgroundColorDP(dp: Int): Color =
-        require(dp > -1 && dp < background.length)
-        background(dp)
+    private var primaryColor: Color = Color.black
+    private var secondaryColor: Color = Color.white
+
+    def getPrimaryColor(): Color = primaryColor
+
+    def setPrimaryColor(color: Color): Unit = primaryColor = color
+
+    def getSecondaryColor(): Color = secondaryColor
+
+    def setSecondaryColor(color: Color): Unit = secondaryColor = color
+
+    def switchColors(): Unit =
+        val temp = primaryColor
+        primaryColor = secondaryColor
+        secondaryColor = temp
+
+    def backgroundColorAtDepth(depth: Int): Color =
+        require(depth > -1 && depth < background.length)
+        background(depth)
 
     def brighten(color: Color, amount: Int): Color =
         new Color(math.min(color.getRed() + amount, 255), math.min(color.getGreen() + amount, 255), math.min(color.getBlue() + amount, 255))

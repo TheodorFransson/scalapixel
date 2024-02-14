@@ -1,4 +1,4 @@
-package scalapaint.view
+package scalapaint.tools.pencil
 
 import scalapaint.EventBinder
 
@@ -18,7 +18,7 @@ class PencilPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     private val model = new SpinnerNumberModel(5, 1, 100, 1)
     private val spinner = new JSpinner(model)
 
-    private var widthFlowpanel = new FlowPanel:
+    private val widthFlowpanel = new FlowPanel:
         peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
 
         contents += new Label:
@@ -29,7 +29,7 @@ class PencilPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     widthFlowpanel.maximumSize = widthFlowpanel.preferredSize
     contents += widthFlowpanel
 
-    bindToSpinnerChangeEvent[Int](spinner, SpinnerValueChanged.apply, model.getNumber.intValue)
+    bindToSpinnerChangeEvent(spinner, SpinnerValueChanged.apply, model.getNumber)
 
     def setValue(value: Int): Unit = 
         model.setValue(value)

@@ -11,6 +11,8 @@ import model.*
 import view.*
 import controller.*
 import javafx.application.Platform
+import scalapaint.tools.pencil.PencilPanel
+import scalapaint.view.components.ColorButton
 
 object EditorWindow extends Frame:
 	title = "ScalaPaint"
@@ -19,77 +21,57 @@ object EditorWindow extends Frame:
 	val model = new Model()
 
 	val topMenu = new TopMenu()
-	val TopMenuController = new TopMenuController(model, topMenu)
-	menuBar = topMenu
+	val topMenuController = new TopMenuController(model, topMenu)
+
+	val colorPanel = new ColorPanel()
+	val colorPanelController = new ColorPanelController(colorPanel)
+
+	val parameterPanel = new ParameterPanel()
 
 	val sideToolbar = new SideToolbar()
-	val sideToolbarController = new SideToolbarController(model, sideToolbar)
-	val pencilPanel = new PencilPanel()
-	val pencilPanelController = new PencilPanelController(model, pencilPanel)
-	val filterPanel = new FilterPanel()
-	val filterPanelController = new FilterPanelController(model, filterPanel)
-		
-	private val colorChooser = new ColorChooser:
-		peer.setPreviewPanel(new JPanel())
-
-		val panels = peer.getChooserPanels
-		panels.foreach(panel => if panel.getDisplayName() != "HSV" then peer.removeChooserPanel(panel))
-
-	private val colorDialog = JColorChooser.createDialog(filterPanel.peer, "Choose color", true, colorChooser.peer, null, null)
-
-	private val sideBar = new BoxPanel(Orientation.Vertical):
-		contents += sideToolbar
-		contents += new Separator:
-			maximumSize = new Dimension(500, 10)
-		contents += pencilPanel
-		contents += new Separator:
-			maximumSize = new Dimension(500, 10)
-		contents += filterPanel
-
-	setBackgroundColor(sideBar.peer, Colors.backgroundColorDP(1))
+	val sideToolbarController = new SideToolbarController(model, sideToolbar, parameterPanel)
 
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
 	val canvasScrollPanel = new CanvasScrollPanel(canvasPanel)
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel, canvasScrollPanel)
-	sideToolbarController.listenTo(canvasPanel)
 
-	var selectedColor: Color = Color.BLACK
+	initGui()
+	setup()
 
-	private val borderPanel = new BorderPanel:
-		layout(sideBar) = West
-		layout(canvasScrollPanel) = Center
+	private def initGui(): Unit =
+		menuBar = topMenu
 
-	contents = borderPanel
+		val sideBar = new BoxPanel(Orientation.Vertical):
+			contents += sideToolbar
+			setBackgroundColor(peer, Colors.backgroundColorAtDepth(1))
 
-	pack()
-	visible = true
-	centerOnScreen()
-	peer.toFront()
-	canvasPanel.requestFocus()
+		val lowerPanel = new TabbedPane:
+			pages += new TabbedPane.Page("Color", colorPanel)
 
-	model.setNewImage(EditorImage.white(new Dimension(400, 400)))
+		val splitPane = new SplitPane(Orientation.Horizontal, parameterPanel, lowerPanel):
+			dividerLocation = 400
 
-	/** @return an int that represents the width from the pencilPanel. */
-	def getPencilWidth(): Int = 2
+		val borderPanel = new BorderPanel:
+			layout(sideBar) = West
+			layout(canvasScrollPanel) = Center
+			layout(splitPane) = East
 
-	/** Repaints the canvas. */
-	def repaintCanvas(): Unit = canvasPanel.repaint()
+		contents = borderPanel
 
-	/** Repaints the color buton to match the selected color. */
-	def repaintColorButton(): Unit = sideToolbar.repaintColorButton()
+	private def setup(): Unit =
+		pack()
+		visible = true
 
-	/** Shows a dialog with colorChooser
-	 * @return the selected color
-	 */
-	def chooseColor(): Color =
-		colorChooser.color = selectedColor
-		colorDialog.setVisible(true)
-		selectedColor = colorChooser.color
-		selectedColor
+		centerOnScreen()
 
-	private def changeSize(dim: Dimension): Unit = 
-		size = dim
+		peer.toFront()
+		canvasPanel.requestFocus()
+		sideToolbar.selectDefaultTool()
 
+		sideToolbarController.listenTo(canvasPanel)
+
+		model.setNewImage(EditorImage.white(new Dimension(400, 400)))
+	
 	private def setBackgroundColor(parent: Container, color: Color): Unit =
 		parent.setBackground(color)
 

@@ -1,19 +1,23 @@
-package scalapaint.tools
+package scalapaint.tools.pencil
 
-import scalapaint.EditorWindow
+import scalapaint.{Colors, EditorWindow}
 import scalapaint.history.{HistoryEntry, SimpleHistoryEntry, TwoPartHistoryEntry}
-import scalapaint.image.EditorImage
+import scalapaint.image.{EditorImage, ImageProcessor}
 import scalapaint.model.Model
+import scalapaint.tools.ToolOperation
 import scalapaint.view.CanvasPanel.Events.*
 
-import java.awt.geom.GeneralPath
-import java.awt.{BasicStroke, Point, geom}
 import java.awt.event.MouseEvent
+import java.awt.geom.GeneralPath
 import java.awt.image.BufferedImage
-import scala.swing.Rectangle
+import java.awt.{BasicStroke, Color, Point, geom}
 import scala.collection.mutable
+import scala.swing.Rectangle
 
-class PencilTool(model: Model) extends Tool(model):
+class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
+  private var pencilWidth: Int = 5
+  private var pencilColor: Color = Colors.getPrimaryColor()
+
   private var path = new GeneralPath()
   private var lastPoint: Option[Point] = None
   private val pointAddInterval = 5
@@ -32,14 +36,20 @@ class PencilTool(model: Model) extends Tool(model):
     else if (!dragging) then
       historyEntry.saveFinalSnapshot(image, getExtendedPathBounds(path, image.width, image.height))
 
-    g.setColor(EditorWindow.selectedColor)
-    g.setStroke(new BasicStroke(EditorWindow.getPencilWidth().toFloat, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
+    g.setColor(pencilColor)
+    g.setStroke(new BasicStroke(pencilWidth.toFloat, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND))
     g.draw(path)
 
     historyEntry
 
   override def mousePressed(event: MousePressedCanvas): Unit =
-    if event.originalEvent.peer.getButton == MouseEvent.BUTTON1 then
+    val mouseEvent = event.originalEvent.peer
+
+    if !isButtonLocked && (isPrimary(mouseEvent) || isSecondary(mouseEvent)) then
+      lockButton(mouseEvent.getButton)
+
+      pencilColor = if isPrimary(mouseEvent) then Colors.getPrimaryColor() else Colors.getSecondaryColor()
+
       path = new GeneralPath()
       moveTo(event.pointOnImage)
       lastPoint = Some(event.pointOnImage)
@@ -58,12 +68,18 @@ class PencilTool(model: Model) extends Tool(model):
       model.enqueueApply(this)
 
   override def mouseReleased(event: MouseReleasedCanvas): Unit =
-    if event.originalEvent.peer.getButton == MouseEvent.BUTTON1 then
+    val mouseEvent = event.originalEvent.peer
+
+    if sameButtonAsLocked(mouseEvent.getButton) then
       lastPoint.foreach(point => lineTo(point))
       model.enqueueApply(this)
       lastPoint = None
       dragging = false
 
+      unlockButton()
+
+  def setPencilWidth(width: Int): Unit =
+    pencilWidth = if width > 0 then width else 5
 
   private def lineTo(point: Point): Unit =
     path.lineTo(point.x.toFloat, point.y.toFloat)
@@ -73,7 +89,6 @@ class PencilTool(model: Model) extends Tool(model):
 
   private def getExtendedPathBounds(path: GeneralPath, maxWidth: Int, maxHeight: Int): Rectangle =
     val pathBounds = path.getBounds
-    val pencilWidth = EditorWindow.getPencilWidth()
     val extendedPathBounds = new Rectangle(
       math.max(pathBounds.x - pencilWidth, 0),
       math.max(pathBounds.y - pencilWidth, 0),

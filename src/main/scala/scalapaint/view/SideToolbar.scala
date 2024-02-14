@@ -17,8 +17,8 @@ import scala.swing.event.*
 class SideToolbar extends ToolBar with EventBinder:
     import SideToolbar.Events.*
 
-    peer.setOrientation(Orientation.Horizontal.id)
-    peer.setAlignmentX(java.awt.Component.RIGHT_ALIGNMENT)
+    peer.setOrientation(Orientation.Vertical.id)
+    peer.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT)
     peer.setFloatable(false)
 
     private val buttonSize = 36
@@ -44,35 +44,18 @@ class SideToolbar extends ToolBar with EventBinder:
         icon = icons(2)
         tooltip = "Bucket fill"
 
-    private val color = new Button:
-        border = Swing.LineBorder(Colors.backgroundColorDP(7))
-        peer.setContentAreaFilled(false)
-        tooltip = "Color picker"
-        setupButton(this)
-
-        override protected def paintComponent(g: Graphics2D): Unit = 
-            if peer.getModel().isRollover() then
-                g.setColor(Colors.brighten(EditorWindow.selectedColor, 25))
-            else 
-                g.setColor(EditorWindow.selectedColor)
-
-            g.fillRect(0, 0, peer.getWidth(), peer.getHeight())
-            super.paintComponent(g)
-
     bindToEvent(zoom, ZoomToolActivated(), () => toggleSelection(zoom))
     bindToEvent(pen, PencilToolActivated(), () => toggleSelection(pen))
     bindToEvent(fill, FloodfillToolActivated(), () => toggleSelection(fill))
-    bindToEvent(color, ColorChooserActivated())
 
     private val toggleButtons = Seq(zoom, pen, fill)
-    private val buttons = Seq(color)
 
     toggleButtons.foreach(btn => setupButton(btn))
 
     contents ++= toggleButtons
-    contents ++= buttons
 
-    def repaintColorButton(): Unit = color.repaint()
+    def selectDefaultTool(): Unit =
+        pen.publish(new SelectionChanged(pen))
 
     private def disableAll(): Unit =
         for i <- toggleButtons.indices do
@@ -94,4 +77,3 @@ object SideToolbar:
 		case class ZoomToolActivated() extends Event
 		case class PencilToolActivated() extends Event
 		case class FloodfillToolActivated() extends Event
-		case class ColorChooserActivated() extends Event

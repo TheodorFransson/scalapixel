@@ -15,7 +15,7 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 	private val renderImage: RenderImage = new RenderImage(EditorImage.ofDim(400, 400))
 
 	updateSize(initSize, padding)
-	background = Colors.backgroundColorDP(0)
+	background = Colors.backgroundColorAtDepth(0)
 	focusable = true
 
 	def updateSize(size: Dimension, padding: Int = padding): Unit =

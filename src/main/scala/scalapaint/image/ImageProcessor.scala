@@ -5,5 +5,5 @@ import scalapaint.image.EditorImage
 
 import scala.swing.Rectangle
 
-abstract class ImageProcessor:
+trait ImageProcessor:
   def process(image: EditorImage): HistoryEntry
