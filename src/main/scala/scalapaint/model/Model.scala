@@ -21,6 +21,7 @@ class Model extends Publisher:
     def setNewImage(newImage: EditorImage): EditorImage =
         image = newImage
         publish(NewImage(image))
+        history.flushHistory
         image
 
     def getImage: EditorImage = image
@@ -30,11 +31,14 @@ class Model extends Publisher:
       processNext()
 
     def enqueueUndo(): Unit =
-      if (history.hasHistory) then
-        processQueue.enqueue(() => undoProcess(history.pop()))
+      if (history.hasUndoHistory) then
+        processQueue.enqueue(() => undoProcess(history.popUndo()))
         processNext()
 
-    def redoImageProcess(): EditorImage = ???
+    def enqueueRedo(): Unit=
+      if (history.hasRedoHistory) then
+        processQueue.enqueue(() => redoProcess(history.popRedo()))
+        processNext()
 
     private def applyProcess(processor: ImageProcessor): Future[Unit] =
         Future {
@@ -49,6 +53,15 @@ class Model extends Publisher:
     private def undoProcess(historyEntry: HistoryEntry): Future[Unit] =
       Future {
         historyEntry.undo(getImage)
+        val area = historyEntry.getAffectedArea
+        SwingUtilities.invokeLater(() => {
+          publish(ImageUpdated(image, area))
+        })
+      }
+
+    private def redoProcess(historyEntry: HistoryEntry): Future[Unit] =
+      Future {
+        historyEntry.redo(getImage)
         val area = historyEntry.getAffectedArea
         SwingUtilities.invokeLater(() => {
           publish(ImageUpdated(image, area))

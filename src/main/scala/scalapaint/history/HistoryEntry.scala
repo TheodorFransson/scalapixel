@@ -1,6 +1,6 @@
 package scalapaint.history
 
-import scalapaint.image.EditorImage
+import scalapaint.image.{EditorImage, ImageProcessor}
 
 import java.awt.image.BufferedImage
 import scala.swing.{Point, Rectangle}
@@ -11,5 +11,7 @@ abstract class HistoryEntry:
   def isCollapsable: Boolean = collapsable
 
   def undo(editorImage: EditorImage): Unit
+
+  def redo(editorImage: EditorImage): Unit
 
   def getAffectedArea: Rectangle

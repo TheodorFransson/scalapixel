@@ -15,6 +15,7 @@ abstract case class ImageFilter(val name: String) extends ImageProcessor:
 
         applyFilter(img)
 
+        historyEntry.saveResult(img)()
         historyEntry
 
     def applyFilter(img: EditorImage): Unit

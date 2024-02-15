@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage
 import scala.collection.mutable
 import scala.swing.Rectangle
 
-class FillToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
+case class FillToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()
@@ -36,7 +36,8 @@ class FillToolOperation(model: Model) extends ToolOperation(model) with ImagePro
     historyEntry.saveSnapshot(image)(new Rectangle(0, 0, image.width, image.height))
 
     floodFill(image)
-
+    
+    historyEntry.saveResult(image)(new Rectangle(0, 0, image.width, image.height))
     historyEntry
 
   private val queue = mutable.Queue[Point]()

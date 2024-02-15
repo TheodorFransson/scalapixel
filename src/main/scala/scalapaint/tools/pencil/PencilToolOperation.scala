@@ -35,12 +35,13 @@ class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageP
     if (!hasSaved) then
       historyEntry.savePreSnapshot(image)
       hasSaved = true
-    else if (!dragging) then
-      historyEntry.saveFinalSnapshot(image, getExtendedPathBounds(path, image.width, image.height))
 
     g.setColor(pencilColor)
     g.setStroke(new BasicStroke(pencilWidth.toFloat, strokeCap, strokeJoin))
     g.draw(path)
+
+    if (hasSaved && !dragging) then
+      historyEntry.saveFinalSnapshot(image, getExtendedPathBounds(path, image.width, image.height))
 
     historyEntry
 

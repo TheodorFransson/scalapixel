@@ -28,7 +28,7 @@ class TopMenuController(model: Model, view: TopMenu) extends Reactor:
 		case SaveMenuItemClicked() => save()
 		case ExitMenuItemClicked() => EditorWindow.closeOperation()
 		case UndoMenuItemClicked() => model.enqueueUndo()
-		case RedoMenuItemClicked() => model.redoImageProcess()
+		case RedoMenuItemClicked() => model.enqueueRedo()
 	}
 	
 	private def fileChooser(): Unit =
