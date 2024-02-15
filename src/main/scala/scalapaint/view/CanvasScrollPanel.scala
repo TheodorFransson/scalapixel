@@ -1,7 +1,7 @@
 package scalapaint.view
 
 import scalapaint.EventBinder
-import scalapaint.view.FilterPanel.Events.PreviewModeChanged
+import scalapaint.tools.filter.FilterPanel.Events.PreviewModeChanged
 
 import java.awt.event.{AdjustmentEvent, AdjustmentListener}
 import scala.swing.{BorderPanel, Orientation, Publisher, ScrollBar}
