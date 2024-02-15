@@ -22,24 +22,24 @@ class PencilPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
         contents += HGlue
         contents += spinnerWrap
 
-    private val caps: Array[Int] = Array(
-        BasicStroke.CAP_ROUND,
-        BasicStroke.CAP_BUTT,
-        BasicStroke.CAP_SQUARE
+    private val caps = Map(
+        "Round" -> BasicStroke.CAP_ROUND,
+        "Cutoff" -> BasicStroke.CAP_BUTT,
+        "Square" -> BasicStroke.CAP_SQUARE
     )
 
-    private val joins: Array[Int] = Array(
-        BasicStroke.JOIN_ROUND,
-        BasicStroke.JOIN_BEVEL,
-        BasicStroke.JOIN_MITER
+    private val joins = Map(
+        "Round" -> BasicStroke.JOIN_ROUND,
+        "Bevel" -> BasicStroke.JOIN_BEVEL,
+        "Miter" -> BasicStroke.JOIN_MITER
     )
 
-    private val capComboBox = new ComboBox[Int](caps):
-        selection.item = caps(0)
+    private val capComboBox = new ComboBox[String](caps.keys.toList):
+        selection.item = caps.keys.head
         maximumSize = preferredSize
 
-    private val joinComboBox = new ComboBox[Int](joins):
-        selection.item = joins(0)
+    private val joinComboBox = new ComboBox[String](joins.keys.toList):
+        selection.item = joins.keys.head
         maximumSize = preferredSize
 
     private val capComboPanel = new BoxPanel(Orientation.Horizontal):
@@ -61,8 +61,8 @@ class PencilPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     contents += VGlue
 
     bindToSpinnerChangeEvent(spinner, SpinnerValueChanged.apply, model.getNumber)
-    bindToValueChangeEvent(capComboBox.selection, CapValueChanged.apply, () => capComboBox.selection.item)
-    bindToValueChangeEvent(joinComboBox.selection, JoinValueChanged.apply, () => joinComboBox.selection.item)
+    bindToValueChangeEvent(capComboBox.selection, CapValueChanged.apply, () => caps(capComboBox.selection.item))
+    bindToValueChangeEvent(joinComboBox.selection, JoinValueChanged.apply, () => joins(joinComboBox.selection.item))
 
 object PencilPanel:
     object Events:
