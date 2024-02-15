@@ -45,6 +45,7 @@ object EditorWindow extends Frame:
 
 		val lowerPanel = new TabbedPane:
 			pages += new TabbedPane.Page("Color", colorPanel)
+			peer.putClientProperty("JTabbedPane.tabType", "card")
 
 		val splitPane = new SplitPane(Orientation.Horizontal, parameterPanel, lowerPanel):
 			dividerLocation = 200
