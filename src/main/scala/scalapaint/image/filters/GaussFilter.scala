@@ -7,7 +7,7 @@ class GaussFilter extends ImageFilter("Blur"):
     def applyFilter(image: EditorImage): Unit =
         val middle = if option.isDefined then option.get.toInt else 4
 
-        val clone = image.deepClone
+        val clone = image.createClone()
         val matrix = image.getColorMatrix
 
         val red = matrix.map(_.map(_.getRed().toShort))

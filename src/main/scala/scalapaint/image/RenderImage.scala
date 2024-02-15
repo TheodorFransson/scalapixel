@@ -9,44 +9,30 @@ import scala.swing.{Dimension, Graphics2D, Image, Point, Rectangle}
 
 class RenderImage(var editorImage: EditorImage):
   private var zoomFactor: Double = 1.0
-  private val imageOrigin = new Point(0, 0)
-  private var updated: Boolean = true
+  private val position = new Point(0, 0)
 
   private def size = new Dimension(editorImage.width, editorImage.height)
   private def scaledWidth = (editorImage.width * zoomFactor).toInt
   private def scaledHeight = (editorImage.height * zoomFactor).toInt
 
-  def needsUpdate(): Boolean = updated
-
   def reset(reference: Dimension, imageSize: Dimension = size): Unit =
     zoomFactor = 1.0
-    imageOrigin.setLocation(
+    position.setLocation(
       (reference.getWidth / 2) - (imageSize.getWidth / 2),
       (reference.getHeight / 2) - (imageSize.getHeight / 2)
     )
 
-    updated = true
-
   def zoom(factor: Double, target: Point, reference: Dimension): Unit =
     zoomFactor *= factor
 
-    val direction = new Point(imageOrigin.x - target.x, imageOrigin.y - target.y)
+    val direction = new Point(position.x - target.x, position.y - target.y)
     val sign = if factor > 1 then 0.1 else -0.1
 
     pan((direction.x * sign).toInt, (direction.y * sign).toInt, reference)
 
-    updated = true
-
   def pan(dx: Int, dy: Int, reference: Dimension): Unit =
-    imageOrigin.translate(dx, dy)
+    position.translate(dx, dy)
     clampImageOrigin(reference)
-    updated = true
-
-  private def clampImageOrigin(reference: Dimension): Unit =
-    val bounds = getBounds(reference)
-
-    imageOrigin.x = math.max(bounds.x, math.min(imageOrigin.x, bounds.width))
-    imageOrigin.y = math.max(bounds.y, math.min(imageOrigin.y, bounds.height))
 
   def getBounds(reference: Dimension): Rectangle =
     val minX = if (scaledWidth < reference.width) then -(scaledWidth / 2) else reference.width / 2 - scaledWidth
@@ -57,20 +43,17 @@ class RenderImage(var editorImage: EditorImage):
 
     new Rectangle(minX, minY, maxX, maxY)
 
-  def getPosition: Point = imageOrigin
+  def getPosition: Point = position
 
   def render(g: Graphics2D, reference: Dimension): Unit =
-    g.drawImage(editorImage.buffer, imageOrigin.x, imageOrigin.y, scaledWidth, scaledHeight, null)
-
-    updated = false
+    g.drawImage(editorImage.buffer, position.x, position.y, scaledWidth, scaledHeight, null)
 
   def updateImage(editorImage: EditorImage): Unit =
     this.editorImage = editorImage
-    updated = true
 
   def getPointOnImage(point: Point): Point =
-    val adjustedX = point.x - imageOrigin.x
-    val adjustedY = point.y - imageOrigin.y
+    val adjustedX = point.x - position.x
+    val adjustedY = point.y - position.y
 
     val imageX = adjustedX / zoomFactor
     val imageY = adjustedY / zoomFactor
@@ -81,7 +64,13 @@ class RenderImage(var editorImage: EditorImage):
     val scaledX = point.x * zoomFactor
     val scaledY = point.y * zoomFactor
 
-    val referenceX = scaledX + imageOrigin.x
-    val referenceY = scaledY + imageOrigin.y
+    val referenceX = scaledX + position.x
+    val referenceY = scaledY + position.y
 
     new Point(referenceX.toInt, referenceY.toInt)
+
+  private def clampImageOrigin(reference: Dimension): Unit =
+    val bounds = getBounds(reference)
+
+    position.x = math.max(bounds.x, math.min(position.x, bounds.width))
+    position.y = math.max(bounds.y, math.min(position.y, bounds.height))

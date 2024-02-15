@@ -8,8 +8,8 @@ import java.awt.{Color, Dimension, Graphics2D, Rectangle}
 import scala.collection.mutable.{ArrayBuffer, HashSet}
 
 class EditorImage(val buffer: BufferedImage):
-  val height: Int = buffer.getHeight
   val width: Int = buffer.getWidth
+  val height: Int = buffer.getHeight
 
   // A buffer used for history management
   private val internalBuffer: BufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
@@ -26,22 +26,14 @@ class EditorImage(val buffer: BufferedImage):
       pixels(i)(j) = new Color(buffer.getRGB(j, i))
     pixels
 
-  def updateImage(pixels: Array[Array[Color]]): Unit =
-    val height = pixels.length
-    val width = pixels(0).length
-
-    for i <- 0 until height; j <- 0 until width do
-      buffer.setRGB(j, i, pixels(i)(j).getRGB)
-
   def writeInteralBuffer(): Unit = internalGraphics.drawImage(buffer, 0, 0, null)
 
   def getInternalBuffer(): BufferedImage = internalBuffer
 
-  def deepClone: EditorImage =
-    val colorModel = buffer.getColorModel
-    val premult = colorModel.isAlphaPremultiplied
-    val raster = buffer.copyData(null)
-    val newBuffer = new BufferedImage(colorModel, raster, premult, null)
+  def createClone(): EditorImage =
+    val newBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+    val graphics = newBuffer.createGraphics()
+    graphics.drawImage(buffer, 0, 0, null)
     new EditorImage(newBuffer)
 
 object EditorImage:
