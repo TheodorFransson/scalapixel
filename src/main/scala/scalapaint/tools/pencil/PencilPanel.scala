@@ -1,6 +1,6 @@
 package scalapaint.tools.pencil
 
-import scalapaint.EventBinder
+import scalapaint.{Colors, EventBinder}
 
 import java.awt.{BasicStroke, Color}
 import javax.swing.{JSpinner, SpinnerNumberModel}

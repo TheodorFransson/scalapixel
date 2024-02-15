@@ -24,7 +24,7 @@ class SideToolbar extends ToolBar with EventBinder:
 	private val buttonSize = 36
 	private val iconSize = 24
 	private val buttonColor = Color(0xf1f1f1)
-	private val selectedButtonColor = Color(0xbb86fc)
+	private val selectedButtonColor = Color(0xc90c0c)
 
 	private val icons = Vector(
 		FontIcon.of(fluentui.FluentUiFilledMZ.SEARCH_24, iconSize, buttonColor),

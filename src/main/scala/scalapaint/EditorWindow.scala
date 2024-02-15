@@ -10,7 +10,6 @@ import java.awt.{Color, Container}
 import model.*
 import view.*
 import controller.*
-import javafx.application.Platform
 import scalapaint.tools.pencil.PencilPanel
 import scalapaint.view.components.ColorButton
 
@@ -43,7 +42,6 @@ object EditorWindow extends Frame:
 
 		val sideBar = new BoxPanel(Orientation.Vertical):
 			contents += sideToolbar
-			setBackgroundColor(peer, Colors.backgroundColorAtDepth(1))
 
 		val lowerPanel = new TabbedPane:
 			pages += new TabbedPane.Page("Color", colorPanel)
@@ -71,18 +69,6 @@ object EditorWindow extends Frame:
 		sideToolbarController.listenTo(canvasPanel)
 
 		model.setNewImage(EditorImage.white(new Dimension(400, 400)))
-	
-	private def setBackgroundColor(parent: Container, color: Color): Unit =
-		parent.setBackground(color)
-
-		val components = parent.getComponents()
-		components.foreach(c => 
-			if c.isInstanceOf[Container] then 		
-				if c.isInstanceOf[JPanel] then
-					c.setBackground(color)
-				
-				setBackgroundColor(c.asInstanceOf[Container], color)
-		)
 
 	override def closeOperation(): Unit =
 		canvasPanelController.dispose()
@@ -91,7 +77,6 @@ object EditorWindow extends Frame:
 		val timer = new java.util.Timer()
 		timer.schedule(new java.util.TimerTask {
 			override def run(): Unit = {
-				Platform.exit()
 				System.exit(0)
 			}
 		}, 500)
