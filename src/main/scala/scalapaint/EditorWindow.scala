@@ -7,7 +7,6 @@ import BorderPanel.Position.*
 import javax.swing.JPanel
 import javax.swing.JColorChooser
 import java.awt.{Color, Container}
-import model.*
 import views.*
 import controllers.*
 import scalapaint.tools.pencil.PencilPanel

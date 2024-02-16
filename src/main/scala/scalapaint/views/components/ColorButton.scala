@@ -5,10 +5,10 @@ import scalapaint.{Colors, EditorWindow}
 import java.awt.{Color, FontMetrics}
 import scala.swing.{Button, Color, Dimension, Graphics2D, Swing, ToggleButton}
 
-class ColorButton(dimensions: Dimension, initColor: Color = Colors.getPrimaryColor()) extends ToggleButton:
+class ColorButton(dimensions: Dimension, toolTip: String, initColor: Color = Colors.getPrimaryColor()) extends ToggleButton:
   private var color: Color = initColor
 
-  tooltip = "Color picker"
+  tooltip = toolTip
 
   border = Swing.LineBorder(Colors.backgroundColorAtDepth(7))
   peer.setContentAreaFilled(false)

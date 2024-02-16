@@ -20,8 +20,8 @@ class ColorPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     panels.foreach(panel => if panel.getDisplayName() != "HSV" then peer.removeChooserPanel(panel))
 
   private val colorDialog = JColorChooser.createDialog(peer, "Choose color", true, colorChooser.peer, null, null)
-  private val primaryColorButton = new ColorButton(new Dimension(50, 50))
-  private val secondaryColorButton = new ColorButton(new Dimension(50, 50) , Colors.getSecondaryColor())
+  private val primaryColorButton = new ColorButton(new Dimension(50, 50), "Primary color")
+  private val secondaryColorButton = new ColorButton(new Dimension(50, 50) , "Secondary color", Colors.getSecondaryColor())
 
   private val primaryBox = new BoxPanel(Orientation.Vertical):
     contents += primaryColorButton
@@ -40,9 +40,9 @@ class ColorPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
 
 
   private val chooserButtonPanel = new BoxPanel(Orientation.Horizontal):
-    contents += Swing.HGlue // Add glue before the button to push it to the center
+    contents += Swing.HGlue
     contents += colorChooserButton
-    contents += Swing.HGlue // Add glue after the button to keep it centered
+    contents += Swing.HGlue
 
   private val boxPanel = new BoxPanel(Orientation.Horizontal):
     contents += primaryBox
