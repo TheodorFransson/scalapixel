@@ -24,12 +24,10 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
     listenTo(model)
 
     reactions += {
-        case ImageUpdated(image, area) => canvasPanel.updateImage(image, area)
+        case ImageUpdated(image) => canvasPanel.updateImage(image)
         case NewImage(image) =>
           canvasPanel.setNewImage(image)
-          canvasPanel.resetViewTransform()
-          scrollPanel.setZoom(canvasPanel.getZoom())
-          updateScrollBars()
+          reset()
         case UIElementResized(_) =>
           val newSize = canvasPanel.peer.getSize()
           canvasPanel.updateSize(newSize)
@@ -68,7 +66,7 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
       val target = event.point
       val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
       canvasPanel.zoom(zoomFactor, target)
-      scrollPanel.setZoom(canvasPanel.getZoom())
+      scrollPanel.setZoom(canvasPanel.getZoomFactor())
       updateScrollBars()
 
     private def callPanOnCanvasPanel(dx: Int, dy: Int): Unit =
@@ -90,11 +88,12 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
       checkReset()
       panWithKeys()
 
-    private def checkReset(): Unit =
-      if pressedKeys(Key.R) then
-        canvasPanel.resetViewTransform()
-        scrollPanel.setZoom(canvasPanel.getZoom())
-        updateScrollBars()
+    private def checkReset(): Unit = if pressedKeys(Key.R) then reset()
+
+    private def reset(): Unit =
+      canvasPanel.resetViewTransform()
+      scrollPanel.setZoom(canvasPanel.getZoomFactor())
+      updateScrollBars()
 
     private def panWithKeys(): Unit =
         if (panTask.isEmpty && pressedKeys.nonEmpty) then

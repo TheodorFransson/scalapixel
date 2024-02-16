@@ -32,7 +32,7 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 
 		renderImage.render(g, dim)
 
-	def updateImage(editorImage: EditorImage, area: Rectangle): Unit =
+	def updateImage(editorImage: EditorImage): Unit =
 		renderImage.updateImage(editorImage)
 
 		repaint()
@@ -60,7 +60,7 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 
 	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dim, renderImage.getBounds(dim), renderImage.getPosition)
 
-	def getZoom(): Int = (renderImage.getZoomFactor * 10).toInt
+	def getZoomFactor(): Int = (renderImage.getZoomFactor * 10).toInt
 
 	listenTo(mouse.clicks, mouse.wheel, mouse.moves, keys)
 	reactions += {

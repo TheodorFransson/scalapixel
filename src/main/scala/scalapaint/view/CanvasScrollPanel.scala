@@ -4,6 +4,7 @@ import org.kordamp.ikonli.*
 import org.kordamp.ikonli.swing.FontIcon
 import scalapaint.EventBinder
 import scalapaint.tools.filter.FilterPanel.Events.PreviewModeChanged
+import scalapaint.view.components.CanvasPanelScrollBar
 
 import java.awt.Color
 import java.awt.Component.LEFT_ALIGNMENT

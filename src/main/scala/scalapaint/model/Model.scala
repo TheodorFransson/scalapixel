@@ -43,28 +43,25 @@ class Model extends Publisher:
     private def applyProcess(processor: ImageProcessor): Future[Unit] =
         Future {
             val historyEntry = processor.process(getImage)
-            val area = historyEntry.getAffectedArea
             history.push(historyEntry)
             SwingUtilities.invokeLater(() => {
-              publish(ImageUpdated(image, area))
+              publish(ImageUpdated(image))
             })
         }
 
     private def undoProcess(historyEntry: HistoryEntry): Future[Unit] =
       Future {
         historyEntry.undo(getImage)
-        val area = historyEntry.getAffectedArea
         SwingUtilities.invokeLater(() => {
-          publish(ImageUpdated(image, area))
+          publish(ImageUpdated(image))
         })
       }
 
     private def redoProcess(historyEntry: HistoryEntry): Future[Unit] =
       Future {
         historyEntry.redo(getImage)
-        val area = historyEntry.getAffectedArea
         SwingUtilities.invokeLater(() => {
-          publish(ImageUpdated(image, area))
+          publish(ImageUpdated(image))
         })
       }
 
@@ -80,5 +77,5 @@ class Model extends Publisher:
 object Model:
 
   object Events:
-    case class ImageUpdated(image: EditorImage, area: Rectangle) extends Event
+    case class ImageUpdated(image: EditorImage) extends Event
     case class NewImage(image: EditorImage) extends Event

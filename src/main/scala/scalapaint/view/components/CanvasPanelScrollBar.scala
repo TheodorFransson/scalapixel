@@ -1,4 +1,4 @@
-package scalapaint.view
+package scalapaint.view.components
 
 import scala.swing.ScrollBar
 
