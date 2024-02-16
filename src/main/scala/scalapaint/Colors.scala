@@ -1,8 +1,12 @@
 package scalapaint
 
-import java.awt.Color
+import scalapaint.Colors.Events.{PrimaryColorChanged, SecondaryColorChanged}
 
-object Colors:
+import java.awt.Color
+import scala.swing.Publisher
+import scala.swing.event.Event
+
+object Colors extends Publisher:
     private val background = Vector(
         Color(0x121212),
         Color(0x1e1e1e),
@@ -21,16 +25,20 @@ object Colors:
 
     def getPrimaryColor(): Color = primaryColor
 
-    def setPrimaryColor(color: Color): Unit = primaryColor = color
-
     def getSecondaryColor(): Color = secondaryColor
 
-    def setSecondaryColor(color: Color): Unit = secondaryColor = color
+    def setPrimaryColor(color: Color): Unit =
+        primaryColor = color
+        publish(PrimaryColorChanged(primaryColor))
+
+    def setSecondaryColor(color: Color): Unit =
+        secondaryColor = color
+        publish(SecondaryColorChanged(secondaryColor))
 
     def switchColors(): Unit =
         val temp = primaryColor
-        primaryColor = secondaryColor
-        secondaryColor = temp
+        setPrimaryColor(secondaryColor)
+        setSecondaryColor(temp)
 
     def backgroundColorAtDepth(depth: Int): Color =
         require(depth > -1 && depth < background.length)
@@ -38,3 +46,7 @@ object Colors:
 
     def brighten(color: Color, amount: Int): Color =
         new Color(math.min(color.getRed() + amount, 255), math.min(color.getGreen() + amount, 255), math.min(color.getBlue() + amount, 255))
+
+    object Events:
+        case class PrimaryColorChanged(color: Color) extends Event
+        case class SecondaryColorChanged(color: Color) extends Event

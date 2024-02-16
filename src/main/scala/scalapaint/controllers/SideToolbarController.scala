@@ -6,6 +6,7 @@ import scalapaint.tools.fill.{FillPanel, FillTool, FillToolOperation}
 import scalapaint.tools.pencil.{PencilPanel, PencilTool, PencilToolOperation}
 import scalapaint.tools.Tool
 import scalapaint.tools.filter.{FilterPanel, FilterTool, FilterToolOperation}
+import scalapaint.tools.picker.{PickerTool, PickerToolOperation, PickerPanel}
 import scalapaint.views.CanvasPanel.Events.{MouseDraggedCanvas, MousePressedCanvas, MouseReleasedCanvas}
 import scalapaint.views.{ParameterPanel, SideToolbar}
 import scalapaint.views.SideToolbar.Events.*
@@ -17,18 +18,21 @@ class SideToolbarController(model: ImageProcessingManager, sideToolbar: SideTool
 
     private val pencilTool = new PencilTool(new PencilToolOperation(model), new PencilPanel())
     private val floodfillTool = new FillTool(new FillToolOperation(model), new FillPanel())
+    private val pickerTool = new PickerTool(new PickerToolOperation(model), new PickerPanel())
     private val filterTool = new FilterTool(new FilterToolOperation(model), new FilterPanel())
 
     listenTo(sideToolbar)
 
     reactions += {
-        case ZoomToolActivated() => ???
         case PencilToolActivated() =>
             parameterPanel.replaceToolPanel(pencilTool.getPanel())
             activeTool = Some(pencilTool)
         case FloodfillToolActivated() =>
             parameterPanel.replaceToolPanel(floodfillTool.getPanel())
             activeTool = Some(floodfillTool)
+        case PickerToolActivated() =>
+            parameterPanel.replaceToolPanel(pickerTool.getPanel())
+            activeTool = Some(pickerTool)
         case FilterToolActivated() =>
             parameterPanel.replaceToolPanel(filterTool.getPanel())
             activeTool = Some(filterTool)

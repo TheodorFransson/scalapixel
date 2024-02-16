@@ -29,6 +29,7 @@ class SideToolbar extends ToolBar with EventBinder:
 	private val icons = Vector(
 		FontIcon.of(fluentui.FluentUiFilledAL.COLOR_LINE_24, iconSize, buttonColor),
 		FontIcon.of(fluentui.FluentUiFilledMZ.PAINT_BUCKET_24, iconSize, buttonColor),
+		FontIcon.of(fluentui.FluentUiFilledMZ.STATUS_24, iconSize, buttonColor),
 		FontIcon.of(fluentui.FluentUiFilledAL.BLUR_24, iconSize, buttonColor),
 	)
 
@@ -40,15 +41,20 @@ class SideToolbar extends ToolBar with EventBinder:
 		icon = icons(1)
 		tooltip = "Bucket fill"
 
-	private val filter = new ToggleButton:
+	private val picker = new ToggleButton:
 		icon = icons(2)
+		tooltip = "Color picker"
+
+	private val filter = new ToggleButton:
+		icon = icons(3)
 		tooltip = "Filter"
 
 	bindToEvent(pen, PencilToolActivated(), () => toggleSelection(pen))
 	bindToEvent(fill, FloodfillToolActivated(), () => toggleSelection(fill))
+	bindToEvent(picker, PickerToolActivated(), () => toggleSelection(picker))
 	bindToEvent(filter, FilterToolActivated(), () => toggleSelection(filter))
 
-	private val toggleButtons = Seq(pen, fill, filter)
+	private val toggleButtons = Seq(pen, fill, picker, filter)
 	toggleButtons.foreach(btn => setupButton(btn))
 
 	contents ++= toggleButtons
@@ -73,7 +79,7 @@ class SideToolbar extends ToolBar with EventBinder:
 
 object SideToolbar:
 	object Events:
-		case class ZoomToolActivated() extends Event
+		case class PickerToolActivated() extends Event
 		case class PencilToolActivated() extends Event
 		case class FloodfillToolActivated() extends Event
 		case class FilterToolActivated() extends Event
