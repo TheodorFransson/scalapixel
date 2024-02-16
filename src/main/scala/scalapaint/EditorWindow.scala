@@ -33,8 +33,8 @@ object EditorWindow extends Frame:
 	val sideToolbarController = new SideToolbarController(model, sideToolbar, parameterPanel)
 
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
-	val canvasScrollPanel = new CanvasScrollPanel(canvasPanel)
-	val canvasPanelController = new CanvasPanelController(model, canvasPanel, canvasScrollPanel)
+	val navigablePanel = new NavigablePanel(canvasPanel, 100, 2, 1, 30)
+	val canvasPanelController = new CanvasPanelController(model, canvasPanel, navigablePanel)
 
 	initGui()
 	setup()
@@ -55,7 +55,7 @@ object EditorWindow extends Frame:
 
 		val borderPanel = new BorderPanel:
 			layout(sideBar) = West
-			layout(canvasScrollPanel) = Center
+			layout(navigablePanel) = Center
 			layout(splitPane) = East
 
 		contents = borderPanel

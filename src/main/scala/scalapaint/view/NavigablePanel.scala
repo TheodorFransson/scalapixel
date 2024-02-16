@@ -11,13 +11,13 @@ import java.awt.Component.LEFT_ALIGNMENT
 import java.awt.event.{AdjustmentEvent, AdjustmentListener}
 import javax.swing.JPopupMenu.Separator
 import javax.swing.JSeparator
-import scala.swing.{Alignment, BorderPanel, BoxPanel, Button, Component, Dimension, FlowPanel, Label, Orientation, Publisher, ScrollBar, Slider, TextField}
+import scala.swing.{Alignment, BorderPanel, BoxPanel, Button, Component, Dimension, FlowPanel, Label, Orientation, Panel, Publisher, ScrollBar, Slider, TextField}
 import BorderPanel.Position.*
 import scala.swing.Swing.{EmptyBorder, HGlue, HStrut}
 import scala.swing.event.{AdjustingEvent, ButtonClicked, EditDone, Event, ValueChanged}
 
-class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with EventBinder:
-  import CanvasScrollPanel.Events.*
+class NavigablePanel(innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoomIncrement: Int, fasterZoomThreshold: Int) extends BorderPanel with EventBinder:
+  import NavigablePanel.Events.*
 
   private var adjustingProgrammatically = false
 
@@ -27,10 +27,9 @@ class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with Event
   private val verticalScrollBar = new CanvasPanelScrollBar()
 
   private val zoomSlider = new Slider():
-    min = 2
-    max = 100
+    min = minimumZoom
+    max = maximumZoom
     value = 10
-    majorTickSpacing = 10
     maximumSize = new Dimension(100, preferredSize.height)
 
   private val zoomInButton = new Button():
@@ -61,7 +60,7 @@ class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with Event
     layout(horizontalScrollBar) = Center
     layout(boxPanel) = South
 
-  layout(canvasPanel) = Center
+  layout(innerPanel) = Center
   layout(borderPanel) = South
   layout(verticalScrollBar) = East
 
@@ -85,14 +84,10 @@ class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with Event
 
   bindToValueChangeEvent(horizontalScrollBar, (delta: Int) => HorizontalScroll(delta))
   bindToValueChangeEvent(verticalScrollBar, (delta: Int) => VerticalScroll(delta))
-  bindToValueChangeEvent(
-    zoomSlider,
-    Zoom.apply,
-    () => {
-      zoomTextField.text = s"${zoomSlider.value * 10}%"
-      zoomSlider.value
-    },
-    () => {
+  bindToValueChangeEvent(zoomSlider, Zoom.apply, () => {
+    updateZoomTextField()
+    zoomSlider.value
+    }, () => {
       !adjustingProgrammatically
   })
 
@@ -106,20 +101,20 @@ class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with Event
     case EditDone(_) => handleZoomTextFieldInput()
   }
 
-  private def adjustZoom(increase: Boolean): Unit = {
-    val step = if (zoomSlider.value >= 30) 5 else 1
-    val newValue = if (increase) (zoomSlider.value + step).min(zoomSlider.max)
-    else (zoomSlider.value - step).max(zoomSlider.min)
+  private def adjustZoom(increase: Boolean): Unit =
+    val step = if (zoomSlider.value >= fasterZoomThreshold) 5 else 1
+    val newValue = if (increase) (zoomSlider.value + step * zoomIncrement).min(maximumZoom)
+    else (zoomSlider.value - step).max(minimumZoom)
     zoomSlider.value = newValue
-  }
 
-  private def handleZoomTextFieldInput(): Unit = {
+  private def updateZoomTextField(): Unit = zoomTextField.text = s"${zoomSlider.value * 10}%"
+
+  private def handleZoomTextFieldInput(): Unit =
     val input = zoomTextField.text.filter(_.isDigit)
     val percentage = input.toIntOption.getOrElse(zoomSlider.value * 10)
     val sliderValue = (percentage / 10).max(zoomSlider.min).min(zoomSlider.max)
     zoomSlider.value = sliderValue
     zoomTextField.text = s"${sliderValue * 10}%"
-  }
 
   def bindToValueChangeEvent[T](component: CanvasPanelScrollBar, event: Int => Event): Unit =
     listenTo(component)
@@ -131,7 +126,7 @@ class CanvasScrollPanel(canvasPanel: CanvasPanel) extends BorderPanel with Event
         component.lastValue = currentValue
     }
 
-object CanvasScrollPanel:
+object NavigablePanel:
   object Events:
     case class VerticalScroll(value: Int) extends Event
     case class HorizontalScroll(value: Int) extends Event

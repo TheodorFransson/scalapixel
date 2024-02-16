@@ -2,16 +2,16 @@ package scalapaint.controller
 
 import scalapaint.model.Model
 import scalapaint.model.Model.Events.*
-import scalapaint.view.{CanvasPanel, CanvasScrollPanel}
+import scalapaint.view.{CanvasPanel, NavigablePanel}
 import scalapaint.view.CanvasPanel.Events.*
-import scalapaint.view.CanvasScrollPanel.Events.*
+import scalapaint.view.NavigablePanel.Events.*
 
 import java.awt.event.*
 import java.util.TimerTask
 import scala.swing.*
 import scala.swing.event.{Key, KeyPressed, MouseEvent, MouseWheelMoved, UIElementResized}
 
-class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel: CanvasScrollPanel) extends Reactor:
+class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, navigablePanel: NavigablePanel) extends Reactor:
     private var mouseOrigin = new Point(0, 0)
     private var dragging = false
 
@@ -20,7 +20,7 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
     private val pressedKeys = scala.collection.mutable.Set[event.Key.Value]()
 
     listenTo(canvasPanel)
-    listenTo(scrollPanel)
+    listenTo(navigablePanel)
     listenTo(model)
 
     reactions += {
@@ -66,7 +66,7 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
       val target = event.point
       val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
       canvasPanel.zoom(zoomFactor, target)
-      scrollPanel.setZoom(canvasPanel.getZoomFactor())
+      navigablePanel.setZoom(canvasPanel.getZoomFactor())
       updateScrollBars()
 
     private def callPanOnCanvasPanel(dx: Int, dy: Int): Unit =
@@ -92,7 +92,7 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
 
     private def reset(): Unit =
       canvasPanel.resetViewTransform()
-      scrollPanel.setZoom(canvasPanel.getZoomFactor())
+      navigablePanel.setZoom(canvasPanel.getZoomFactor())
       updateScrollBars()
 
     private def panWithKeys(): Unit =
@@ -119,12 +119,12 @@ class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, scrollPanel:
       val verticalValue = imageBounds.y + imageBounds.height - imagePosition.y
       val verticalExtent = canvasPanelDimension.height / 2
 
-      scrollPanel.setHorizontalScrollbarParameters(
+      navigablePanel.setHorizontalScrollbarParameters(
         horizontalValue,
         horizontalExtent,
         imageBounds.x,
         imageBounds.width + horizontalExtent)
-      scrollPanel.setVerticalScrollbarParameters(
+      navigablePanel.setVerticalScrollbarParameters(
         verticalValue,
         verticalExtent,
         imageBounds.y,
