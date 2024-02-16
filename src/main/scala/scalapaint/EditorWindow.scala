@@ -8,10 +8,10 @@ import javax.swing.JPanel
 import javax.swing.JColorChooser
 import java.awt.{Color, Container}
 import model.*
-import view.*
-import controller.*
+import views.*
+import controllers.*
 import scalapaint.tools.pencil.PencilPanel
-import scalapaint.view.components.ColorButton
+import scalapaint.views.components.ColorButton
 
 import scala.swing.Swing.EmptyBorder
 
@@ -19,7 +19,7 @@ object EditorWindow extends Frame:
 	title = "ScalaPaint"
 	resizable = true
 	
-	val model = new Model()
+	val model = new ImageProcessingManager()
 
 	val topMenu = new TopMenu()
 	val topMenuController = new TopMenuController(model, topMenu)

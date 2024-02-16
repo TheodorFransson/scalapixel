@@ -1,7 +1,6 @@
 package scalapaint.tools
 
-import scalapaint.image.ImageProcessor
-import scalapaint.model.Model
+import scalapaint.image.{ImageProcessingManager, ImageProcessor}
 
 import scala.swing.{Panel, Reactor}
 

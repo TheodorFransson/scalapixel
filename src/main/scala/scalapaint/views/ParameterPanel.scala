@@ -1,7 +1,7 @@
-package scalapaint.view
+package scalapaint.views
 
 import scalapaint.EditorWindow
-import scalapaint.controller.ColorPanelController
+import scalapaint.controllers.ColorPanelController
 
 import javax.swing.{JColorChooser, JPanel}
 import scala.swing.{BoxPanel, ColorChooser, Component, Dimension, Orientation, Panel, TabbedPane}

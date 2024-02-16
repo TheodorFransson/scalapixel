@@ -1,4 +1,4 @@
-package scalapaint.view
+package scalapaint.views
 
 import scalapaint.*
 import scalapaint.image.{EditorImage, RenderImage}

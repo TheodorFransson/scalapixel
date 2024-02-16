@@ -2,10 +2,9 @@ package scalapaint.tools.pencil
 
 import scalapaint.{Colors, EditorWindow}
 import scalapaint.history.{HistoryEntry, SimpleHistoryEntry, TwoPartHistoryEntry}
-import scalapaint.image.{EditorImage, ImageProcessor}
-import scalapaint.model.Model
+import scalapaint.image.{EditorImage, ImageProcessingManager, ImageProcessor}
 import scalapaint.tools.ToolOperation
-import scalapaint.view.CanvasPanel.Events.*
+import scalapaint.views.CanvasPanel.Events.*
 
 import java.awt.event.MouseEvent
 import java.awt.geom.GeneralPath
@@ -14,7 +13,7 @@ import java.awt.{BasicStroke, Color, Point, geom}
 import scala.collection.mutable
 import scala.swing.Rectangle
 
-class PencilToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
+class PencilToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with ImageProcessor:
   private var pencilWidth: Int = 5
   private var pencilColor: Color = Colors.getPrimaryColor()
   private var strokeCap: Int = BasicStroke.CAP_ROUND

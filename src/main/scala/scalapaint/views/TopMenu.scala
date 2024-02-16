@@ -1,4 +1,4 @@
-package scalapaint.view
+package scalapaint.views
 
 import org.kordamp.ikonli.*
 import org.kordamp.ikonli.swing.FontIcon

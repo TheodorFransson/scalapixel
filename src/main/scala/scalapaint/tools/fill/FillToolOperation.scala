@@ -2,10 +2,9 @@ package scalapaint.tools.fill
 
 import scalapaint.{Colors, EditorWindow}
 import scalapaint.history.{HistoryEntry, SimpleHistoryEntry}
-import scalapaint.image.{EditorImage, ImageProcessor}
-import scalapaint.model.Model
+import scalapaint.image.{EditorImage, ImageProcessingManager, ImageProcessor}
 import scalapaint.tools.ToolOperation
-import scalapaint.view.CanvasPanel.Events.MousePressedCanvas
+import scalapaint.views.CanvasPanel.Events.MousePressedCanvas
 
 import java.awt.{Color, Point}
 import java.awt.event.MouseEvent
@@ -13,7 +12,7 @@ import java.awt.image.BufferedImage
 import scala.collection.mutable
 import scala.swing.Rectangle
 
-case class FillToolOperation(model: Model) extends ToolOperation(model) with ImageProcessor:
+case class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with ImageProcessor:
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()

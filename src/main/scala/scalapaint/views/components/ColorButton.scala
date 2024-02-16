@@ -1,4 +1,4 @@
-package scalapaint.view.components
+package scalapaint.views.components
 
 import scalapaint.{Colors, EditorWindow}
 

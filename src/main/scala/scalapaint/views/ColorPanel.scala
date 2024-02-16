@@ -1,10 +1,10 @@
-package scalapaint.view
+package scalapaint.views
 
 import org.kordamp.ikonli.fluentui
 import org.kordamp.ikonli.swing.FontIcon
-import scalapaint.view.ColorPanel.Events.{ColorChooserClicked, SwitchButtonClicked}
-import scalapaint.view.components.ColorSwatch.Events.SwatchColorClicked
-import scalapaint.view.components.{ColorButton, ColorSwatch}
+import scalapaint.views.ColorPanel.Events.{ColorChooserClicked, SwitchButtonClicked}
+import scalapaint.views.components.ColorSwatch.Events.SwatchColorClicked
+import scalapaint.views.components.{ColorButton, ColorSwatch}
 import scalapaint.{Colors, EditorWindow, EventBinder}
 
 import java.awt.Color

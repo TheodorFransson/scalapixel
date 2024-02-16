@@ -1,9 +1,9 @@
-package scalapaint.controller
+package scalapaint.controllers
 
 import scalapaint.Colors
-import scalapaint.view.ColorPanel
-import scalapaint.view.ColorPanel.Events.*
-import scalapaint.view.components.ColorSwatch.Events.SwatchColorClicked
+import scalapaint.views.ColorPanel
+import scalapaint.views.ColorPanel.Events.*
+import scalapaint.views.components.ColorSwatch.Events.SwatchColorClicked
 
 import scala.swing.Reactor
 

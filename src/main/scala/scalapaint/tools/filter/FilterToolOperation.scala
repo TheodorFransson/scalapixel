@@ -1,11 +1,11 @@
 package scalapaint.tools.filter
 
+import scalapaint.image.ImageProcessingManager
 import scalapaint.image.filters.{GaussFilter, ImageFilter}
-import scalapaint.model.Model
 import scalapaint.tools.ToolOperation
-import scalapaint.view.CanvasPanel.Events.MousePressedCanvas
+import scalapaint.views.CanvasPanel.Events.MousePressedCanvas
 
-class FilterToolOperation(model: Model) extends ToolOperation(model):
+class FilterToolOperation(model: ImageProcessingManager) extends ToolOperation(model):
 	var filter: ImageFilter = new GaussFilter()
 
 	def applyFilter(): Unit = model.enqueueApply(filter)

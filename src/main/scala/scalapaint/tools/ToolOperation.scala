@@ -1,11 +1,11 @@
 package scalapaint.tools
 
-import scalapaint.model.Model
-import scalapaint.view.CanvasPanel.Events.*
+import scalapaint.image.ImageProcessingManager
+import scalapaint.views.CanvasPanel.Events.*
 
 import java.awt.event.MouseEvent
 
-class ToolOperation(model: Model):
+class ToolOperation(model: ImageProcessingManager):
   private var lockedButton: Option[Int] = Option.empty
 
   def mousePressed(event: MousePressedCanvas): Unit = ()

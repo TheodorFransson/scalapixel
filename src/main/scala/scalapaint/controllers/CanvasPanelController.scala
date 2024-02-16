@@ -1,17 +1,17 @@
-package scalapaint.controller
+package scalapaint.controllers
 
-import scalapaint.model.Model
-import scalapaint.model.Model.Events.*
-import scalapaint.view.{CanvasPanel, NavigablePanel}
-import scalapaint.view.CanvasPanel.Events.*
-import scalapaint.view.NavigablePanel.Events.*
+import scalapaint.image.ImageProcessingManager
+import ImageProcessingManager.Events.*
+import scalapaint.views.{CanvasPanel, NavigablePanel}
+import scalapaint.views.CanvasPanel.Events.*
+import scalapaint.views.NavigablePanel.Events.*
 
 import java.awt.event.*
 import java.util.TimerTask
 import scala.swing.*
 import scala.swing.event.{Key, KeyPressed, MouseEvent, MouseWheelMoved, UIElementResized}
 
-class CanvasPanelController(model: Model, canvasPanel: CanvasPanel, navigablePanel: NavigablePanel) extends Reactor:
+class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPanel, navigablePanel: NavigablePanel) extends Reactor:
     private var mouseOrigin = new Point(0, 0)
     private var dragging = false
 

@@ -1,12 +1,11 @@
-package scalapaint.controller
+package scalapaint.controllers
 
 import org.kordamp.ikonli.*
 import org.kordamp.ikonli.swing.FontIcon
 import scalapaint.EditorWindow
-import scalapaint.image.EditorImage
-import scalapaint.model.Model
-import scalapaint.view.TopMenu
-import scalapaint.view.TopMenu.Events.*
+import scalapaint.image.{EditorImage, ImageProcessingManager}
+import scalapaint.views.TopMenu
+import scalapaint.views.TopMenu.Events.*
 
 import java.awt.{Color, Toolkit}
 import java.io.File
@@ -18,7 +17,7 @@ import scala.swing.*
 import scala.swing.Swing.*
 import scala.swing.event.*
 
-class TopMenuController(model: Model, view: TopMenu) extends Reactor:
+class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Reactor:
 	private var openFile: Option[File] = None
 
 	listenTo(view)

@@ -1,18 +1,18 @@
-package scalapaint.model
+package scalapaint.image
 
 import scalapaint.history.{HistoryEntry, HistoryManager}
+import scalapaint.image.ImageProcessingManager.Events.*
 import scalapaint.image.{EditorImage, ImageProcessor}
-import scalapaint.model.Model.Events.*
 
 import java.awt.Graphics2D
 import javax.swing.SwingUtilities
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.swing.{Dimension, Publisher, Rectangle}
 import scala.swing.event.Event
+import scala.swing.{Dimension, Publisher, Rectangle}
 
-class Model extends Publisher:
+class ImageProcessingManager extends Publisher:
     private var image: EditorImage = EditorImage.ofDim(100, 100)
     private val processQueue: mutable.Queue[() => Future[Unit]] = mutable.Queue()
     private val history: HistoryManager = new HistoryManager()
@@ -74,7 +74,7 @@ class Model extends Publisher:
                 processNext()
             }
 
-object Model:
+object ImageProcessingManager:
 
   object Events:
     case class ImageUpdated(image: EditorImage) extends Event

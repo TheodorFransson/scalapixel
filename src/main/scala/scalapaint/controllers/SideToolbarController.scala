@@ -1,18 +1,18 @@
-package scalapaint.controller
+package scalapaint.controllers
 
 import scalapaint.EditorWindow
-import scalapaint.model.Model
+import scalapaint.image.ImageProcessingManager
 import scalapaint.tools.fill.{FillPanel, FillTool, FillToolOperation}
 import scalapaint.tools.pencil.{PencilPanel, PencilTool, PencilToolOperation}
 import scalapaint.tools.Tool
 import scalapaint.tools.filter.{FilterPanel, FilterTool, FilterToolOperation}
-import scalapaint.view.CanvasPanel.Events.{MouseDraggedCanvas, MousePressedCanvas, MouseReleasedCanvas}
-import scalapaint.view.{ParameterPanel, SideToolbar}
-import scalapaint.view.SideToolbar.Events.*
+import scalapaint.views.CanvasPanel.Events.{MouseDraggedCanvas, MousePressedCanvas, MouseReleasedCanvas}
+import scalapaint.views.{ParameterPanel, SideToolbar}
+import scalapaint.views.SideToolbar.Events.*
 
 import scala.swing.{Publisher, Reactor}
 
-class SideToolbarController(model: Model, sideToolbar: SideToolbar, parameterPanel: ParameterPanel) extends Reactor:
+class SideToolbarController(model: ImageProcessingManager, sideToolbar: SideToolbar, parameterPanel: ParameterPanel) extends Reactor:
     private var activeTool: Option[Tool] = None
 
     private val pencilTool = new PencilTool(new PencilToolOperation(model), new PencilPanel())

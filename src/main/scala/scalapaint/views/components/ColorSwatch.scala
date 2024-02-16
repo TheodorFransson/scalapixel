@@ -1,7 +1,7 @@
-package scalapaint.view.components
+package scalapaint.views.components
 
 import scalapaint.EventBinder
-import scalapaint.view.components.ColorSwatch.Events.SwatchColorClicked
+import scalapaint.views.components.ColorSwatch.Events.SwatchColorClicked
 
 import java.awt.{Component, GridBagConstraints, GridBagLayout}
 import javax.swing.JPanel
