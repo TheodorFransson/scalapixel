@@ -14,7 +14,7 @@ class FilterPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     import FilterPanel.Events.* 
 
     val filters: Array[ImageFilter] = Array(
-        new BlueFilter(),
+        new TintFilter(),
         new CryptographyFilter(), 
         new GaussFilter(), 
         new GrayscaleFilter(), 
