@@ -26,10 +26,10 @@ object EditorWindow extends Frame:
 	val colorPanel = new ColorPanel()
 	val colorPanelController = new ColorPanelController(colorPanel)
 
-	val parameterPanel = new ParameterPanel()
+	val toolTabPanel = new ToolTabPanel()
 
 	val sideToolbar = new SideToolbar()
-	val sideToolbarController = new SideToolbarController(model, sideToolbar, parameterPanel)
+	val sideToolbarController = new SideToolbarController(model, sideToolbar, toolTabPanel)
 
 	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
 	val navigablePanel = new NavigablePanel(canvasPanel, 100, 2, 1, 30)
@@ -44,11 +44,11 @@ object EditorWindow extends Frame:
 		val sideBar = new BoxPanel(Orientation.Vertical):
 			contents += sideToolbar
 
-		val lowerPanel = new TabbedPane:
+		val colorTabPanel = new TabbedPane:
 			pages += new TabbedPane.Page("Color", colorPanel)
 			peer.putClientProperty("JTabbedPane.tabType", "card")
 
-		val splitPane = new SplitPane(Orientation.Horizontal, parameterPanel, lowerPanel):
+		val splitPane = new SplitPane(Orientation.Horizontal, toolTabPanel, colorTabPanel):
 			dividerLocation = 200
 			border = EmptyBorder(5, 5, 5, 5)
 

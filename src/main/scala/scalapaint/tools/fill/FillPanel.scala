@@ -1,12 +1,13 @@
 package scalapaint.tools.fill
 
 import scalapaint.EventBinder
+import scalapaint.tools.{ParameterGridPanel, ToolPanel}
 
 import scala.swing.Swing.{HGlue, VGlue, VStrut}
 import scala.swing.event.Event
 import scala.swing.{BoxPanel, FlowPanel, Label, Orientation, Slider, TextField}
 
-class FillPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
+class FillPanel extends ToolPanel("Bucket fill") with EventBinder:
   import FillPanel.Events.*
 
   private val toleranceSlider = new Slider:
@@ -15,13 +16,13 @@ class FillPanel extends BoxPanel(Orientation.Vertical) with EventBinder:
     value = 0
     majorTickSpacing = 50
 
-  private val tolerancePanel = new BoxPanel(Orientation.Horizontal):
-    contents += new Label("Tolerance")
-    contents += HGlue
-    contents += toleranceSlider
+  private val components = Seq(
+    ("Tolerance", toleranceSlider)
+  )
 
-  contents += VStrut(10)
-  contents += tolerancePanel
+  private val gridPanel = new ParameterGridPanel(components)
+
+  contents += gridPanel
   contents += VGlue
 
   bindToValueChangeEvent(toleranceSlider, SliderValueChanged.apply, () => toleranceSlider.value)

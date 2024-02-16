@@ -8,12 +8,12 @@ import scalapaint.tools.Tool
 import scalapaint.tools.filter.{FilterPanel, FilterTool, FilterToolOperation}
 import scalapaint.tools.picker.{PickerTool, PickerToolOperation, PickerPanel}
 import scalapaint.views.CanvasPanel.Events.{MouseDraggedCanvas, MousePressedCanvas, MouseReleasedCanvas}
-import scalapaint.views.{ParameterPanel, SideToolbar}
+import scalapaint.views.{ToolTabPanel, SideToolbar}
 import scalapaint.views.SideToolbar.Events.*
 
 import scala.swing.{Publisher, Reactor}
 
-class SideToolbarController(model: ImageProcessingManager, sideToolbar: SideToolbar, parameterPanel: ParameterPanel) extends Reactor:
+class SideToolbarController(model: ImageProcessingManager, sideToolbar: SideToolbar, toolTabPanel: ToolTabPanel) extends Reactor:
     private var activeTool: Option[Tool] = None
 
     private val pencilTool = new PencilTool(new PencilToolOperation(model), new PencilPanel())
@@ -24,19 +24,15 @@ class SideToolbarController(model: ImageProcessingManager, sideToolbar: SideTool
     listenTo(sideToolbar)
 
     reactions += {
-        case PencilToolActivated() =>
-            parameterPanel.replaceToolPanel(pencilTool.getPanel())
-            activeTool = Some(pencilTool)
-        case FloodfillToolActivated() =>
-            parameterPanel.replaceToolPanel(floodfillTool.getPanel())
-            activeTool = Some(floodfillTool)
-        case PickerToolActivated() =>
-            parameterPanel.replaceToolPanel(pickerTool.getPanel())
-            activeTool = Some(pickerTool)
-        case FilterToolActivated() =>
-            parameterPanel.replaceToolPanel(filterTool.getPanel())
-            activeTool = Some(filterTool)
+        case PencilToolActivated() => switchTool(pencilTool)
+        case FloodfillToolActivated() => switchTool(floodfillTool)
+        case PickerToolActivated() => switchTool(pickerTool)
+        case FilterToolActivated() => switchTool(filterTool)
         case event: MousePressedCanvas => activeTool.foreach(t => t.getOperation().mousePressed(event))
         case event: MouseDraggedCanvas => activeTool.foreach(t => t.getOperation().mouseDragged(event))
         case event: MouseReleasedCanvas => activeTool.foreach(t => t.getOperation().mouseReleased(event))
     }
+
+    private def switchTool(tool: Tool): Unit =
+        toolTabPanel.replaceToolPanel(tool.getPanel())
+        activeTool = Some(tool)
