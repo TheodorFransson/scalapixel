@@ -27,42 +27,34 @@ class SideToolbar extends ToolBar with EventBinder:
 	private val selectedButtonColor = Color(0xc90c0c)
 
 	private val icons = Vector(
-		FontIcon.of(fluentui.FluentUiFilledMZ.SEARCH_24, iconSize, buttonColor),
 		FontIcon.of(fluentui.FluentUiFilledAL.COLOR_LINE_24, iconSize, buttonColor),
 		FontIcon.of(fluentui.FluentUiFilledMZ.PAINT_BUCKET_24, iconSize, buttonColor),
 		FontIcon.of(fluentui.FluentUiFilledAL.BLUR_24, iconSize, buttonColor),
 	)
 
-	private val zoom = new ToggleButton:
-		icon = icons(0)
-		tooltip = "Zoom"
-
 	private val pen = new ToggleButton:
-		icon = icons(1)
+		icon = icons(0)
 		tooltip = "Pencil"
 
 	private val fill = new ToggleButton:
-		icon = icons(2)
+		icon = icons(1)
 		tooltip = "Bucket fill"
 
 	private val filter = new ToggleButton:
-		icon = icons(3)
+		icon = icons(2)
 		tooltip = "Filter"
 
-
-	bindToEvent(zoom, ZoomToolActivated(), () => toggleSelection(zoom))
 	bindToEvent(pen, PencilToolActivated(), () => toggleSelection(pen))
 	bindToEvent(fill, FloodfillToolActivated(), () => toggleSelection(fill))
 	bindToEvent(filter, FilterToolActivated(), () => toggleSelection(filter))
 
-	private val toggleButtons = Seq(zoom, pen, fill, filter)
-
+	private val toggleButtons = Seq(pen, fill, filter)
 	toggleButtons.foreach(btn => setupButton(btn))
 
 	contents ++= toggleButtons
 
 	def selectDefaultTool(): Unit =
-		pen.publish(new SelectionChanged(pen))
+		pen.publish(SelectionChanged(pen))
 
 	private def disableAll(): Unit =
 		for i <- toggleButtons.indices do
