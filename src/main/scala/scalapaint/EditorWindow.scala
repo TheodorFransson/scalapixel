@@ -13,6 +13,8 @@ import controller.*
 import scalapaint.tools.pencil.PencilPanel
 import scalapaint.view.components.ColorButton
 
+import scala.swing.Swing.EmptyBorder
+
 object EditorWindow extends Frame:
 	title = "ScalaPaint"
 	resizable = true
@@ -49,6 +51,7 @@ object EditorWindow extends Frame:
 
 		val splitPane = new SplitPane(Orientation.Horizontal, parameterPanel, lowerPanel):
 			dividerLocation = 200
+			border = EmptyBorder(5, 5, 5, 5)
 
 		val borderPanel = new BorderPanel:
 			layout(sideBar) = West

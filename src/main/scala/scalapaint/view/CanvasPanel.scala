@@ -42,10 +42,16 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 		resetViewTransform()
 		repaint()
 
-	def resetViewTransform(): Unit = renderImage.reset(preferredSize)
+	def resetViewTransform(): Unit =
+		renderImage.reset(preferredSize)
+		repaint()
 
 	def zoom(factor: Double, target: Point = new Point(dim.width / 2, dim.height / 2)): Unit =
 		renderImage.zoom(factor, target, dim)
+		repaint()
+
+	def zoomAbsolute(zoom: Int): Unit =
+		renderImage.zoomAbsolute(zoom, dim)
 		repaint()
 
 	def pan(dx: Int, dy: Int): Unit =
@@ -53,6 +59,8 @@ class CanvasPanel(initSize: Dimension, val padding: Int) extends Panel:
 		repaint()
 
 	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dim, renderImage.getBounds(dim), renderImage.getPosition)
+
+	def getZoom(): Int = (renderImage.getZoomFactor * 10).toInt
 
 	listenTo(mouse.clicks, mouse.wheel, mouse.moves, keys)
 	reactions += {

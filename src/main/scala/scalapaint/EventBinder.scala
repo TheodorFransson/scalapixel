@@ -18,12 +18,13 @@ trait EventBinder:
         publish(event)
     }
 
-  def bindToValueChangeEvent[T](component: Publisher, event: T => Event, getValue: () => T, customAction: () => Unit = () => {}): Unit = 
+  def bindToValueChangeEvent[T](component: Publisher, event: T => Event, getValue: () => T, customAction: () => Unit = () => {}, guard: () => Boolean = () => true): Unit =
     listenTo(component)
     component.reactions += {
-      case ValueChanged(_) | ButtonClicked(_) | SelectionChanged(_) => 
-        customAction()
-        publish(event(getValue()))
+      case ValueChanged(_) | ButtonClicked(_) | SelectionChanged(_) =>
+        if (guard()) then
+          customAction()
+          publish(event(getValue()))
     }
 
   def bindToSpinnerChangeEvent(spinner: javax.swing.JSpinner, event: Int => Event, getValue: () => Number): Unit =

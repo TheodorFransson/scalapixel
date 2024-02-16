@@ -23,12 +23,34 @@ class RenderImage(var editorImage: EditorImage):
     )
 
   def zoom(factor: Double, target: Point, reference: Dimension): Unit =
-    zoomFactor *= factor
+    val oldDimensions = new Dimension(scaledWidth, scaledHeight)
 
-    val direction = new Point(position.x - target.x, position.y - target.y)
-    val sign = if factor > 1 then 0.1 else -0.1
+    val change = if zoomFactor >= 3 then (factor - 1) * 5 else (factor - 1)
+    zoomFactor = math.min(math.max(zoomFactor + change, 0.2), 10)
 
-    pan((direction.x * sign).toInt, (direction.y * sign).toInt, reference)
+    val newDimensions = new Dimension(scaledWidth, scaledHeight)
+
+    val widthDifference = newDimensions.width - oldDimensions.width
+    val heightDifference = newDimensions.height - oldDimensions.height
+
+    val dx = ((target.x - position.x).toDouble / oldDimensions.width * widthDifference).toInt
+    val dy = ((target.y - position.y).toDouble / oldDimensions.height * heightDifference).toInt
+
+    pan(-dx, -dy, reference)
+
+  def zoomAbsolute(zoom: Int, reference: Dimension): Unit =
+    val oldDimensions = new Dimension(scaledWidth, scaledHeight)
+
+    zoomFactor = zoom.toDouble / 10
+
+    val newDimensions = new Dimension(scaledWidth, scaledHeight)
+
+    val direction = new Point(
+      (oldDimensions.width - newDimensions.width) / 2,
+      (oldDimensions.height - newDimensions.height) / 2
+    )
+
+    pan(direction.x, direction.y, reference)
 
   def pan(dx: Int, dy: Int, reference: Dimension): Unit =
     position.translate(dx, dy)
@@ -44,6 +66,8 @@ class RenderImage(var editorImage: EditorImage):
     new Rectangle(minX, minY, maxX, maxY)
 
   def getPosition: Point = position
+
+  def getZoomFactor: Double = zoomFactor
 
   def render(g: Graphics2D, reference: Dimension): Unit =
     g.drawImage(editorImage.buffer, position.x, position.y, scaledWidth, scaledHeight, null)
