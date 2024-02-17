@@ -2,6 +2,7 @@ package scalapaint.controllers
 
 import scalapaint.image.ImageProcessingManager
 import ImageProcessingManager.Events.*
+import scalapaint.EditorWindow
 import scalapaint.views.{CanvasPanel, NavigablePanel}
 import scalapaint.views.CanvasPanel.Events.*
 import scalapaint.views.NavigablePanel.Events.*
@@ -19,9 +20,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
     private var panTask: Option[TimerTask] = None
     private val pressedKeys = scala.collection.mutable.Set[event.Key.Value]()
 
-    listenTo(canvasPanel)
-    listenTo(navigablePanel)
-    listenTo(model)
+    listenTo(model, canvasPanel, navigablePanel)
 
     reactions += {
         case ImageUpdated(image) => canvasPanel.updateImage(image)
@@ -29,8 +28,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
           canvasPanel.setNewImage(image)
           reset()
         case UIElementResized(_) =>
-          val newSize = canvasPanel.peer.getSize()
-          canvasPanel.updateSize(newSize)
+          canvasPanel.updateSize()
           updateScrollBars()
         case ZoomEvent(event) => zoom(event)
         case MousePressedCanvas(event, point) =>

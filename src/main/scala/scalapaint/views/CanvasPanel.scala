@@ -8,29 +8,21 @@ import scala.swing.{Dimension, Panel, Point, Rectangle}
 import scala.swing.Swing.*
 import scala.swing.event.{Event, KeyPressed, KeyReleased, MouseDragged, MouseEvent, MousePressed, MouseReleased, MouseWheelMoved}
 
-class CanvasPanel(initSize: Dimension) extends Panel:
+class CanvasPanel extends MainPanel:
 	import CanvasPanel.Events.*
 
-	private var dim = initSize
+	private var dimension = new Dimension(400, 400)
 	private val renderImage: RenderImage = new RenderImage(EditorImage.ofDim(400, 400))
 
-	updateSize(initSize)
-	background = Colors.backgroundColorAtDepth(0)
-	focusable = true
-
-	def updateSize(size: Dimension): Unit =
-		dim = new Dimension(size.width, size.height)
-		preferredSize = new Dimension(dim.width, dim.height)
-
-		revalidate()
-		EditorWindow.pack()
-		repaint()
+	def updateSize(size: Dimension = peer.getSize()): Unit =
+		dimension = size
+		preferredSize = dimension
 
 	override def paintComponent(g: Graphics2D): Unit =
 		super.paintComponent(g)
-		g.setClip(0, 0, dim.width, dim.height)
+		g.setClip(0, 0, dimension.width, dimension.height)
 
-		renderImage.render(g, dim)
+		renderImage.render(g, dimension)
 
 	def updateImage(editorImage: EditorImage): Unit =
 		renderImage.updateImage(editorImage)
@@ -40,25 +32,24 @@ class CanvasPanel(initSize: Dimension) extends Panel:
 	def setNewImage(editorImage: EditorImage): Unit =
 		renderImage.updateImage(editorImage)
 		resetViewTransform()
-		repaint()
 
 	def resetViewTransform(): Unit =
-		renderImage.reset(preferredSize)
+		renderImage.reset(dimension)
 		repaint()
 
-	def zoom(factor: Double, target: Point = new Point(dim.width / 2, dim.height / 2)): Unit =
-		renderImage.zoom(factor, target, dim)
+	def zoom(factor: Double, target: Point = new Point(dimension.width / 2, dimension.height / 2)): Unit =
+		renderImage.zoom(factor, target, dimension)
 		repaint()
 
 	def zoomAbsolute(zoom: Int): Unit =
-		renderImage.zoomAbsolute(zoom, dim)
+		renderImage.zoomAbsolute(zoom, dimension)
 		repaint()
 
 	def pan(dx: Int, dy: Int): Unit =
-		renderImage.pan(dx, dy, dim)
+		renderImage.pan(dx, dy, dimension)
 		repaint()
 
-	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dim, renderImage.getBounds(dim), renderImage.getPosition)
+	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dimension, renderImage.getBounds(dimension), renderImage.getPosition)
 
 	def getZoomFactor(): Int = (renderImage.getZoomFactor * 10).toInt
 

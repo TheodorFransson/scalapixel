@@ -16,7 +16,7 @@ import BorderPanel.Position.*
 import scala.swing.Swing.{EmptyBorder, HGlue, HStrut}
 import scala.swing.event.{AdjustingEvent, ButtonClicked, EditDone, Event, ValueChanged}
 
-class NavigablePanel(innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoomIncrement: Int, fasterZoomThreshold: Int) extends BorderPanel with EventBinder:
+class NavigablePanel(var innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoomIncrement: Int, fasterZoomThreshold: Int) extends BorderPanel with EventBinder:
   import NavigablePanel.Events.*
 
   private var adjustingProgrammatically = false
@@ -64,24 +64,6 @@ class NavigablePanel(innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoom
   layout(borderPanel) = South
   layout(verticalScrollBar) = East
 
-  def setHorizontalScrollbarParameters(value: Int, size: Int, min: Int, max: Int): Unit =
-    setScrollbarParameters(horizontalScrollBar, value, size, min, max)
-
-  def setVerticalScrollbarParameters(value: Int, size: Int, min: Int, max: Int): Unit =
-    setScrollbarParameters(verticalScrollBar, value, size, min, max)
-
-  def setZoom(value: Int): Unit =
-    adjustingProgrammatically = true
-    zoomSlider.value = value
-    zoomTextField.text = s"${zoomSlider.value * 10}%"
-    adjustingProgrammatically = false
-
-  private def setScrollbarParameters(scrollBar: CanvasPanelScrollBar, value: Int, size: Int, min: Int, max: Int): Unit =
-    adjustingProgrammatically = true
-    scrollBar.peer.setValues(value, size, min, max)
-    adjustingProgrammatically = false
-    scrollBar.lastValue = value
-
   bindToValueChangeEvent(horizontalScrollBar, (delta: Int) => HorizontalScroll(delta))
   bindToValueChangeEvent(verticalScrollBar, (delta: Int) => VerticalScroll(delta))
   bindToValueChangeEvent(zoomSlider, Zoom.apply, () => {
@@ -101,6 +83,37 @@ class NavigablePanel(innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoom
     case EditDone(_) => handleZoomTextFieldInput()
   }
 
+  def setHorizontalScrollbarParameters(value: Int, size: Int, min: Int, max: Int): Unit =
+    setScrollbarParameters(horizontalScrollBar, value, size, min, max)
+
+  def setVerticalScrollbarParameters(value: Int, size: Int, min: Int, max: Int): Unit =
+    setScrollbarParameters(verticalScrollBar, value, size, min, max)
+
+  def setZoom(value: Int): Unit =
+    adjustingProgrammatically = true
+    zoomSlider.value = value
+    zoomTextField.text = s"${zoomSlider.value * 10}%"
+    adjustingProgrammatically = false
+
+  def navigationEnabled(enabled: Boolean): Unit =
+    verticalScrollBar.enabled = enabled
+    horizontalScrollBar.enabled = enabled
+    zoomSlider.enabled = enabled
+    zoomInButton.enabled = enabled
+    zoomOutButton.enabled = enabled
+    zoomTextField.enabled = enabled
+
+  def setInnerPanel(panel: Panel): Unit =
+    innerPanel = panel
+    layout(panel) = Center
+
+  private def setScrollbarParameters(scrollBar: CanvasPanelScrollBar, value: Int, size: Int, min: Int, max: Int): Unit =
+    adjustingProgrammatically = true
+    scrollBar.peer.setValues(value, size, min, max)
+    adjustingProgrammatically = false
+    scrollBar.lastValue = value
+
+
   private def adjustZoom(increase: Boolean): Unit =
     val step = if (zoomSlider.value >= fasterZoomThreshold) 5 else 1
     val newValue = if (increase) (zoomSlider.value + step * zoomIncrement).min(maximumZoom)
@@ -116,7 +129,7 @@ class NavigablePanel(innerPanel: Panel, maximumZoom: Int, minimumZoom: Int, zoom
     zoomSlider.value = sliderValue
     zoomTextField.text = s"${sliderValue * 10}%"
 
-  def bindToValueChangeEvent[T](component: CanvasPanelScrollBar, event: Int => Event): Unit =
+  private def bindToValueChangeEvent[T](component: CanvasPanelScrollBar, event: Int => Event): Unit =
     listenTo(component)
     component.reactions += {
       case ValueChanged(_) if !adjustingProgrammatically =>

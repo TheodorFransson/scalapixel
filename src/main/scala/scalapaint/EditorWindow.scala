@@ -17,6 +17,8 @@ import scala.swing.Swing.EmptyBorder
 object EditorWindow extends Frame:
 	title = "ScalaPaint"
 	resizable = true
+
+	preferredSize = new Dimension(1600, 900)
 	
 	val model = new ImageProcessingManager()
 
@@ -31,12 +33,28 @@ object EditorWindow extends Frame:
 	val sideToolbar = new SideToolbar()
 	val sideToolbarController = new SideToolbarController(model, sideToolbar, toolTabPanel)
 
-	val canvasPanel = new CanvasPanel(new Dimension(1400, 800))
-	val navigablePanel = new NavigablePanel(canvasPanel, 100, 2, 1, 30)
+	val canvasPanel = new CanvasPanel()
+	val startPanel = new StartPanel()
+	val navigablePanel = new NavigablePanel(startPanel, 100, 2, 1, 30)
+
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel, navigablePanel)
+	val startPanelController = new StartPanelController(model, startPanel)
 
 	initGui()
 	setup()
+
+	def showStartPanel(): Unit =
+		navigablePanel.setInnerPanel(startPanel)
+		navigablePanel.navigationEnabled(false)
+
+	def showCanvasPanel(): Unit =
+		canvasPanel.updateSize(startPanel.size)
+
+		navigablePanel.setInnerPanel(canvasPanel)
+		navigablePanel.navigationEnabled(true)
+
+		pack()
+		repaint()
 
 	private def initGui(): Unit =
 		menuBar = topMenu
@@ -67,12 +85,12 @@ object EditorWindow extends Frame:
 		centerOnScreen()
 
 		peer.toFront()
-		canvasPanel.requestFocus()
+		startPanel.requestFocus()
 		sideToolbar.selectDefaultTool()
 
 		sideToolbarController.listenTo(canvasPanel)
 
-		model.setNewImage(EditorImage.white(new Dimension(400, 400)))
+		showStartPanel()
 
 	override def closeOperation(): Unit =
 		canvasPanelController.dispose()
