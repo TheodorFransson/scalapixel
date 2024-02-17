@@ -6,7 +6,7 @@ import scalapaint.image.ImageProcessor
 
 import scala.swing.Rectangle
 
-abstract case class ImageFilter(val name: String) extends ImageProcessor:
+abstract case class ImageFilter(name: String, description: String) extends ImageProcessor:
     protected var option: Option[Double] = None
 
     def process(img: EditorImage): HistoryEntry =

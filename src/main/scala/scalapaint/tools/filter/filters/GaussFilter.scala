@@ -3,7 +3,7 @@ package scalapaint.image.filters
 import scalapaint.image.EditorImage
 import java.awt.Color
 
-class GaussFilter extends ImageFilter("Blur"):
+class GaussFilter extends ImageFilter("Blur", "Blurs the image using Gaussian blur."):
     def applyFilter(image: EditorImage): Unit =
         val middle = if option.isDefined then option.get.toInt else 4
 

@@ -3,7 +3,7 @@ package scalapaint.image.filters
 import scalapaint.image.EditorImage
 import java.awt.Color
 
-class InvertFilter extends ImageFilter("Invert"):
+class InvertFilter extends ImageFilter("Invert", "Inverts the color value for each pixel."):
     def applyFilter(image: EditorImage): Unit =
         for i <- 0 until image.height do
             for j <- 0 until image.width do

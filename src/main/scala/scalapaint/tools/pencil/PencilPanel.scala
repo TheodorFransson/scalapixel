@@ -1,10 +1,11 @@
 package scalapaint.tools.pencil
 
-import scalapaint.tools.{ParameterGridPanel, ToolPanel}
+import scalapaint.tools.ToolPanel
+import scalapaint.tools.components.{ParameterGridPanel, TooltipComboBox}
 import scalapaint.{Colors, EventBinder}
 
 import java.awt.{BasicStroke, Color, GridBagConstraints, GridBagLayout}
-import javax.swing.{JPanel, JSpinner, SpinnerNumberModel}
+import javax.swing.{JPanel, JSpinner, JToolTip, SpinnerNumberModel}
 import scala.swing.*
 import scala.swing.BorderPanel.Position.*
 import scala.swing.Swing.*
@@ -23,16 +24,28 @@ class PencilPanel extends ToolPanel("Pencil") with EventBinder:
         "Square" -> BasicStroke.CAP_SQUARE
     )
 
+    private val capTooltips = Seq(
+        "<html>Creates a rounded end<br>to lines and paths.</html>",
+        "<html>Ends the line or path exactly<br>at its endpoint, with no extension.</html>",
+        "<html>Extends the line or path beyond<br>the endpoint by half the pen's width,<br>with a squared-off end.</html>"
+    )
+
     private val joins = Map(
         "Round" -> BasicStroke.JOIN_ROUND,
         "Bevel" -> BasicStroke.JOIN_BEVEL,
         "Miter" -> BasicStroke.JOIN_MITER
     )
 
-    private val capComboBox = new ComboBox[String](caps.keys.toList):
+    private val joinTooltips = Seq(
+        "<html>Creates a rounded corner<br>where lines or path segments meet.</html>",
+        "<html>Produces a flattened corner by connecting<br>the outer corners of the stroke.</html>",
+        "<html>Extends the outer edges of the strokes<br>until they meet at an angle,<br>creating a sharp corner.</html>"
+    )
+
+    private val capComboBox = new TooltipComboBox[String](caps.keys.toList, capTooltips):
         selection.item = caps.keys.head
 
-    private val joinComboBox = new ComboBox[String](joins.keys.toList):
+    private val joinComboBox = new TooltipComboBox[String](joins.keys.toList, joinTooltips):
         selection.item = joins.keys.head
 
     val components = Seq(

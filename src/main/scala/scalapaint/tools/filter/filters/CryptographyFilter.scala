@@ -3,7 +3,7 @@ package scalapaint.image.filters
 import scalapaint.image.EditorImage
 import java.awt.Color
 
-class CryptographyFilter extends ImageFilter("Encrypt"):
+class CryptographyFilter extends ImageFilter("Encrypt", "<html>Encrypts/decrypts the image using<br> an integer key.</html>"):
     def applyFilter(image: EditorImage): Unit =
         import scala.util.Random
 

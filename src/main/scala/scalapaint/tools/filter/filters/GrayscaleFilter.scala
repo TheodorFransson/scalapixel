@@ -4,7 +4,7 @@ import scalapaint.image.EditorImage
 import scalapaint.image.filters.ImageFilter
 import java.awt.Color
 
-class GrayscaleFilter extends ImageFilter("Grayscale"):
+class GrayscaleFilter extends ImageFilter("Grayscale", "Converts color values into grayscale."):
     def applyFilter(image: EditorImage): Unit =
         for i <- 0 until image.height do
             for j <- 0 until image.width do
