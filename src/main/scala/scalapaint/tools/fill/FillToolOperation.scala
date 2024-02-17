@@ -17,7 +17,7 @@ case class FillToolOperation(model: ImageProcessingManager) extends ToolOperatio
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()
 
-  private var tolerance = 150
+  private var tolerance = 0
 
   def setTolerance(value: Int): Unit = tolerance = value
 
