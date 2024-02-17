@@ -79,12 +79,12 @@ class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Re
 				text = "Height: "
 			contents += heightField
 
-		val values = Seq("1920", "1080")
-		val result = showConfirmation(view, panel.peer, "New File", Options.OkCancel)
+		val result = showConfirmation(EditorWindow, panel.peer, "New File", Options.OkCancel)
 
 		val width = widthField.peer.getText().toIntOption
 		val height = heightField.peer.getText().toIntOption
 
 		if result == Result.Ok then
 			val newImage = EditorImage.white(new Dimension(width.getOrElse(1400), height.getOrElse(800)))
+			openFile = None
 			model.setNewImage(newImage)
