@@ -1,8 +1,8 @@
-package scalapaint.tools
+package scalapaint.tools.components
 
 import java.awt.{GridBagConstraints, GridBagLayout}
 import javax.swing.JPanel
-import scala.swing.{Alignment, Component, GridPanel, Insets, Label}
+import scala.swing.*
 
 class ParameterGridPanel(components: Seq[(String, Component)]) extends GridPanel(1, 2):
 	peer.setLayout(new GridBagLayout())
