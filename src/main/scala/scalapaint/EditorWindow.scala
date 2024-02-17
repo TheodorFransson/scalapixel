@@ -31,7 +31,7 @@ object EditorWindow extends Frame:
 	val sideToolbar = new SideToolbar()
 	val sideToolbarController = new SideToolbarController(model, sideToolbar, toolTabPanel)
 
-	val canvasPanel = new CanvasPanel(new Dimension(1400, 800), 40)
+	val canvasPanel = new CanvasPanel(new Dimension(1400, 800))
 	val navigablePanel = new NavigablePanel(canvasPanel, 100, 2, 1, 30)
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel, navigablePanel)
 
@@ -51,6 +51,7 @@ object EditorWindow extends Frame:
 		val splitPane = new SplitPane(Orientation.Horizontal, toolTabPanel, colorTabPanel):
 			dividerLocation = 200
 			border = EmptyBorder(5, 5, 5, 5)
+			preferredSize = new Dimension(200, preferredSize.height)
 
 		val borderPanel = new BorderPanel:
 			layout(sideBar) = West
