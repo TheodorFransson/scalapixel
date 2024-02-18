@@ -1,4 +1,4 @@
-# Scala Pixel
+# ScalaPixel
 
 ### TODO
 1. Replace ImageFilter with new class
