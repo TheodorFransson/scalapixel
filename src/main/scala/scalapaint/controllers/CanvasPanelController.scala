@@ -28,7 +28,6 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
           canvasPanel.setNewImage(image)
           reset()
         case UIElementResized(_) =>
-          canvasPanel.updateSize()
           updateScrollBars()
         case ZoomEvent(event) => zoom(event)
         case MousePressedCanvas(event, point) =>

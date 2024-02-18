@@ -14,12 +14,8 @@ class CanvasPanel extends Panel:
 	background = Colors.backgroundColorAtDepth(0)
 	focusable = true
 
-	private var dimension = new Dimension(400, 400)
+	private def dimension = size
 	private val renderImage: RenderImage = new RenderImage(EditorImage.ofDim(400, 400))
-
-	def updateSize(size: Dimension = peer.getSize()): Unit =
-		dimension = size
-		preferredSize = dimension
 
 	override def paintComponent(g: Graphics2D): Unit =
 		super.paintComponent(g)

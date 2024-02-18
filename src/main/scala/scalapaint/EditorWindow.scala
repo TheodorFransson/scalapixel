@@ -48,10 +48,11 @@ object EditorWindow extends Frame:
 		navigablePanel.navigationEnabled(false)
 
 	def showCanvasPanel(): Unit =
-		canvasPanel.updateSize(startPanel.size)
-
 		navigablePanel.setInnerPanel(canvasPanel)
 		navigablePanel.navigationEnabled(true)
+
+		canvasPanel.preferredSize = startPanel.size
+		preferredSize = size
 
 		pack()
 		repaint()
