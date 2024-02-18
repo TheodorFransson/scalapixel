@@ -1,4 +1,5 @@
-ThisBuild/scalaVersion := "3.3.0"
+ThisBuild/scalaVersion := "3.3.1"
+ThisBuild/name := "ScalaPixel"
 
 scalacOptions := Seq("-unchecked", "-deprecation")
 
@@ -12,3 +13,11 @@ Compile/doc/javacOptions ++= Seq(
   "-charset",     "UTF-8", 
   "-docencoding", "UTF-8"
 )
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
+  case PathList("module-info.class") => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
