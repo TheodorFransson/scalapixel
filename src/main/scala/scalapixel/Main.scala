@@ -1,9 +1,9 @@
 package scalapixel
 
-import com.formdev.flatlaf.FlatDarkLaf
+import scalapixel.theme.DarkerLaf
 
 @main
 def run =
-    FlatDarkLaf.setup()
+    DarkerLaf.setup()
 
     EditorWindow
