@@ -37,8 +37,8 @@ class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Re
 		chooser.multiSelectionEnabled = false
 		if chooser.showOpenDialog(view) == FileChooser.Result.Approve then
 			openFile = Some(chooser.selectedFile)
-		val image = ImageIO.read(chooser.selectedFile)
-		if image != null then model.setNewImage(new EditorImage(image))
+			val image = ImageIO.read(chooser.selectedFile)
+			if image != null then model.setNewImage(new EditorImage(image))
 
 	private def saveAs(): Unit =
 		val chooser = new FileChooser()
@@ -62,7 +62,6 @@ class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Re
 		else
 			saveAs()
 
-	// TODO: Move the panel to a separate file.
 	def createNewImage(): Unit =
 		import Dialog.*
 		val widthField = new TextField():
