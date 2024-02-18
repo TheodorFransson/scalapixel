@@ -15,7 +15,6 @@ class StartPanel extends Panel:
 	background = Colors.backgroundColorAtDepth(0)
 	focusable = false
 
-	private val controlsImagePath = "./images/controls.png"
 	private var controlsImage: Option[Image] = Option.empty
 
 	private val text =
@@ -28,7 +27,7 @@ class StartPanel extends Panel:
 
 	loadImage()
 
-	override def paintComponent(g: Graphics2D): Unit = {
+	override def paintComponent(g: Graphics2D): Unit =
 		super.paintComponent(g)
 
 		val defaultButtonFont = UIManager.getFont("Button.font")
@@ -47,13 +46,17 @@ class StartPanel extends Panel:
 		val lineHeight = metrics.getHeight
 
 		val totalTextHeight = lineHeight * lines.length
-		val totalGraphicHeight = totalTextHeight + metrics.getDescent + controlsImage.get.getHeight(null)
+		val totalGraphicHeight = if controlsImage.isDefined then
+			totalTextHeight + metrics.getDescent + controlsImage.get.getHeight(null)
+		else
+			totalTextHeight
+
 		var textY = (size.height - totalGraphicHeight) / 2
 
 		for (line <- lines) {
 			val strWidth = metrics.stringWidth(line)
 			g.drawString(line, (size.width - strWidth) / 2, textY + metrics.getAscent)
-			textY += lineHeight // Move to the next line
+			textY += lineHeight
 		}
 
 		controlsImage.foreach(image => {
@@ -61,17 +64,11 @@ class StartPanel extends Panel:
 			val y = textY + metrics.getDescent
 			g.drawImage(image, x, y, null)
 		})
-	}
 
-	private def loadImage(): Unit = {
-		try {
-			controlsImage = Option(ImageIO.read(new File(controlsImagePath)))
-			val width = controlsImage.get.getWidth(null)
-			val height = controlsImage.get.getHeight(null)
-			controlsImage = Option(controlsImage.get.getScaledInstance(width / 4, height / 4, java.awt.Image.SCALE_SMOOTH))
-		} catch {
-			case e: Exception =>
-				e.printStackTrace()
-				controlsImage = Option.empty
-		}
-	}
+	private def loadImage(): Unit =
+		val imageUrl = getClass.getResource("/images/controls.png")
+		if (imageUrl != null) then
+			val image = ImageIO.read(imageUrl)
+			controlsImage = Some(image.getScaledInstance(image.getWidth / 4, image.getHeight / 4, java.awt.Image.SCALE_SMOOTH))
+		else
+			println("Resource /images/controls.png not found.")
