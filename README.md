@@ -36,7 +36,18 @@ java -jar ScalaPixel-<version>.jar
 
 Alternatively, if your system is configured to allow it, you may be able to run ScalaPixel by double-clicking the `ScalaPixel-<version>.jar` file. 
 
+#### Platform Compatability Note
+
+ScalaPixel has yet to be tested extensively on Mac and Linux, beware of minor visual and or functional issues.
+
 ## Roadmap
+
+- [ ] Extensive testing on all platforms
+- [ ] Layer capabilities
+- [ ] Select tools
+- [ ] Color history
+- [ ] Inspectable history
+- [ ] Greater image format support
 
 ## Acknowledgments
 
