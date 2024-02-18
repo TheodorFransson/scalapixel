@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 import scala.collection.mutable
 import scala.swing.Rectangle
 
-case class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with ImageProcessor:
+class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with ImageProcessor:
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()
