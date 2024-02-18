@@ -56,6 +56,8 @@ object EditorWindow extends Frame:
 		pack()
 		repaint()
 
+		canvasPanel.requestFocus()
+
 	private def initGui(): Unit =
 		menuBar = topMenu
 
@@ -85,7 +87,6 @@ object EditorWindow extends Frame:
 		centerOnScreen()
 
 		peer.toFront()
-		startPanel.requestFocus()
 		sideToolbar.selectDefaultTool()
 
 		sideToolbarController.listenTo(canvasPanel)

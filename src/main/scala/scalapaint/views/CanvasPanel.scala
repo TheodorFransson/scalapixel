@@ -8,8 +8,11 @@ import scala.swing.{Dimension, Panel, Point, Rectangle}
 import scala.swing.Swing.*
 import scala.swing.event.{Event, KeyPressed, KeyReleased, MouseDragged, MouseEvent, MousePressed, MouseReleased, MouseWheelMoved}
 
-class CanvasPanel extends MainPanel:
+class CanvasPanel extends Panel:
 	import CanvasPanel.Events.*
+
+	background = Colors.backgroundColorAtDepth(0)
+	focusable = true
 
 	private var dimension = new Dimension(400, 400)
 	private val renderImage: RenderImage = new RenderImage(EditorImage.ofDim(400, 400))
