@@ -7,7 +7,7 @@ import scalapixel.image.filters.ImageFilter
 import java.awt.Color
 
 class TintFilter extends ImageFilter("Tint", "Applies a tint based on the primary color."):
-    def applyFilter(image: EditorImage): Unit =
+    def apply(image: EditorImage): Unit =
         val alphaMask = 255 << 24
         val tintColor = Colors.getPrimaryColor()
 

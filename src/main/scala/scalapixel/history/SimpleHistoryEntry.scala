@@ -6,45 +6,42 @@ import java.awt.image.BufferedImage
 import scala.swing.{Point, Rectangle}
 
 class SimpleHistoryEntry extends HistoryEntry:
-  private type Snapshot = (BufferedImage, Point)
-  private var snapshot: Snapshot = null
-  private var result: Snapshot = null
+  private type State = (BufferedImage, Point)
+  private var initialState: State = null
+  private var finalState: State = null
 
   def undo(editorImage: EditorImage): Unit =
     if (!isCollapsable) then
-      val buffer = snapshot._1
-      val offset = snapshot._2
+      val buffer = initialState._1
+      val offset = initialState._2
       editorImage.graphics.drawImage(buffer, offset.x, offset.y, null)
 
   def redo(editorImage: EditorImage): Unit =
-    val buffer = result._1
-    val offset = result._2
+    val buffer = finalState._1
+    val offset = finalState._2
     editorImage.graphics.drawImage(buffer, offset.x, offset.y, null)
 
   def getAffectedArea: Rectangle =
     if (!isCollapsable) then
-      val buffer = snapshot._1
-      val offset = snapshot._2
+      val buffer = initialState._1
+      val offset = initialState._2
       new Rectangle(offset.x, offset.y, buffer.getWidth, buffer.getHeight)
     else
       new Rectangle(0,0,0,0)
 
-  def saveSnapshot(originalImage: EditorImage)(bounds: Rectangle = new Rectangle(0, 0, originalImage.width, originalImage.height)): Unit =
-    val savedImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_RGB)
-    val graphics = savedImage.createGraphics()
-    graphics.setClip(0, 0, bounds.width, bounds.height)
-
+  def saveInitialState(originalImage: EditorImage): Unit =
     originalImage.writeInteralBuffer()
 
-    graphics.drawImage(originalImage.getInternalBuffer(), -bounds.x, -bounds.y, null)
-    snapshot = (savedImage, bounds.getLocation)
+  def saveFinalState(originalImage: EditorImage)(bounds: Rectangle = new Rectangle(0, 0, originalImage.width, originalImage.height)): Unit =
+    initialState = captureState(originalImage.getInternalBuffer(), bounds)
+    finalState = captureState(originalImage.buffer, bounds)
 
     collapsable = false
 
-  def saveResult(originalImage: EditorImage)(bounds: Rectangle = new Rectangle(0, 0, originalImage.width, originalImage.height)): Unit =
-    val resultImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_RGB)
-    val graphics = resultImage.createGraphics()
+  private def captureState(image: BufferedImage, bounds: Rectangle): State =
+    val state = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_RGB)
+    val graphics = state.createGraphics()
     graphics.setClip(0, 0, bounds.width, bounds.height)
 
-    graphics.drawImage(originalImage.buffer, -bounds.x, -bounds.y, null)
-    result = (resultImage, bounds.getLocation)
+    graphics.drawImage(image, -bounds.x, -bounds.y, null)
+    (state, bounds.getLocation)

@@ -2,7 +2,7 @@ package scalapixel.tools.fill
 
 import scalapixel.{Colors, EditorWindow}
 import scalapixel.history.{HistoryEntry, SimpleHistoryEntry}
-import scalapixel.image.{EditorImage, ImageProcessingManager, ImageProcessor}
+import scalapixel.image.{EditorImage, ImageProcessingManager, ImageProcessor, SimpleImageProcessor}
 import scalapixel.tools.ToolOperation
 import scalapixel.views.CanvasPanel.Events.MousePressedCanvas
 
@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 import scala.collection.mutable
 import scala.swing.Rectangle
 
-class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with ImageProcessor:
+class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(model) with SimpleImageProcessor:
   private val mousePosition = new Point(0, 0)
   private val neighbours = Vector((-1, 0), (1, 0), (0, -1), (0, 1))
   private var targetColor: Color = Colors.getPrimaryColor()
@@ -30,14 +30,7 @@ class FillToolOperation(model: ImageProcessingManager) extends ToolOperation(mod
       mousePosition.setLocation(event.pointOnImage)
       model.enqueueApply(this)
 
-  override def process(image: EditorImage): HistoryEntry =
-    val historyEntry = new SimpleHistoryEntry()
-    historyEntry.saveSnapshot(image)(new Rectangle(0, 0, image.width, image.height))
-
-    floodFill(image)
-    
-    historyEntry.saveResult(image)(new Rectangle(0, 0, image.width, image.height))
-    historyEntry
+  override def apply(image: EditorImage): Unit = floodFill(image)
 
   private val queue = mutable.Queue[Point]()
 

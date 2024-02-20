@@ -4,7 +4,7 @@ import scalapixel.image.EditorImage
 import java.awt.Color
 
 class GaussFilter extends ImageFilter("Blur", "Blurs the image using Gaussian blur."):
-    def applyFilter(image: EditorImage): Unit =
+    def apply(image: EditorImage): Unit =
         val middle = if option.isDefined then option.get.toInt else 4
 
         val clone = image.createClone()

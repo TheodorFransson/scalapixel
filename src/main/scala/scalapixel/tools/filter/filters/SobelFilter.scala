@@ -4,7 +4,7 @@ import scalapixel.image.EditorImage
 import java.awt.Color
 
 class SobelFilter extends ImageFilter("Sobel", "<html>Emphasises edges in the image using<br> convolutions.</html>"):
-    def applyFilter(image: EditorImage): Unit =
+    def apply(image: EditorImage): Unit =
         val threshold = if option.isDefined then option.get.toInt else 122
 
         val intensity = computeIntensity(image)

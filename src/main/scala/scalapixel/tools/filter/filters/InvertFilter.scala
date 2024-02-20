@@ -4,7 +4,7 @@ import scalapixel.image.EditorImage
 import java.awt.Color
 
 class InvertFilter extends ImageFilter("Invert", "Inverts the color value for each pixel."):
-    def applyFilter(image: EditorImage): Unit =
+    def apply(image: EditorImage): Unit =
         for i <- 0 until image.height do
             for j <- 0 until image.width do
                 val r = 255 - ((image.buffer.getRGB(j, i) >> 16) & 0x0ff)

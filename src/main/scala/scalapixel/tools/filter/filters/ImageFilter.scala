@@ -1,24 +1,12 @@
 package scalapixel.image.filters
 
 import scalapixel.history.{HistoryEntry, SimpleHistoryEntry}
-import scalapixel.image.EditorImage
-import scalapixel.image.ImageProcessor
+import scalapixel.image.{EditorImage, ImageProcessor, SimpleImageProcessor}
 
 import scala.swing.Rectangle
 
-abstract case class ImageFilter(name: String, description: String) extends ImageProcessor:
+abstract case class ImageFilter(name: String, description: String) extends SimpleImageProcessor:
     protected var option: Option[Double] = None
-
-    def process(img: EditorImage): HistoryEntry =
-        val historyEntry = new SimpleHistoryEntry()
-        historyEntry.saveSnapshot(img)()
-
-        applyFilter(img)
-
-        historyEntry.saveResult(img)()
-        historyEntry
-
-    def applyFilter(img: EditorImage): Unit
 
     def setOption(option: String): ImageFilter =
         this.option = option.toDoubleOption

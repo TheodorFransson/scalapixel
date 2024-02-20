@@ -4,7 +4,7 @@ import scalapixel.image.EditorImage
 import java.awt.Color
 
 class CryptographyFilter extends ImageFilter("Encrypt", "<html>Encrypts/decrypts the image using<br> an integer key.</html>"):
-    def applyFilter(image: EditorImage): Unit =
+    def apply(image: EditorImage): Unit =
         import scala.util.Random
 
         val seed = if option.isDefined then option.get.toInt else Random().nextInt()

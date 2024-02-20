@@ -1,7 +1,7 @@
 package scalapixel.tools.pencil
 
 import scalapixel.{Colors, EditorWindow}
-import scalapixel.history.{HistoryEntry, SimpleHistoryEntry, TwoPartHistoryEntry}
+import scalapixel.history.{HistoryEntry, SimpleHistoryEntry}
 import scalapixel.image.{EditorImage, ImageProcessingManager, ImageProcessor}
 import scalapixel.tools.ToolOperation
 import scalapixel.views.CanvasPanel.Events.*
@@ -29,10 +29,10 @@ class PencilToolOperation(model: ImageProcessingManager) extends ToolOperation(m
   override def process(image: EditorImage): HistoryEntry =
     val g = image.graphics
 
-    val historyEntry = new TwoPartHistoryEntry()
+    val historyEntry = new SimpleHistoryEntry()
 
     if (!hasSaved) then
-      historyEntry.savePreSnapshot(image)
+      historyEntry.saveInitialState(image)
       hasSaved = true
 
     g.setColor(pencilColor)
@@ -40,7 +40,7 @@ class PencilToolOperation(model: ImageProcessingManager) extends ToolOperation(m
     g.draw(path)
 
     if (hasSaved && !dragging) then
-      historyEntry.saveFinalSnapshot(image, getExtendedPathBounds(path, image.width, image.height))
+      historyEntry.saveFinalState(image)(getExtendedPathBounds(path, image.width, image.height))
 
     historyEntry
 
