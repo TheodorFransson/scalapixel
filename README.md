@@ -10,6 +10,7 @@ A simple image editor written in the Scala programming language. Built using [sc
 - Currently supported formats: jpg, png, bmp
 
 ## Demo
+![](https://github.com/TheodorFransson/scalapixel/blob/main/Demo.gif)
 
 ## Installation
 
