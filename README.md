@@ -12,6 +12,7 @@ A simple image editor written in the Scala programming language. Built using [sc
 ## Demo
 ![](https://github.com/TheodorFransson/scalapixel/blob/main/Demo.gif)
 
+
 ## Installation
 
 ScalaPixel is a standalone application packaged as a single JAR file, making it easy to run on any platform with Java installed. Follow the steps below to download and run ScalaPixel on your system.
