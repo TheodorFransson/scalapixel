@@ -43,7 +43,7 @@ class ImageProcessingManager extends Publisher:
     private def applyProcess(processor: ImageProcessor): Future[Unit] =
         Future {
             val historyEntry = processor.process(getImage)
-            history.push(historyEntry)
+            history.pushHistory(historyEntry)
             SwingUtilities.invokeLater(() => {
               publish(ImageUpdated(image))
             })
