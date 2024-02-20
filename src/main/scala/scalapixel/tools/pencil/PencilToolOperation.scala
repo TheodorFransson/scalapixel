@@ -24,22 +24,19 @@ class PencilToolOperation(model: ImageProcessingManager) extends ToolOperation(m
   private val pointAddInterval = 5
   private var lastAddTime = System.currentTimeMillis()
   private var dragging = false
-  private var hasSaved = false
+  private var historyEntry = new SimpleHistoryEntry()
 
   override def process(image: EditorImage): HistoryEntry =
     val g = image.graphics
 
-    val historyEntry = new SimpleHistoryEntry()
-
-    if (!hasSaved) then
+    if (!historyEntry.hasSavedInitialState()) then
       historyEntry.saveInitialState(image)
-      hasSaved = true
 
     g.setColor(pencilColor)
     g.setStroke(new BasicStroke(pencilWidth.toFloat, strokeCap, strokeJoin))
     g.draw(path)
 
-    if (hasSaved && !dragging) then
+    if (historyEntry.hasSavedInitialState() && !dragging) then
       historyEntry.saveFinalState(image)(getExtendedPathBounds(path, image.width, image.height))
 
     historyEntry
@@ -57,7 +54,7 @@ class PencilToolOperation(model: ImageProcessingManager) extends ToolOperation(m
       lastPoint = Some(event.pointOnImage)
       lastAddTime = System.currentTimeMillis()
       dragging = true
-      hasSaved = false
+      historyEntry = new SimpleHistoryEntry()
 
   override def mouseDragged(event: MouseDraggedCanvas): Unit =
     if dragging then
