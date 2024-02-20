@@ -12,29 +12,17 @@ class HistoryManager:
 
   def push(historyEntry: HistoryEntry): Unit =
     if (!historyEntry.isCollapsable) then
-      undoHistory.push(historyEntry)
-
-      if undoHistory.size > entryLimit then
-        undoHistory.removeLast()
-
+      pushWithLimit(historyEntry, undoHistory)
       redoHistory.clear()
 
   def popUndo(): HistoryEntry =
-      val historyEntry = undoHistory.pop()
-
-      redoHistory.push(historyEntry)
-      if redoHistory.size > entryLimit then
-        redoHistory.removeLast()
-
-      historyEntry
+    val historyEntry = undoHistory.pop()
+    pushWithLimit(historyEntry, redoHistory)
+    historyEntry
 
   def popRedo(): HistoryEntry =
     val historyEntry = redoHistory.pop()
-    undoHistory.push(historyEntry)
-
-    if undoHistory.size > entryLimit then
-      undoHistory.removeLast()
-
+    pushWithLimit(historyEntry, undoHistory)
     historyEntry
 
   def flushHistory: Unit =
@@ -44,3 +32,11 @@ class HistoryManager:
   def hasUndoHistory: Boolean = undoHistory.nonEmpty
 
   def hasRedoHistory: Boolean = redoHistory.nonEmpty
+
+  private def pushWithLimit(historyEntry: HistoryEntry, stack: mutable.Stack[HistoryEntry]): Unit =
+    stack.push(historyEntry)
+    limitStack(stack)
+
+  private def limitStack(stack: mutable.Stack[HistoryEntry]): Unit =
+    if stack.size > entryLimit then
+      stack.removeLast()
