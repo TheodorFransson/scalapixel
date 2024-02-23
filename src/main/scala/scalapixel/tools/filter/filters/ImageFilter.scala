@@ -32,4 +32,28 @@ abstract case class ImageFilter(name: String, description: String) extends Simpl
             sum += imageMatrix(i + ii)(j + jj) * kernel(ii + 1)(jj + 1)
         (sum / weight).round.toShort
 
+    protected def fastConvolve(image: EditorImage, i: Int, j: Int, kernel: Array[Array[Short]], weight: Int): Int =
+        var sumR: Double = 0.0
+        var sumG: Double = 0.0
+        var sumB: Double = 0.0
+
+        for
+            ii <- -1 to 1
+            jj <- -1 to 1
+        do
+            val pixel = image.buffer.getRGB(j + jj, i + ii)
+            val red = (pixel >> 16) & 0xFF
+            val green = (pixel >> 8) & 0xFF
+            val blue = pixel & 0xFF
+
+            sumR += red * kernel(ii + 1)(jj + 1)
+            sumG += green * kernel(ii + 1)(jj + 1)
+            sumB += blue * kernel(ii + 1)(jj + 1)
+
+        val r = ((sumR / weight).round.toInt & 0xFF) << 16
+        val g = ((sumG / weight).round.toInt & 0xFF) << 8
+        val b = (sumB / weight).round.toInt & 0xFF
+
+        (0xFF << 24) | r | g | b
+
     override def toString(): String = name

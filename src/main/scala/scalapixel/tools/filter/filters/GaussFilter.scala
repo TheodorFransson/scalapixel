@@ -1,28 +1,26 @@
 package scalapixel.image.filters
 
 import scalapixel.image.EditorImage
+
 import java.awt.Color
 
 class GaussFilter extends ImageFilter("Blur", "Blurs the image using Gaussian blur."):
-    def apply(image: EditorImage): Unit =
-        val middle = if option.isDefined then option.get.toInt else 4
+	def apply(image: EditorImage): Unit =
+		val middle = if option.isDefined then option.get.toInt else 4
 
-        val clone = image.createClone()
-        val matrix = image.getColorMatrix
+		val clone = image.createClone()
+		val kernel: Array[Array[Short]] = Array(Array(0, 1, 0), Array(1, middle, 1), Array(0, 1, 0)).map(_.map(_.toShort))
+		val weight = kernel.map(_.sum).sum
 
-        val red = matrix.map(_.map(_.getRed().toShort))
-        val green = matrix.map(_.map(_.getGreen().toShort))
-        val blue = matrix.map(_.map(_.getBlue().toShort))
+		for j <- 0 until image.width do
+			image.buffer.setRGB(j, 0, clone.buffer.getRGB(j, 0))
+			image.buffer.setRGB(j, image.height - 1, clone.buffer.getRGB(j, image.height - 1))
 
-        val kernel: Array[Array[Short]] = Array(Array(0, 1, 0), Array(1, middle, 1), Array(0, 1, 0)).map(_.map(_.toShort))
-        val weight = kernel.map(_.sum).sum
+		for i <- 1 until image.height - 1 do
+			image.buffer.setRGB(0, i, clone.buffer.getRGB(0, i))
+			image.buffer.setRGB(image.width - 1, i, clone.buffer.getRGB(image.width - 1, i))
 
-        for i <- 0 until image.height do
-            for j <- 0 until image.width do
-                if (i == 0 || i == image.height - 1 || j == 0 || j == image.width - 1) then
-                    image.buffer.setRGB(j, i, clone.buffer.getRGB(j, i))
-                else 
-                    val r = convolve(red, i, j, kernel, weight)
-                    val g = convolve(green, i, j, kernel, weight)
-                    val b = convolve(blue, i, j, kernel, weight)
-                    image.buffer.setRGB(j, i, (255 << 24) | (r << 16) | (g << 8) | (b))
+		for i <- 1 until image.height - 1 do
+			for j <- 1 until image.width - 1 do
+				val pixel = fastConvolve(clone, i, j, kernel, weight)
+				image.buffer.setRGB(j, i, pixel)
