@@ -15,9 +15,9 @@ class EditorImage(val buffer: BufferedImage):
   private val internalBuffer: BufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
   lazy val graphics: Graphics2D = buffer.createGraphics()
-  lazy val internalGraphics: Graphics2D = internalBuffer.createGraphics()
+  private lazy val internalGraphics: Graphics2D = internalBuffer.createGraphics()
 
-  writeInteralBuffer()
+  updateInteralBuffer()
 
   def getColorMatrix: Array[Array[Color]] =
     val pixels: Array[Array[Color]] = Array.ofDim(height, width)
@@ -26,7 +26,7 @@ class EditorImage(val buffer: BufferedImage):
       pixels(i)(j) = new Color(buffer.getRGB(j, i))
     pixels
 
-  def writeInteralBuffer(): Unit = internalGraphics.drawImage(buffer, 0, 0, null)
+  def updateInteralBuffer(): Unit = internalGraphics.drawImage(buffer, 0, 0, null)
 
   def getInternalBuffer(): BufferedImage = internalBuffer
 

@@ -21,7 +21,7 @@ class CanvasPanel extends Panel:
 		super.paintComponent(g)
 		g.setClip(0, 0, dimension.width, dimension.height)
 
-		renderImage.render(g, dimension)
+		renderImage.render(g)(using dimension)
 
 	def updateImage(editorImage: EditorImage): Unit =
 		renderImage.updateImage(editorImage)
@@ -33,22 +33,22 @@ class CanvasPanel extends Panel:
 		resetViewTransform()
 
 	def resetViewTransform(): Unit =
-		renderImage.reset(dimension)
+		renderImage.reset()(using dimension)
 		repaint()
 
 	def zoom(factor: Double, target: Point = new Point(dimension.width / 2, dimension.height / 2)): Unit =
-		renderImage.zoom(factor, target, dimension)
+		renderImage.zoom(factor, target)(using dimension)
 		repaint()
 
 	def zoomAbsolute(zoom: Int): Unit =
-		renderImage.zoomAbsolute(zoom, dimension)
+		renderImage.zoomAbsolute(zoom)(using dimension)
 		repaint()
 
 	def pan(dx: Int, dy: Int): Unit =
-		renderImage.pan(dx, dy, dimension)
+		renderImage.pan(dx, dy)(using dimension)
 		repaint()
 
-	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dimension, renderImage.getBounds(dimension), renderImage.getPosition)
+	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dimension, renderImage.getBounds(using dimension), renderImage.getPosition)
 
 	def getZoomFactor(): Int = (renderImage.getZoomFactor * 10).toInt
 
