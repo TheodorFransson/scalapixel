@@ -36,7 +36,7 @@ class SimpleHistoryEntry extends HistoryEntry:
       new Rectangle(0,0,0,0)
 
   def saveInitialState(originalImage: EditorImage): Unit =
-    originalImage.writeInteralBuffer()
+    originalImage.updateInteralBuffer()
     hasSaved = true
 
   def saveFinalState(originalImage: EditorImage)(bounds: Rectangle = new Rectangle(0, 0, originalImage.width, originalImage.height)): Unit =

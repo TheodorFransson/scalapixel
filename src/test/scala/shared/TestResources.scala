@@ -33,3 +33,6 @@ object TestResources:
 
 		equal
 
+	def alterImage(buffer: BufferedImage): Unit =
+		buffer.setRGB(0, 0, 0x000000)
+

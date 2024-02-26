@@ -12,9 +12,6 @@ import java.awt.image.BufferedImage
 class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 	var simpleHistory: SimpleHistoryEntry = _
 
-	def alterImage(buffer: BufferedImage): Unit =
-		buffer.setRGB(0, 0, 0x000000)
-
 	before {
 		simpleHistory = new SimpleHistoryEntry()
 	}
@@ -30,7 +27,7 @@ class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 
 	test("SimpleHistoryEntry.saveInitialState") {
 		val imageClone = TestResources.editorImageClone
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 
 		assert(TestResources.areBuffersEqual(
 			imageClone.buffer,
@@ -53,7 +50,7 @@ class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 		}
 
 		simpleHistory.saveInitialState(imageClone)
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 		simpleHistory.saveFinalState(imageClone)()
 
 		simpleHistory.undo(imageClone)
@@ -70,13 +67,13 @@ class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 		assert(simpleHistory.getAffectedArea === new Rectangle(0, 0, 0, 0))
 
 		simpleHistory.saveInitialState(imageClone)
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 		simpleHistory.saveFinalState(imageClone)()
 
 		assert(simpleHistory.getAffectedArea === new Rectangle(0, 0, 50, 50))
 
 		simpleHistory.saveInitialState(imageClone)
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 		simpleHistory.saveFinalState(imageClone)(new Rectangle(0, 0, 1, 1))
 
 		assert(simpleHistory.getAffectedArea === new Rectangle(0, 0, 1, 1))
@@ -97,7 +94,7 @@ class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 		}
 
 		simpleHistory.saveInitialState(imageClone)
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 		simpleHistory.saveFinalState(imageClone)()
 
 		assert(TestResources.areBuffersEqual(imageClone.buffer, TestResources.bufferedImage) === false)
@@ -115,7 +112,7 @@ class SimpleHistoryEntryTest extends AnyFunSuite with BeforeAndAfter:
 		}
 
 		simpleHistory.saveInitialState(imageClone)
-		alterImage(imageClone.buffer)
+		TestResources.alterImage(imageClone.buffer)
 		simpleHistory.saveFinalState(imageClone)()
 
 		simpleHistory.undo(imageClone)
