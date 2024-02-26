@@ -12,12 +12,12 @@ abstract case class ImageFilter(name: String, description: String) extends Simpl
         this.option = option.toDoubleOption
         this
 
-    protected def computeIntensity(img: EditorImage): Array[Array[Short]] = 
-        val intensity: Array[Array[Short]] = Array.ofDim[Short](img.height, img.width)
-        val colorMatrix = img.getColorMatrix
-        for 
-            h <- 0 until img.height
-            w <- 0 until img.width
+    protected def computeIntensity(image: EditorImage): Array[Array[Short]] =
+        val intensity: Array[Array[Short]] = Array.ofDim[Short](image.height, image.width)
+        val colorMatrix = image.getColorMatrix
+        for
+            h <- 0 until image.height
+            w <- 0 until image.width
         do
             val pixelColor = colorMatrix(h)(w)
             intensity(h)(w) = ((pixelColor.getRed + pixelColor.getGreen + pixelColor.getBlue) / 3).toShort
