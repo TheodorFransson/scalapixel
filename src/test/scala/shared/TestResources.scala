@@ -24,12 +24,13 @@ object TestResources:
 	def areBuffersEqual(imageA: BufferedImage, imageB: BufferedImage): Boolean =
 		var equal = true
 
-		if (imageA.getWidth != imageB.getWidth || imageA.getHeight != imageB.getHeight) equal = false
-
-		for (x <- 0 until imageA.getWidth) do
-			for (y <- 0 until imageA.getHeight) do
-				if imageA.getRGB(x, y) != imageB.getRGB(x, y) then
-					equal = false
+		if (imageA.getWidth == imageB.getWidth || imageA.getHeight == imageB.getHeight)
+			for (x <- 0 until imageA.getWidth) do
+				for (y <- 0 until imageA.getHeight) do
+					if imageA.getRGB(x, y) != imageB.getRGB(x, y) then
+						equal = false
+		else
+			equal = false
 
 		equal
 
