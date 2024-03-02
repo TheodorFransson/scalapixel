@@ -37,6 +37,7 @@ class TopMenu extends MenuBar with EventBinder:
 		bindToEvent(openMenuItem, OpenMenuItemClicked())
 		bindToEvent(newMenuItem, NewMenuItemClicked())
 		bindToEvent(saveMenuItem, SaveMenuItemClicked())
+		bindToEvent(saveAsMenuItem, SaveAsMenuItemClicked())
 		bindToEvent(exitMenuItem, ExitMenuItemClicked())
 
 	val fileMenu = new FileMenu()
@@ -63,6 +64,7 @@ object TopMenu:
 		case class NewMenuItemClicked() extends Event
 		case class OpenMenuItemClicked() extends Event
 		case class SaveMenuItemClicked() extends Event
+		case class SaveAsMenuItemClicked() extends Event
 		case class ExitMenuItemClicked() extends Event
 		case class UndoMenuItemClicked() extends Event
 		case class RedoMenuItemClicked() extends Event

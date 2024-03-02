@@ -25,6 +25,7 @@ class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Re
 		case OpenMenuItemClicked() => fileChooser()
 		case NewMenuItemClicked() => createNewImage()
 		case SaveMenuItemClicked() => save()
+		case SaveAsMenuItemClicked() => saveAs()
 		case ExitMenuItemClicked() => EditorWindow.closeOperation()
 		case UndoMenuItemClicked() => model.enqueueUndo()
 		case RedoMenuItemClicked() => model.enqueueRedo()
@@ -49,8 +50,10 @@ class TopMenuController(model: ImageProcessingManager, view: TopMenu) extends Re
 			val file = chooser.peer.getSelectedFile()
 			val name = if !file.getAbsolutePath().endsWith(".png") then file.getAbsolutePath() + ".png" else file.getAbsolutePath()
 			val newFile = new File(name)
+			println(file)
 			newFile.createNewFile()
 			ImageIO.write(model.getImage.buffer, "PNG", newFile)
+			openFile = Some(newFile)
 
 	private def save(): Unit = 
 		if openFile.isDefined then 
