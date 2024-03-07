@@ -2,17 +2,18 @@ package scalapixel.controllers
 
 import scalapixel.image.ImageProcessingManager
 import ImageProcessingManager.Events.*
-import scalapixel.EditorWindow
 import scalapixel.views.{CanvasPanel, NavigablePanel}
 import scalapixel.views.CanvasPanel.Events.*
 import scalapixel.views.NavigablePanel.Events.*
+import scalapixel.controllers.FocusListener
+import scalapixel.controllers.FocusListener.Events.*
 
 import java.awt.event.*
 import java.util.TimerTask
 import scala.swing.*
-import scala.swing.event.{Key, KeyPressed, MouseEvent, MouseWheelMoved, UIElementResized}
+import scala.swing.event.{Key, MouseEvent, MouseWheelMoved, UIElementResized}
 
-class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPanel, navigablePanel: NavigablePanel) extends Reactor:
+class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPanel, navigablePanel: NavigablePanel) extends FocusListener:
     private var mouseOrigin = new Point(0, 0)
     private var dragging = false
 
@@ -21,6 +22,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
     private val pressedKeys = scala.collection.mutable.Set[event.Key.Value]()
 
     listenTo(model, canvasPanel, navigablePanel)
+    listenToFocusEvents(canvasPanel)
 
     reactions += {
         case ImageUpdated(image) => canvasPanel.updateImage(image)
@@ -51,6 +53,8 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
         case Zoom(value) =>
           canvasPanel.zoomAbsolute(value)
           updateScrollBars()
+        case FocusLost() =>
+          stopPanningOnFocusLost()
     }
 
     def dispose(): Unit = {
@@ -73,6 +77,14 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
     private def stopPanning(event: MouseEvent): Unit =
       callPanOnCanvasPanel(event.point.x - mouseOrigin.x, event.point.y - mouseOrigin.y)
       dragging = false
+
+    private def stopPanningOnFocusLost(): Unit =
+      panTask.foreach(_.cancel())
+      panTask = None
+
+      dragging = false
+
+      pressedKeys.clear()
 
     private def pan(event: MouseEvent): Unit =
       if dragging then
