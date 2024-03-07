@@ -67,7 +67,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
       val target = event.point
       val zoomFactor = if (event.rotation > 0) 0.9 else 1.1
       canvasPanel.zoom(zoomFactor, target)
-      navigablePanel.setZoom(canvasPanel.getZoomFactor())
+      navigablePanel.setZoom(canvasPanel.getZoomFactor)
       updateScrollBars()
 
     private def callPanOnCanvasPanel(dx: Int, dy: Int): Unit =
@@ -101,7 +101,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
 
     private def reset(): Unit =
       canvasPanel.resetViewTransform()
-      navigablePanel.setZoom(canvasPanel.getZoomFactor())
+      navigablePanel.setZoom(canvasPanel.getZoomFactor)
       updateScrollBars()
 
     private def panWithKeys(): Unit =
@@ -121,7 +121,7 @@ class CanvasPanelController(model: ImageProcessingManager, canvasPanel: CanvasPa
 
     private def updateScrollBars(): Unit =
       val (canvasPanelDimension, imageBounds, imagePosition): (Dimension, Rectangle, Point) =
-        canvasPanel.getPositionalParameters()
+        canvasPanel.getPositionalParameters
 
       val horizontalValue = imageBounds.x + imageBounds.width - imagePosition.x
       val horizontalExtent = canvasPanelDimension.width / 2
