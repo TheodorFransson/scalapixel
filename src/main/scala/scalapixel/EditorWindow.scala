@@ -35,7 +35,7 @@ object EditorWindow extends Frame:
 
 	val canvasPanel = new CanvasPanel()
 	val startPanel = new StartPanel()
-	val navigablePanel = new NavigablePanel(startPanel, 100, 2, 1, 30)
+	val navigablePanel = new NavigablePanel(startPanel, 100, 1, 1, 30)
 
 	val canvasPanelController = new CanvasPanelController(model, canvasPanel, navigablePanel)
 	val startPanelController = new StartPanelController(model, startPanel)
