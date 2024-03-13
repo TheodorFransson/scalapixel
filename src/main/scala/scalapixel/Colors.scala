@@ -23,6 +23,8 @@ object Colors extends Publisher:
     private var primaryColor: Color = Color.black
     private var secondaryColor: Color = Color.white
 
+    def backgroundLevels = background.length
+
     def getPrimaryColor(): Color = primaryColor
 
     def getSecondaryColor(): Color = secondaryColor
@@ -41,7 +43,7 @@ object Colors extends Publisher:
         setSecondaryColor(temp)
 
     def backgroundColorAtDepth(depth: Int): Color =
-        require(depth > -1 && depth < background.length)
+        require(depth > -1 && depth < backgroundLevels)
         background(depth)
 
     def brighten(color: Color, amount: Int): Color =
