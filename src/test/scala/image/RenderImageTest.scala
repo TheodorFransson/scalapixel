@@ -54,7 +54,7 @@ class RenderImageTest extends AnyFunSuite with BeforeAndAfter:
 		for i <- 0 to 50 do
 			renderImage.zoom(0.9, zoomTarget)
 
-		assert(renderImage.getZoomFactor === (0.2 +- tolerance))
+		assert(renderImage.getZoomFactor === (0.1 +- tolerance))
 	}
 
 	test("RenderImage.zoom speedup threshold") {

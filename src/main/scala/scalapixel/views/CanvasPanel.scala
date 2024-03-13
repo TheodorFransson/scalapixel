@@ -48,9 +48,9 @@ class CanvasPanel extends Panel:
 		renderImage.pan(dx, dy)(using dimension)
 		repaint()
 
-	def getPositionalParameters(): (Dimension, Rectangle, Point) = (dimension, renderImage.getBounds(using dimension), renderImage.getPosition)
+	def getPositionalParameters: (Dimension, Rectangle, Point) = (dimension, renderImage.getBounds(using dimension), renderImage.getPosition)
 
-	def getZoomFactor(): Int = (renderImage.getZoomFactor * 10).toInt
+	def getZoomFactor: Int = (renderImage.getZoomFactor * 10).toInt
 
 	listenTo(mouse.clicks, mouse.wheel, mouse.moves, keys)
 	reactions += {

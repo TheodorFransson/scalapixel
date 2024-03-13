@@ -14,4 +14,5 @@ class FilterToolOperation(model: ImageProcessingManager) extends ToolOperation(m
 
 	def setOption(option: String): Unit = filter.setOption(option)
 
-	override def mousePressed(event: MousePressedCanvas): Unit = applyFilter()
+	override def mousePressed(event: MousePressedCanvas): Unit =
+		if isPrimary(event.originalEvent.peer) then applyFilter()

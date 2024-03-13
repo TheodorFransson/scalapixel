@@ -26,7 +26,7 @@ class RenderImage(var editorImage: EditorImage):
     val oldDimensions = new Dimension(scaledWidth, scaledHeight)
 
     val change = if zoomFactor >= 3 then (factor - 1) * 5 else (factor - 1)
-    zoomFactor = math.min(math.max(zoomFactor + change, 0.2), 10)
+    zoomFactor = math.min(math.max(zoomFactor + change, 0.1), 10)
 
     val newDimensions = new Dimension(scaledWidth, scaledHeight)
 

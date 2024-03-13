@@ -1,7 +1,8 @@
 .vscode
 .metals
 .bloop
-/project
+/project/*
+!/project/plugins.sbt
 /target
 /.idea
 /.bsp
